@@ -53,7 +53,7 @@ class CalculatorProvider extends ChangeNotifier {
           .replaceAll('sqrt(', 'sqrt(')
           .replaceAll('%', '/100');
 
-      final parser  = Parser();
+      final parser  = GrammarParser();
       final exp     = parser.parse(expr);
       final context = ContextModel();
       final val     = exp.evaluate(EvaluationType.REAL, context) as double;

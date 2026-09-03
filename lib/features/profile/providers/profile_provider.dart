@@ -6,7 +6,7 @@ import '../../auth/models/user_profile.dart';
 /// (e.g., editing profile, uploading avatar).
 class ProfileProvider extends ChangeNotifier {
   UserProfile? _editingProfile;
-  bool _isSaving = false;
+  final bool   _isSaving = false;
 
   UserProfile? get editingProfile => _editingProfile;
   bool         get isSaving       => _isSaving;

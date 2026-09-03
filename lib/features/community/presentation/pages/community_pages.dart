@@ -25,7 +25,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
       backgroundColor: AppColors.background,
       appBar: AppBar(title: Text('Community', style: AppTextStyles.headlineSmall)),
       body: Consumer<CommunityProvider>(
-        builder: (_, cp, __) {
+        builder: (_, cp, _) {
           if (cp.isLoading) return const LoadingWidget(message: 'Loading communities...');
           if (cp.error != null) return AppErrorWidget(message: cp.error!, onRetry: cp.loadCommunities);
           return GridView.builder(

@@ -4,7 +4,6 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:http/http.dart' as http;
 import '../models/chat_message.dart';
 import '../../../core/constants/app_constants.dart';
-import '../../../core/errors/app_exception.dart';
 
 /// Calls the Google Gemini REST API to generate AI responses.
 /// Includes a dynamic academic knowledge engine when running offline.
