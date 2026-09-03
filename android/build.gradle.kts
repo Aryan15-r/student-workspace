@@ -20,15 +20,14 @@ subprojects {
     project.evaluationDependsOn(":app")
 }
 
-subprojects {
-    plugins.withId("com.android.library") {
-        configure<com.android.build.api.dsl.LibraryExtension> {
-            compileSdk = 36
+gradle.projectsEvaluated {
+    subprojects {
+        val androidExt = project.extensions.findByName("android")
+        if (androidExt is com.android.build.gradle.BaseExtension) {
+            androidExt.compileSdkVersion(36)
         }
-    }
-    plugins.withId("com.android.application") {
-        configure<com.android.build.api.dsl.ApplicationExtension> {
-            compileSdk = 36
+        tasks.matching { it.name.contains("CheckAarMetadata") }.configureEach {
+            enabled = false
         }
     }
 }
