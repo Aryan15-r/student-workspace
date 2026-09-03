@@ -4,18 +4,11 @@ import '../../../core/errors/app_exception.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
 /// AuthService — Handles all Supabase authentication operations
-///
-/// The UI never calls Supabase directly.
-/// Instead, it calls AuthService, which calls Supabase.
-/// This makes it easy to swap auth providers later.
 /// ─────────────────────────────────────────────────────────────────────────────
 class AuthService {
-  // Get the Supabase client — this is the connection to our backend
   final _supabase = Supabase.instance.client;
 
   // ── Sign Up ────────────────────────────────────────────────────────────────
-  /// Creates a new account with email, password, and a username.
-  /// The Supabase trigger automatically creates the profile row.
   Future<void> signUp({
     required String email,
     required String password,
@@ -36,8 +29,7 @@ class AuthService {
     }
   }
 
-  // ── Sign In ────────────────────────────────────────────────────────────────
-  /// Logs in with email and password.
+  // ── Sign In with Password ──────────────────────────────────────────────────
   Future<void> signIn({
     required String email,
     required String password,
@@ -52,6 +44,40 @@ class AuthService {
     }
   }
 
+  // ── Send Email OTP ─────────────────────────────────────────────────────────
+  Future<void> sendOtp(String email) async {
+    try {
+      await _supabase.auth.signInWithOtp(email: email);
+    } catch (e) {
+      throw AppException.from(e);
+    }
+  }
+
+  // ── Verify Email OTP ───────────────────────────────────────────────────────
+  Future<AuthResponse> verifyOtp({
+    required String email,
+    required String token,
+  }) async {
+    try {
+      // First try signup type, then fallback to magiclink/email type
+      try {
+        return await _supabase.auth.verifyOTP(
+          email: email,
+          token: token,
+          type: OtpType.signup,
+        );
+      } catch (_) {
+        return await _supabase.auth.verifyOTP(
+          email: email,
+          token: token,
+          type: OtpType.magiclink,
+        );
+      }
+    } catch (e) {
+      throw AppException(message: 'Invalid or expired OTP code. Please try again.');
+    }
+  }
+
   // ── Sign Out ───────────────────────────────────────────────────────────────
   Future<void> signOut() async {
     try {
@@ -62,7 +88,6 @@ class AuthService {
   }
 
   // ── Password Reset ─────────────────────────────────────────────────────────
-  /// Sends a password reset email.
   Future<void> resetPassword(String email) async {
     try {
       await _supabase.auth.resetPasswordForEmail(email);
@@ -72,19 +97,11 @@ class AuthService {
   }
 
   // ── Current User ───────────────────────────────────────────────────────────
-  /// Returns the currently logged-in Supabase user, or null if not logged in.
   User? get currentUser => _supabase.auth.currentUser;
-
-  /// True if a user is currently logged in
   bool get isAuthenticated => currentUser != null;
 
-  // ── Auth State Stream ──────────────────────────────────────────────────────
-  /// A stream that fires whenever the auth state changes
-  /// (login, logout, token refresh).
   Stream<AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;
 
-  // ── Fetch Profile ──────────────────────────────────────────────────────────
-  /// Loads the profile row from Supabase for the given user ID.
   Future<UserProfile?> fetchProfile(String userId) async {
     try {
       final data = await _supabase
@@ -100,7 +117,6 @@ class AuthService {
     }
   }
 
-  // ── Update Profile ─────────────────────────────────────────────────────────
   Future<void> updateProfile(UserProfile profile) async {
     try {
       await _supabase

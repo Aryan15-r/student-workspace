@@ -146,7 +146,31 @@ class _LoginPageState extends State<LoginPage> {
                             style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 18)),
                             child: auth.isLoading
                                 ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                : const Text('Sign In', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                                : const Text('Sign In with Password', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+
+                        // Login with OTP button
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            icon: const Icon(Icons.pin_outlined, size: 18),
+                            label: const Text('Sign In with 6-Digit Email OTP'),
+                            style: OutlinedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 16)),
+                            onPressed: () async {
+                              final email = _emailCtrl.text.trim();
+                              if (email.isEmpty || !email.contains('@')) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(content: Text('Please enter a valid email above first'), backgroundColor: AppColors.warning),
+                                );
+                                return;
+                              }
+                              await context.read<AuthProvider>().sendOtp(email);
+                              if (context.mounted) {
+                                context.go('/verify-otp', extra: email);
+                              }
+                            },
                           ),
                         ),
                       ],

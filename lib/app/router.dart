@@ -5,6 +5,7 @@ import '../features/auth/presentation/pages/landing_page.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/signup_page.dart';
 import '../features/auth/presentation/pages/forgot_password_page.dart';
+import '../features/auth/presentation/pages/otp_verification_page.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/todo/presentation/pages/todo_page.dart';
 import '../features/ai_assistant/presentation/pages/ai_page.dart';
@@ -48,7 +49,8 @@ class AppRouter {
     final isPublicPage = location == '/' ||
         location == '/login' ||
         location == '/signup' ||
-        location == '/forgot-password';
+        location == '/forgot-password' ||
+        location.startsWith('/verify-otp');
 
     // Not logged in and trying to access a protected page → go to landing
     if (!isAuth && !isPublicPage) return '/';
@@ -67,6 +69,12 @@ class AppRouter {
     GoRoute(path: '/login',           builder: (context, state) => const LoginPage()),
     GoRoute(path: '/signup',          builder: (context, state) => const SignupPage()),
     GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordPage()),
+    GoRoute(
+      path: '/verify-otp',
+      builder: (context, state) => OtpVerificationPage(
+        email: state.extra as String? ?? (state.uri.queryParameters['email'] ?? ''),
+      ),
+    ),
 
     // ── Protected routes (require auth) ─────────────────────────────────────
     GoRoute(path: '/dashboard',   builder: (context, state) => const DashboardPage()),

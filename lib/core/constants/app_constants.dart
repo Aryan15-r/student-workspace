@@ -1,7 +1,5 @@
 /// ─────────────────────────────────────────────────────────────────────────────
 /// AppConstants — App-wide constant values
-///
-/// Put any magic strings, numbers, or configuration here.
 /// ─────────────────────────────────────────────────────────────────────────────
 class AppConstants {
   AppConstants._();
@@ -12,31 +10,21 @@ class AppConstants {
   static const String appVersion = '1.0.0';
 
   // ── AI ─────────────────────────────────────────────────────────────────────
-  /// Google Gemini REST API base URL
+  /// Google Gemini REST API endpoint
   static const String geminiBaseUrl =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash-latest:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
 
   /// System prompt that shapes the AI's personality
   static const String aiSystemPrompt = '''
-You are StudySpace AI, a friendly and intelligent study assistant for college students.
+You are StudySpace AI, an encouraging and intelligent academic assistant for college students.
 
-You help students with:
+You assist students with:
 - Explaining concepts clearly and simply
-- Summarizing long texts
-- Creating study plans and schedules
-- Answering academic questions across subjects
-- Explaining programming concepts with examples
-- Helping brainstorm project and presentation ideas
-- Generating revision questions for any topic
-- Helping organize notes
+- Answering programming, math, physics, and science questions
+- Summarizing topics and creating study roadmaps
+- Providing revision questions and flashcard concepts
 
-Guidelines:
-- Be encouraging and supportive
-- Use simple, clear language — avoid unnecessary jargon
-- Give concrete examples when explaining concepts
-- If asked to do homework *for* a student (not explain it), gently redirect to explaining the concept instead
-- Keep responses concise unless the student asks for more detail
-- Use bullet points and numbered lists for clarity
+Keep formatting clean with Markdown headers, bullet points, and code snippets when appropriate.
 ''';
 
   /// System prompt for the search/resource finder
@@ -49,11 +37,9 @@ Each resource must have:
 - "url": a real, working URL
 - "type": one of "video", "article", "course", "documentation", "tool", "website"
 - "isFree": true or false
-- "source": the website name (e.g. "YouTube", "MDN", "Khan Academy")
+- "source": the website name (e.g. "YouTube", "MDN", "Khan Academy", "GeeksforGeeks")
 
-Prioritize: free resources, beginner-friendly explanations, trusted sources (YouTube, MDN, W3Schools, Khan Academy, GeeksForGeeks, Coursera free, FreeCodeCamp, Wikipedia).
-
-Return ONLY a valid JSON array. No extra text, no markdown, just the JSON array.
+Return ONLY a valid JSON array.
 ''';
 
   // ── Task Categories ────────────────────────────────────────────────────────
@@ -67,19 +53,7 @@ Return ONLY a valid JSON array. No extra text, no markdown, just the JSON array.
 
   static const List<String> taskPriorities = ['low', 'medium', 'high'];
 
-  // ── Breakpoints (for responsive layout) ───────────────────────────────────
-  static const double mobileBreakpoint  = 600;   // below = mobile → bottom nav
-  static const double tabletBreakpoint  = 1024;  // below = tablet → nav rail
-  // above tabletBreakpoint = desktop/web → sidebar
-
-  // ── Search History ─────────────────────────────────────────────────────────
-  static const int maxSearchHistory = 20; // Keep last 20 searches
-
-  // ── Community ─────────────────────────────────────────────────────────────
-  static const int messagesPageSize = 50; // Load 50 messages at a time
-
-  // ── Animation Durations ───────────────────────────────────────────────────
-  static const Duration animFast   = Duration(milliseconds: 150);
-  static const Duration animNormal = Duration(milliseconds: 300);
-  static const Duration animSlow   = Duration(milliseconds: 500);
+  // ── Breakpoints ───────────────────────────────────────────────────────────
+  static const double mobileBreakpoint  = 600;
+  static const double tabletBreakpoint  = 1024;
 }
