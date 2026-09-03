@@ -24,7 +24,7 @@ jobs:
         env:
           SUPABASE_URL: "https://fjxnjtcxrxeknkoupvsr.supabase.co"
           SUPABASE_ANON_KEY: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqeG5qdGN4cnhla25rb3VwdnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MzI0NTEsImV4cCI6MjEwNDAwODQ1MX0.5r9Q_KdkwrVf5gdUKlSD-FBNpR5srJaBE0tbYP2IHWw"
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GEMINI_API_KEY: "${{ secrets.GEMINI_API_KEY }}"
         run: |
           echo "SUPABASE_URL=$SUPABASE_URL" > .env
           echo "SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY" >> .env
