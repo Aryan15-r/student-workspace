@@ -1,13 +1,14 @@
 {
-    "name": "student_workspace",
-    "short_name": "student_workspace",
+    "name": "StudySpace — Student Workspace",
+    "short_name": "StudySpace",
     "start_url": ".",
     "display": "standalone",
-    "background_color": "#0175C2",
-    "theme_color": "#0175C2",
-    "description": "A new Flutter project.",
+    "background_color": "#0A0A1A",
+    "theme_color": "#6366F1",
+    "description": "One workspace. Less switching. More learning. All-in-one student productivity app.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
+    "categories": ["education", "productivity"],
     "icons": [
         {
             "src": "icons/Icon-192.png",

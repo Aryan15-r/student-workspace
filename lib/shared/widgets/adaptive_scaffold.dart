@@ -7,15 +7,13 @@ import '../../core/constants/app_constants.dart';
 /// AdaptiveScaffold — Responsive navigation shell
 ///
 /// Automatically switches between:
-///   Mobile  (< 600px):  Bottom navigation bar
+///   Mobile  (< 600px):  5-tab Bottom navigation bar (with More modal)
 ///   Tablet  (600–1024): Navigation rail
 ///   Desktop (> 1024px): Sidebar navigation
-///
-/// Every authenticated page is wrapped in this widget.
 /// ─────────────────────────────────────────────────────────────────────────────
 class AdaptiveScaffold extends StatelessWidget {
   final Widget child;       // The current page content
-  final int selectedIndex;  // Which nav item is active
+  final int selectedIndex;  // Which nav item is active (0 to 6)
 
   const AdaptiveScaffold({
     super.key,
@@ -23,19 +21,20 @@ class AdaptiveScaffold extends StatelessWidget {
     required this.selectedIndex,
   });
 
-  // ── Nav destinations ───────────────────────────────────────────────────────
-  static const List<_NavItem> _items = [
-    _NavItem(icon: Icons.home_outlined,        activeIcon: Icons.home_rounded,        label: 'Home',      route: '/dashboard'),
-    _NavItem(icon: Icons.check_circle_outline, activeIcon: Icons.check_circle_rounded,label: 'To-Do',     route: '/todo'),
-    _NavItem(icon: Icons.auto_awesome_outlined,activeIcon: Icons.auto_awesome_rounded, label: 'AI',       route: '/ai'),
-    _NavItem(icon: Icons.search_outlined,      activeIcon: Icons.search_rounded,       label: 'Search',   route: '/search'),
-    _NavItem(icon: Icons.people_outline,       activeIcon: Icons.people_rounded,       label: 'Community',route: '/community'),
-    _NavItem(icon: Icons.grid_view_outlined,   activeIcon: Icons.grid_view_rounded,    label: 'Tools',    route: '/calculator'),
-    _NavItem(icon: Icons.person_outline,       activeIcon: Icons.person_rounded,       label: 'Profile',  route: '/profile'),
+  // ── All Nav destinations ───────────────────────────────────────────────────
+  static const List<NavItem> allItems = [
+    NavItem(icon: Icons.home_outlined,        activeIcon: Icons.home_rounded,        label: 'Home',      route: '/dashboard'),
+    NavItem(icon: Icons.check_circle_outline, activeIcon: Icons.check_circle_rounded,label: 'To-Do',     route: '/todo'),
+    NavItem(icon: Icons.auto_awesome_outlined,activeIcon: Icons.auto_awesome_rounded, label: 'AI',       route: '/ai'),
+    NavItem(icon: Icons.search_outlined,      activeIcon: Icons.search_rounded,       label: 'Search',   route: '/search'),
+    NavItem(icon: Icons.people_outline,       activeIcon: Icons.people_rounded,       label: 'Community',route: '/community'),
+    NavItem(icon: Icons.calculate_outlined,   activeIcon: Icons.calculate_rounded,    label: 'Calculator',route: '/calculator'),
+    NavItem(icon: Icons.picture_as_pdf_outlined, activeIcon: Icons.picture_as_pdf_rounded, label: 'PDF Tools', route: '/pdf-tools'),
+    NavItem(icon: Icons.person_outline,       activeIcon: Icons.person_rounded,       label: 'Profile',  route: '/profile'),
   ];
 
   void _onTap(BuildContext context, int index) {
-    context.go(_items[index].route);
+    context.go(allItems[index].route);
   }
 
   @override
@@ -45,7 +44,7 @@ class AdaptiveScaffold extends StatelessWidget {
     if (width >= AppConstants.tabletBreakpoint) {
       return _DesktopShell(
         selectedIndex: selectedIndex,
-        items: _items,
+        items: allItems,
         onTap: (i) => _onTap(context, i),
         child: child,
       );
@@ -54,7 +53,7 @@ class AdaptiveScaffold extends StatelessWidget {
     if (width >= AppConstants.mobileBreakpoint) {
       return _TabletShell(
         selectedIndex: selectedIndex,
-        items: _items,
+        items: allItems,
         onTap: (i) => _onTap(context, i),
         child: child,
       );
@@ -62,7 +61,6 @@ class AdaptiveScaffold extends StatelessWidget {
 
     return _MobileShell(
       selectedIndex: selectedIndex,
-      items: _items,
       onTap: (i) => _onTap(context, i),
       child: child,
     );
@@ -70,12 +68,12 @@ class AdaptiveScaffold extends StatelessWidget {
 }
 
 // ── Nav Item model ─────────────────────────────────────────────────────────────
-class _NavItem {
+class NavItem {
   final IconData icon;
   final IconData activeIcon;
   final String label;
   final String route;
-  const _NavItem({
+  const NavItem({
     required this.icon,
     required this.activeIcon,
     required this.label,
@@ -83,22 +81,91 @@ class _NavItem {
   });
 }
 
-// ── Mobile Shell (Bottom Navigation Bar) ──────────────────────────────────────
+// ── Mobile Shell (5-tab Bottom Navigation Bar with More Sheet) ────────────────
 class _MobileShell extends StatelessWidget {
   final Widget child;
   final int selectedIndex;
-  final List<_NavItem> items;
   final ValueChanged<int> onTap;
 
   const _MobileShell({
     required this.child,
     required this.selectedIndex,
-    required this.items,
     required this.onTap,
   });
 
+  void _showMoreMenu(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: AppColors.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (ctx) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 12),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      const Text(
+                        'More Tools',
+                        style: TextStyle(fontSize: 18, fontWeight: FontWeight.w700, color: AppColors.textPrimary),
+                      ),
+                      IconButton(
+                        icon: const Icon(Icons.close_rounded, color: AppColors.textMuted),
+                        onPressed: () => Navigator.pop(ctx),
+                      ),
+                    ],
+                  ),
+                ),
+                const SizedBox(height: 12),
+                ListTile(
+                  leading: const Icon(Icons.people_rounded, color: AppColors.accent),
+                  title: const Text('Community Lounge', style: TextStyle(color: AppColors.textPrimary)),
+                  subtitle: const Text('Chat and collaborate with classmates', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  onTap: () { Navigator.pop(ctx); onTap(4); },
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.calculate_rounded, color: AppColors.secondary),
+                  title: const Text('Scientific Calculator', style: TextStyle(color: AppColors.textPrimary)),
+                  subtitle: const Text('Works 100% offline with expressions', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  onTap: () { Navigator.pop(ctx); onTap(5); },
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.picture_as_pdf_rounded, color: AppColors.warning),
+                  title: const Text('PDF Tools', style: TextStyle(color: AppColors.textPrimary)),
+                  subtitle: const Text('Convert, merge, and extract PDF text', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  onTap: () { Navigator.pop(ctx); onTap(6); },
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+                ListTile(
+                  leading: const Icon(Icons.person_rounded, color: AppColors.primary),
+                  title: const Text('My Profile & Settings', style: TextStyle(color: AppColors.textPrimary)),
+                  subtitle: const Text('Manage your account and preferences', style: TextStyle(color: AppColors.textSecondary, fontSize: 12)),
+                  onTap: () { Navigator.pop(ctx); onTap(7); },
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
+    // Determine which mobile tab is selected (0 to 3, or 4 for 'More')
+    final mobileIndex = selectedIndex < 4 ? selectedIndex : 4;
+
     return Scaffold(
       backgroundColor: AppColors.background,
       body: child,
@@ -107,21 +174,31 @@ class _MobileShell extends StatelessWidget {
           color: AppColors.surface,
           border: Border(top: BorderSide(color: AppColors.border)),
         ),
-        child: BottomNavigationBar(
-          currentIndex: selectedIndex,
-          onTap: onTap,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          type: BottomNavigationBarType.fixed,
-          selectedItemColor: AppColors.primary,
-          unselectedItemColor: AppColors.textMuted,
-          selectedFontSize: 11,
-          unselectedFontSize: 11,
-          items: items.map((item) => BottomNavigationBarItem(
-            icon: Icon(item.icon),
-            activeIcon: Icon(item.activeIcon),
-            label: item.label,
-          )).toList(),
+        child: SafeArea(
+          child: BottomNavigationBar(
+            currentIndex: mobileIndex,
+            onTap: (index) {
+              if (index == 4) {
+                _showMoreMenu(context);
+              } else {
+                onTap(index);
+              }
+            },
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            type: BottomNavigationBarType.fixed,
+            selectedItemColor: AppColors.primary,
+            unselectedItemColor: AppColors.textMuted,
+            selectedFontSize: 11,
+            unselectedFontSize: 11,
+            items: const [
+              BottomNavigationBarItem(icon: Icon(Icons.home_outlined), activeIcon: Icon(Icons.home_rounded), label: 'Home'),
+              BottomNavigationBarItem(icon: Icon(Icons.check_circle_outline), activeIcon: Icon(Icons.check_circle_rounded), label: 'To-Do'),
+              BottomNavigationBarItem(icon: Icon(Icons.auto_awesome_outlined), activeIcon: Icon(Icons.auto_awesome_rounded), label: 'AI'),
+              BottomNavigationBarItem(icon: Icon(Icons.search_outlined), activeIcon: Icon(Icons.search_rounded), label: 'Search'),
+              BottomNavigationBarItem(icon: Icon(Icons.grid_view_outlined), activeIcon: Icon(Icons.grid_view_rounded), label: 'More'),
+            ],
+          ),
         ),
       ),
     );
@@ -132,7 +209,7 @@ class _MobileShell extends StatelessWidget {
 class _TabletShell extends StatelessWidget {
   final Widget child;
   final int selectedIndex;
-  final List<_NavItem> items;
+  final List<NavItem> items;
   final ValueChanged<int> onTap;
 
   const _TabletShell({
@@ -149,7 +226,7 @@ class _TabletShell extends StatelessWidget {
       body: Row(
         children: [
           NavigationRail(
-            selectedIndex: selectedIndex,
+            selectedIndex: selectedIndex.clamp(0, items.length - 1),
             onDestinationSelected: onTap,
             backgroundColor: AppColors.surface,
             useIndicator: true,
@@ -173,7 +250,7 @@ class _TabletShell extends StatelessWidget {
 class _DesktopShell extends StatelessWidget {
   final Widget child;
   final int selectedIndex;
-  final List<_NavItem> items;
+  final List<NavItem> items;
   final ValueChanged<int> onTap;
 
   const _DesktopShell({
@@ -189,7 +266,6 @@ class _DesktopShell extends StatelessWidget {
       backgroundColor: AppColors.background,
       body: Row(
         children: [
-          // ── Sidebar ───────────────────────────────────────────────────────
           SizedBox(
             width: 240,
             child: Container(
@@ -197,7 +273,6 @@ class _DesktopShell extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // Logo
                   Padding(
                     padding: const EdgeInsets.fromLTRB(20, 24, 20, 32),
                     child: Row(
@@ -225,8 +300,6 @@ class _DesktopShell extends StatelessWidget {
                       ],
                     ),
                   ),
-
-                  // Nav items
                   Expanded(
                     child: ListView.builder(
                       padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -247,7 +320,6 @@ class _DesktopShell extends StatelessWidget {
             ),
           ),
           const VerticalDivider(width: 1, color: AppColors.border),
-          // ── Main content ──────────────────────────────────────────────────
           Expanded(child: child),
         ],
       ),
@@ -256,7 +328,7 @@ class _DesktopShell extends StatelessWidget {
 }
 
 class _SidebarItem extends StatelessWidget {
-  final _NavItem item;
+  final NavItem item;
   final bool isSelected;
   final VoidCallback onTap;
 

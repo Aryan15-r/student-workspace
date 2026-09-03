@@ -144,12 +144,18 @@ class _CalcButton extends StatelessWidget {
           border: Border.all(color: AppColors.border, width: 0.5),
         ),
         child: Center(
-          child: Text(
-            label,
-            style: TextStyle(
-              fontSize: label.length > 3 ? 12 : 18,
-              fontWeight: FontWeight.w500,
-              color: _textColor(),
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4),
+            child: FittedBox(
+              fit: BoxFit.scaleDown,
+              child: Text(
+                label,
+                style: TextStyle(
+                  fontSize: label.length > 3 ? 13 : 18,
+                  fontWeight: FontWeight.w500,
+                  color: _textColor(),
+                ),
+              ),
             ),
           ),
         ),

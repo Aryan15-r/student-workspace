@@ -71,19 +71,18 @@ class TaskCard extends StatelessWidget {
                 Text(task.description, style: AppTextStyles.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
               ],
               const SizedBox(height: 6),
-              Row(
+              Wrap(
+                spacing: 6,
+                runSpacing: 4,
                 children: [
                   _Chip(label: task.category.titleCase, color: catColor),
-                  const SizedBox(width: 6),
                   _Chip(label: task.priority.capitalized, color: priColor),
-                  if (task.dueDate != null) ...[
-                    const SizedBox(width: 6),
+                  if (task.dueDate != null)
                     _Chip(
                       label: task.dueDate!.dueDateLabel,
                       color: task.dueDate!.isOverdue ? AppColors.error : AppColors.textMuted,
                       icon: Icons.calendar_today_outlined,
                     ),
-                  ],
                 ],
               ),
             ],

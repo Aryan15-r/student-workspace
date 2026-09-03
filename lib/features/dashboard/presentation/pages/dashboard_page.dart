@@ -162,15 +162,34 @@ class _QuickTool extends StatelessWidget {
     return GestureDetector(
       onTap: () => context.go(route),
       child: Column(
+        mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Container(
-            width: 52, height: 52,
-            decoration: BoxDecoration(color: AppColors.surface, borderRadius: BorderRadius.circular(14), border: Border.all(color: AppColors.border)),
-            child: Center(child: Text(emoji, style: const TextStyle(fontSize: 24))),
+          Flexible(
+            child: Container(
+              constraints: const BoxConstraints(maxWidth: 52, maxHeight: 52),
+              decoration: BoxDecoration(
+                color: AppColors.surface,
+                borderRadius: BorderRadius.circular(14),
+                border: Border.all(color: AppColors.border),
+              ),
+              child: Center(
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(emoji, style: const TextStyle(fontSize: 24)),
+                ),
+              ),
+            ),
           ),
           const SizedBox(height: 6),
-          Text(label, style: const TextStyle(fontSize: 11, color: AppColors.textSecondary), textAlign: TextAlign.center),
+          FittedBox(
+            fit: BoxFit.scaleDown,
+            child: Text(
+              label,
+              style: const TextStyle(fontSize: 11, color: AppColors.textSecondary),
+              textAlign: TextAlign.center,
+            ),
+          ),
         ],
       ).animate().fadeIn(delay: Duration(milliseconds: delay + 200)).scale(begin: const Offset(0.85, 0.85)),
     );
