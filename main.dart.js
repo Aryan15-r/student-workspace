@@ -100466,7 +100466,7 @@ break}l=a3[a0]
 p=10
 k=A.cL("https://generativelanguage.googleapis.com/v1beta/models/"+A.k(l)+":generateContent?key="+A.k(a7),0,null)
 j=A.V(["Content-Type","application/json","x-goog-api-key",a7],c,c)
-i=B.a1.qg(A.V(["system_instruction",A.V(["parts",A.b([A.V(["text","You are StudySpace AI, an encouraging and intelligent academic assistant for college students.\n\nYou assist students with:\n- Explaining concepts clearly and simply\n- Answering programming, math, physics, and science questions\n- Summarizing topics and creating study roadmaps\n- Providing revision questions and flashcard concepts\n\nKeep formatting clean with Markdown headers, bullet points, and code snippets when appropriate.\n"],c,c)],b)],c,d),"contents",m,"generationConfig",A.V(["temperature",0.7,"maxOutputTokens",1024],c,a)],c,a2),null)
+i=B.a1.qg(A.V(["system_instruction",A.V(["parts",A.b([A.V(["text",'You are StudySpace AI, an exceptionally smart, friendly, and articulate personal academic tutor and coding mentor for students.\n\nYour capabilities:\n1. Programming & Engineering: Write production-ready, clean, well-commented code with step-by-step logic breakdowns and time/space complexity analysis.\n2. Math & Science: Derive formulas clearly, show all intermediate calculation steps, and explain intuitive physical meanings.\n3. Study Strategy: Provide concrete revision roadmaps, active recall questions, and structured flashcard summaries.\n4. Natural & Flexible: If the student chats casually, jokes, or says something playful (e.g. "Meow", "Hello", "How are you"), reply charmingly and naturally with personality!\n\nFormatting guidelines:\n- Use clean Markdown with headers (`###`), bullet points, and syntax-highlighted code blocks where helpful.\n- Keep explanations clear, engaging, and directly actionable.\n'],c,c)],b)],c,d),"contents",m,"generationConfig",A.V(["temperature",0.7,"maxOutputTokens",1024],c,a)],c,a2),null)
 s=13
 return A.p(A.aVH(k,i,null,j).yJ(B.pY),$async$kT)
 case 13:h=b2
@@ -101907,7 +101907,7 @@ return A.b7(s)===A.b7(r)&&A.bf(s)===A.bf(r)&&A.cp(s)===A.cp(r)},
 $S:68}
 A.xj.prototype={
 G(a){var s=null
-return new A.jK(A.f4(A.m6(s,s,s,A.a6("PDF Tools",s,s,s,s,A.dl().$3$color$fontSize$fontWeight(B.w,18,B.D),s,s,s)),B.aI,A.BY(new A.akv(),t.Yr),s,s),5,s)}}
+return new A.jK(A.f4(A.m6(s,s,s,A.a6("PDF Tools",s,s,s,s,A.dl().$3$color$fontSize$fontWeight(B.w,18,B.D),s,s,s)),B.aI,A.BY(new A.akv(),t.Yr),s,s),6,s)}}
 A.akv.prototype={
 $3(a,b,c){var s=null,r=A.a6("Convert & Process",s,s,s,s,A.dl().$3$color$fontSize$fontWeight(B.w,18,B.D),s,s,s),q=A.a6("Select a PDF to get started",s,s,s,s,A.bC().$4$color$fontSize$fontWeight$height(B.L,12,B.n,1.4),s,s,s),p=b.a
 r=A.b([r,B.cR,q,B.bO,A.bn(A.bg(new A.a3o("\ud83d\udcc4","PDF \u2192 Text / Word","Extract text from any PDF file. Download the result as a text file.",p===B.hh||p===B.mV||p===B.ye?new A.akt(a):s,s),s),s,A.ay(4e5,0,0)),B.bN],t.p)
@@ -102029,7 +102029,7 @@ if(q.length!==0)s.push(new A.kz(B.L2,"Bio",q,p))
 B.b.L(r,new A.hi(s,t.y5).geq().d7(0,new A.aly(),t.l7))
 r.push(B.eX)
 r.push(A.bn(A.bg(A.c_(A.aR8(B.Lp,B.a1N,new A.alz(a),A.S5(p,p,p,p,p,p,p,p,p,p,p,p,B.fO,p,p,B.oM,p,p,p,p)),p,1/0),p),A.ay(5e5,0,0),p))
-s=A.pz(A.bj(r,B.p,B.l,B.o),p,B.M,B.cp,p,B.ad)}return new A.jK(A.f4(n,B.aI,s,p,p),6,p)}}
+s=A.pz(A.bj(r,B.p,B.l,B.o),p,B.M,B.cp,p,B.ad)}return new A.jK(A.f4(n,B.aI,s,p,p),7,p)}}
 A.aly.prototype={
 $1(a){return A.bn(A.bg(a.b,null),A.ay(0,200+a.a*60,0),null)},
 $S:697}
