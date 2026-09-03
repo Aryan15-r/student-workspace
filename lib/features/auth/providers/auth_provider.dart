@@ -17,7 +17,8 @@ class AuthProvider extends ChangeNotifier {
   bool         get isLoading       => _isLoading;
   String?      get error           => _error;
   bool         get initialized     => _initialized;
-  bool         get isAuthenticated => _authService.isAuthenticated && _profile != null;
+  // User is authenticated as long as Supabase has an active session
+  bool         get isAuthenticated => _authService.isAuthenticated;
 
   AuthProvider() {
     _init();
@@ -39,8 +40,30 @@ class AuthProvider extends ChangeNotifier {
   Future<void> _loadProfile(String userId) async {
     try {
       _profile = await _authService.fetchProfile(userId);
+      if (_profile == null) {
+        final user = _authService.currentUser;
+        if (user != null) {
+          _profile = UserProfile(
+            id: user.id,
+            username: user.userMetadata?['username'] ?? (user.email?.split('@').first ?? 'student'),
+            fullName: user.userMetadata?['full_name'] ?? 'Student',
+            createdAt: DateTime.now(),
+            updatedAt: DateTime.now(),
+          );
+        }
+      }
     } catch (e) {
       debugPrint('Error loading profile: $e');
+      final user = _authService.currentUser;
+      if (user != null) {
+        _profile = UserProfile(
+          id: user.id,
+          username: user.userMetadata?['username'] ?? (user.email?.split('@').first ?? 'student'),
+          fullName: user.userMetadata?['full_name'] ?? 'Student',
+          createdAt: DateTime.now(),
+          updatedAt: DateTime.now(),
+        );
+      }
     }
   }
 
@@ -97,6 +120,7 @@ class AuthProvider extends ChangeNotifier {
         await _loadProfile(user.id);
       }
       _error = null;
+      notifyListeners();
       return true;
     } catch (e) {
       _error = e.toString().replaceAll('AppException: ', '');
@@ -114,7 +138,12 @@ class AuthProvider extends ChangeNotifier {
     _setLoading(true);
     try {
       await _authService.signIn(email: email, password: password);
+      final user = _authService.currentUser;
+      if (user != null) {
+        await _loadProfile(user.id);
+      }
       _error = null;
+      notifyListeners();
       return true;
     } catch (e) {
       _error = e.toString().replaceAll('AppException: ', '');
