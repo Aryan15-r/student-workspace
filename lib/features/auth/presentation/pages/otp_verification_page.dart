@@ -53,7 +53,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
     if (token.length < 6) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Please enter the complete 6-digit code'),
+          content: Text('Please enter the complete verification code'),
           backgroundColor: AppColors.warning,
           behavior: SnackBarBehavior.floating,
         ),
@@ -96,7 +96,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
         _startCountdown();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('A new 6-digit code has been sent to your email!'),
+            content: Text('A new verification code has been sent to your email!'),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
           ),
@@ -143,29 +143,29 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                       .animate().fadeIn(delay: 100.ms),
                   const SizedBox(height: 8),
                   Text(
-                    'We sent a 6-digit verification code to:\n${widget.email}',
+                    'We sent a verification code to:\n${widget.email}',
                     style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
                   ).animate().fadeIn(delay: 200.ms),
                   const SizedBox(height: 36),
 
-                  // 6-digit OTP field
+                  // Flexible OTP field supporting 6 to 8 characters
                   TextField(
                     controller: _otpController,
-                    keyboardType: TextInputType.number,
-                    maxLength: 6,
+                    keyboardType: TextInputType.text,
+                    maxLength: 8,
                     textAlign: TextAlign.center,
                     style: const TextStyle(
-                      fontSize: 28,
+                      fontSize: 24,
                       fontWeight: FontWeight.w700,
-                      letterSpacing: 12,
+                      letterSpacing: 6,
                       color: AppColors.primary,
                     ),
                     decoration: InputDecoration(
                       counterText: '',
-                      hintText: '••••••',
+                      hintText: 'CODE',
                       hintStyle: TextStyle(
-                        fontSize: 28,
-                        letterSpacing: 12,
+                        fontSize: 20,
+                        letterSpacing: 6,
                         color: AppColors.textMuted.withValues(alpha: 0.4),
                       ),
                       prefixIcon: const Icon(Icons.security_rounded, color: AppColors.primary),
