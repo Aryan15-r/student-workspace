@@ -1,0 +1,39 @@
+name: Build and Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Create .env file from secrets or defaults
+        run: |
+          echo "SUPABASE_URL=https://fjxnjtcxrxeknkoupvsr.supabase.co" > .env
+          echo "SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZqeG5qdGN4cnhla25rb3VwdnNyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODg0MzI0NTEsImV4cCI6MjEwNDAwODQ1MX0.5r9Q_KdkwrVf5gdUKlSD-FBNpR5srJaBE0tbYP2IHWw" >> .env
+          echo "GEMINI_API_KEY=${{ secrets.GEMINI_API_KEY || 'your-gemini-api-key-here' }}" >> .env
+
+      - name: Install dependencies
+        run: flutter pub get
+
+      - name: Build Web
+        run: flutter build web --release --base-href "/student-workspace/"
+
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./build/web
