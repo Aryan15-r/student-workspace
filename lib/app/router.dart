@@ -17,6 +17,8 @@ import '../features/calculator/presentation/pages/calculator_page.dart';
 import '../features/pdf_tools/presentation/pages/pdf_tools_page.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
 
+import '../core/widgets/error_landing_page.dart';
+
 /// ─────────────────────────────────────────────────────────────────────────────
 /// AppRouter — Centralized routing for StudySpace
 ///
@@ -31,10 +33,10 @@ class AppRouter {
 
   late final GoRouter router = GoRouter(
     initialLocation: '/',
-    // Whenever AuthProvider calls notifyListeners(), the router re-checks redirect
     refreshListenable: authProvider,
     redirect: _redirect,
     routes: _routes,
+    errorBuilder: (context, state) => ErrorLandingPage(state: state),
   );
 
   // ── Redirect logic ──────────────────────────────────────────────────────────
