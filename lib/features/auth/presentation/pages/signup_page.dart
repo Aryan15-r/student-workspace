@@ -44,12 +44,14 @@ class _SignupPageState extends State<SignupPage> {
     if (ok) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Account created! Please check your email to confirm.'),
+          content: Text('Account created successfully! Welcome to StudySpace 🎉'),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
       );
-      context.go('/login');
+      if (!auth.isAuthenticated) {
+        context.go('/login');
+      }
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
