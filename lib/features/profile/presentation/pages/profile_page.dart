@@ -16,7 +16,7 @@ class ProfilePage extends StatelessWidget {
     final profile = auth.profile;
 
     return AdaptiveScaffold(
-      selectedIndex: 6,
+      selectedIndex: 7,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(title: Text('Profile', style: AppTextStyles.headlineSmall)),

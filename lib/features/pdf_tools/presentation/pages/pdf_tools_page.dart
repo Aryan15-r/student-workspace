@@ -13,7 +13,7 @@ class PdfToolsPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AdaptiveScaffold(
-      selectedIndex: 5,
+      selectedIndex: 6,
       child: Scaffold(
         backgroundColor: AppColors.background,
         appBar: AppBar(title: Text('PDF Tools', style: AppTextStyles.headlineSmall)),
