@@ -45,10 +45,13 @@ class AuthProvider extends ChangeNotifier {
         if (user != null) {
           _profile = UserProfile(
             id: user.id,
-            username: user.userMetadata?['username'] ?? (user.email?.split('@').first ?? 'student'),
-            fullName: user.userMetadata?['full_name'] ?? 'Student',
+            username: user.userMetadata?['username'] as String? ?? (user.email?.split('@').first ?? 'student'),
+            fullName: user.userMetadata?['full_name'] as String? ?? 'Student',
+            avatarUrl: '',
+            bio: '',
+            college: '',
+            branch: '',
             createdAt: DateTime.now(),
-            updatedAt: DateTime.now(),
           );
         }
       }
@@ -58,10 +61,13 @@ class AuthProvider extends ChangeNotifier {
       if (user != null) {
         _profile = UserProfile(
           id: user.id,
-          username: user.userMetadata?['username'] ?? (user.email?.split('@').first ?? 'student'),
-          fullName: user.userMetadata?['full_name'] ?? 'Student',
+          username: user.userMetadata?['username'] as String? ?? (user.email?.split('@').first ?? 'student'),
+          fullName: user.userMetadata?['full_name'] as String? ?? 'Student',
+          avatarUrl: '',
+          bio: '',
+          college: '',
+          branch: '',
           createdAt: DateTime.now(),
-          updatedAt: DateTime.now(),
         );
       }
     }
