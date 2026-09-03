@@ -69,8 +69,8 @@ extension DateTimeExtensions on DateTime {
   String get dueDateLabel {
     if (isToday)     return 'Due Today';
     if (isTomorrow)  return 'Due Tomorrow';
-    if (isPast)      return 'Overdue · ${toShortDisplay}';
-    return 'Due ${toShortDisplay}';
+    if (isPast)      return 'Overdue · $toShortDisplay';
+    return 'Due $toShortDisplay';
   }
 }
 
