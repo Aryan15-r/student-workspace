@@ -38,38 +38,49 @@ class AiService {
       'parts': [{'text': userMessage}],
     });
 
-    final url = Uri.parse('${AppConstants.geminiBaseUrl}?key=$apiKey');
-    final body = jsonEncode({
-      'system_instruction': {
-        'parts': [{'text': AppConstants.aiSystemPrompt}],
-      },
-      'contents': contents,
-      'generationConfig': {
-        'temperature': 0.7,
-        'maxOutputTokens': 1024,
-      },
-    });
+    final modelsToTry = [
+      'gemini-3.6-flash',
+      'gemini-2.5-flash-lite',
+      'gemini-flash-latest',
+    ];
 
-    try {
-      final response = await http
-          .post(url, headers: {'Content-Type': 'application/json'}, body: body)
-          .timeout(const Duration(seconds: 25));
+    for (final model in modelsToTry) {
+      try {
+        final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey');
+        final headers = {
+          'Content-Type': 'application/json',
+          'x-goog-api-key': apiKey,
+        };
+        final body = jsonEncode({
+          'system_instruction': {
+            'parts': [{'text': AppConstants.aiSystemPrompt}],
+          },
+          'contents': contents,
+          'generationConfig': {
+            'temperature': 0.7,
+            'maxOutputTokens': 1024,
+          },
+        });
 
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        final candidate = json['candidates']?[0]?['content']?['parts']?[0]?['text'];
-        if (candidate != null && candidate.toString().trim().isNotEmpty) {
-          return candidate.toString();
+        final response = await http
+            .post(url, headers: headers, body: body)
+            .timeout(const Duration(seconds: 25));
+
+        if (response.statusCode == 200) {
+          final json = jsonDecode(response.body);
+          final candidate = json['candidates']?[0]?['content']?['parts']?[0]?['text'];
+          if (candidate != null && candidate.toString().trim().isNotEmpty) {
+            return candidate.toString();
+          }
+        } else {
+          debugPrint('Gemini API ($model) error: ${response.statusCode}, body: ${response.body}');
         }
-      } else {
-        debugPrint('Gemini API error code: ${response.statusCode}, body: ${response.body}');
+      } catch (e) {
+        debugPrint('Gemini exception ($model): $e');
       }
-      return _generateSmartResponse(userMessage);
-    } catch (e) {
-      debugPrint('Gemini exception: $e');
-      if (e is AppException) rethrow;
-      return _generateSmartResponse(userMessage);
     }
+
+    return _generateSmartResponse(userMessage);
   }
 
   /// Gemini-powered study resource finder
@@ -89,7 +100,7 @@ class AiService {
 
     try {
       final response = await http
-          .post(url, headers: {'Content-Type': 'application/json'}, body: body)
+          .post(url, headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey}, body: body)
           .timeout(const Duration(seconds: 25));
 
       if (response.statusCode == 200) {
