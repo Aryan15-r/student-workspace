@@ -3,6 +3,9 @@ allprojects {
         google()
         mavenCentral()
     }
+    tasks.matching { it.name.contains("CheckAarMetadata") }.configureEach {
+        enabled = false
+    }
 }
 
 val newBuildDir: Directory =
@@ -18,18 +21,6 @@ subprojects {
 
 subprojects {
     project.evaluationDependsOn(":app")
-}
-
-gradle.projectsEvaluated {
-    subprojects {
-        val androidExt = project.extensions.findByName("android")
-        if (androidExt is com.android.build.gradle.BaseExtension) {
-            androidExt.compileSdkVersion(36)
-        }
-        tasks.matching { it.name.contains("CheckAarMetadata") }.configureEach {
-            enabled = false
-        }
-    }
 }
 
 tasks.register<Delete>("clean") {
