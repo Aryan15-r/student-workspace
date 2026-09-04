@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../../providers/ai_provider.dart';
 import '../../models/chat_message.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
@@ -148,7 +149,7 @@ class _MessageBubble extends StatelessWidget {
       alignment: message.isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.only(bottom: 12),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.78),
+        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.85),
         padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
         decoration: BoxDecoration(
           gradient: message.isUser ? AppColors.primaryGradient : null,
@@ -159,7 +160,31 @@ class _MessageBubble extends StatelessWidget {
           ),
           border: message.isUser ? null : Border.all(color: AppColors.border),
         ),
-        child: Text(message.content, style: TextStyle(color: message.isUser ? Colors.white : AppColors.textPrimary, fontSize: 14, height: 1.5)),
+        child: message.isUser
+            ? Text(
+                message.content,
+                style: const TextStyle(color: Colors.white, fontSize: 14, height: 1.5),
+              )
+            : MarkdownBody(
+                data: message.content,
+                selectable: true,
+                styleSheet: MarkdownStyleSheet(
+                  p: const TextStyle(color: AppColors.textPrimary, fontSize: 14, height: 1.5),
+                  h1: AppTextStyles.headlineSmall.copyWith(color: AppColors.textPrimary),
+                  h2: AppTextStyles.titleLarge.copyWith(color: AppColors.textPrimary),
+                  h3: AppTextStyles.titleMedium.copyWith(color: AppColors.primary, fontWeight: FontWeight.bold),
+                  code: const TextStyle(backgroundColor: Color(0xFF1E293B), color: Color(0xFF38BDF8), fontFamily: 'monospace', fontSize: 12),
+                  codeblockDecoration: BoxDecoration(
+                    color: const Color(0xFF0F172A),
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: AppColors.border),
+                  ),
+                  listBullet: const TextStyle(color: AppColors.primary),
+                  strong: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                  em: const TextStyle(fontStyle: FontStyle.italic, color: AppColors.textSecondary),
+                  blockSpacing: 8,
+                ),
+              ),
       ),
     ).animate().fadeIn(duration: 200.ms).slideY(begin: 0.1, end: 0);
   }

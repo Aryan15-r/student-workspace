@@ -84,10 +84,12 @@ class _SearchPageState extends State<SearchPage> {
                     padding: const EdgeInsets.fromLTRB(16, 0, 16, 24),
                     itemCount: search.results.length + 1,
                     itemBuilder: (_, i) {
-                      if (i == 0) return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: Text('${search.results.length} resources for "${search.lastQuery}"', style: AppTextStyles.bodySmall),
-                      );
+                      if (i == 0) {
+                        return Padding(
+                          padding: const EdgeInsets.only(bottom: 12),
+                          child: Text('${search.results.length} resources for "${search.lastQuery}"', style: AppTextStyles.bodySmall),
+                        );
+                      }
                       return _ResultCard(result: search.results[i - 1])
                           .animate().fadeIn(delay: Duration(milliseconds: (i - 1) * 60)).slideY(begin: 0.1, end: 0);
                     },

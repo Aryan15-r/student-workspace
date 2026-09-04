@@ -22,17 +22,25 @@ class TodoProvider extends ChangeNotifier {
     return t.dueDate!.year == now.year && t.dueDate!.month == now.month && t.dueDate!.day == now.day;
   }).toList();
 
-  Future<void> loadTasks() async {
+  Future<void> loadTasks({bool forceLoading = false}) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
-    _loading = true; notifyListeners();
+    
+    // Only show full loading spinner if tasks list is currently empty
+    if (_tasks.isEmpty || forceLoading) {
+      _loading = true;
+      notifyListeners();
+    }
+
     try {
-      _tasks = await _repo.fetchTasks(userId);
+      final fetched = await _repo.fetchTasks(userId);
+      _tasks = fetched;
       _error = null;
     } catch (e) {
       _error = e.toString().replaceAll('AppException: ', '');
     } finally {
-      _loading = false; notifyListeners();
+      _loading = false;
+      notifyListeners();
     }
   }
 

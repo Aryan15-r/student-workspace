@@ -1,4 +1,5 @@
 import 'package:flutter/foundation.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/user_profile.dart';
 import '../services/auth_service.dart';
 
@@ -17,21 +18,41 @@ class AuthProvider extends ChangeNotifier {
   bool         get isLoading       => _isLoading;
   String?      get error           => _error;
   bool         get initialized     => _initialized;
-  // User is authenticated as long as Supabase has an active session
-  bool         get isAuthenticated => _authService.isAuthenticated;
+  // User is authenticated as long as Supabase has an active session or profile
+  bool get isAuthenticated => _authService.isAuthenticated || _profile != null;
 
   AuthProvider() {
     _init();
   }
 
   void _init() {
+    // 1. Immediately evaluate local/cached Supabase session
+    final initialUser = _authService.currentUser;
+    if (initialUser != null) {
+      _loadProfile(initialUser.id).then((_) {
+        _initialized = true;
+        notifyListeners();
+      });
+    }
+
+    // 2. Listen for auth changes (token refresh, sign in, sign out)
     _authService.authStateChanges.listen((authState) async {
-      final user = authState.session?.user;
+      final event = authState.event;
+      final user = authState.session?.user ?? _authService.currentUser;
+
+      if (event == AuthChangeEvent.signedOut) {
+        _profile = null;
+        _initialized = true;
+        notifyListeners();
+        return;
+      }
+
       if (user != null) {
         await _loadProfile(user.id);
-      } else {
+      } else if (event == AuthChangeEvent.initialSession) {
         _profile = null;
       }
+
       _initialized = true;
       notifyListeners();
     });

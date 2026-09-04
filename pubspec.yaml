@@ -34,6 +34,7 @@ dependencies:
   uuid: ^4.5.1                   # Generate unique IDs
   math_expressions: ^2.6.0       # Parse & evaluate calculator expressions
   file_picker: ^10.3.8            # Pick PDF/files from device (modern Android 36+ support)
+  flutter_markdown: ^0.7.7+1
 
 dev_dependencies:
   flutter_test:

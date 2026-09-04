@@ -38,9 +38,9 @@ class AiService {
     });
 
     final modelsToTry = [
-      'gemini-3.6-flash',
-      'gemini-2.5-flash-lite',
-      'gemini-flash-latest',
+      'gemini-1.5-flash',
+      'gemini-2.0-flash',
+      'gemini-1.5-pro',
     ];
 
     for (final model in modelsToTry) {
@@ -63,7 +63,7 @@ class AiService {
 
         final response = await http
             .post(url, headers: headers, body: body)
-            .timeout(const Duration(seconds: 25));
+            .timeout(const Duration(seconds: 12));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
