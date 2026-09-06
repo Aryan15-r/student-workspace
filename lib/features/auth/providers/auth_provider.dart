@@ -209,6 +209,42 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  Future<bool> resetPasswordWithOtp({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) async {
+    _setLoading(true);
+    try {
+      await _authService.resetPasswordWithOtp(
+        email: email,
+        token: token,
+        newPassword: newPassword,
+      );
+      _error = null;
+      return true;
+    } catch (e) {
+      _error = e.toString().replaceAll('AppException: ', '');
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
+  Future<bool> updatePassword(String newPassword) async {
+    _setLoading(true);
+    try {
+      await _authService.updatePassword(newPassword);
+      _error = null;
+      return true;
+    } catch (e) {
+      _error = e.toString().replaceAll('AppException: ', '');
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   Future<bool> updateProfile(UserProfile updated) async {
     _setLoading(true);
     try {

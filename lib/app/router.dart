@@ -70,7 +70,12 @@ class AppRouter {
     GoRoute(path: '/',                builder: (context, state) => const LandingPage()),
     GoRoute(path: '/login',           builder: (context, state) => const LoginPage()),
     GoRoute(path: '/signup',          builder: (context, state) => const SignupPage()),
-    GoRoute(path: '/forgot-password', builder: (context, state) => const ForgotPasswordPage()),
+    GoRoute(
+      path: '/forgot-password',
+      builder: (context, state) => ForgotPasswordPage(
+        initialEmail: state.extra as String? ?? (state.uri.queryParameters['email'] ?? ''),
+      ),
+    ),
     GoRoute(
       path: '/verify-otp',
       builder: (context, state) => OtpVerificationPage(

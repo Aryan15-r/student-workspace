@@ -59,7 +59,7 @@ class AuthService {
     required String token,
   }) async {
     try {
-      // First try signup type, then fallback to magiclink/email type
+      // First try signup, then recovery, then fallback to magiclink/email type
       try {
         return await _supabase.auth.verifyOTP(
           email: email,
@@ -67,11 +67,19 @@ class AuthService {
           type: OtpType.signup,
         );
       } catch (_) {
-        return await _supabase.auth.verifyOTP(
-          email: email,
-          token: token,
-          type: OtpType.magiclink,
-        );
+        try {
+          return await _supabase.auth.verifyOTP(
+            email: email,
+            token: token,
+            type: OtpType.recovery,
+          );
+        } catch (_) {
+          return await _supabase.auth.verifyOTP(
+            email: email,
+            token: token,
+            type: OtpType.magiclink,
+          );
+        }
       }
     } catch (e) {
       throw AppException(message: 'Invalid or expired OTP code. Please try again.');
@@ -91,6 +99,54 @@ class AuthService {
   Future<void> resetPassword(String email) async {
     try {
       await _supabase.auth.resetPasswordForEmail(email);
+    } catch (e) {
+      throw AppException.from(e);
+    }
+  }
+
+  Future<void> resetPasswordWithOtp({
+    required String email,
+    required String token,
+    required String newPassword,
+  }) async {
+    try {
+      // Verify OTP (try recovery first, then magiclink, then signup)
+      try {
+        await _supabase.auth.verifyOTP(
+          email: email,
+          token: token,
+          type: OtpType.recovery,
+        );
+      } catch (_) {
+        try {
+          await _supabase.auth.verifyOTP(
+            email: email,
+            token: token,
+            type: OtpType.magiclink,
+          );
+        } catch (_) {
+          await _supabase.auth.verifyOTP(
+            email: email,
+            token: token,
+            type: OtpType.signup,
+          );
+        }
+      }
+
+      // Update password once authenticated
+      await _supabase.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
+    } catch (e) {
+      throw AppException.from(e);
+    }
+  }
+
+  Future<UserResponse> updatePassword(String newPassword) async {
+    try {
+      return await _supabase.auth.updateUser(
+        UserAttributes(password: newPassword),
+      );
     } catch (e) {
       throw AppException.from(e);
     }

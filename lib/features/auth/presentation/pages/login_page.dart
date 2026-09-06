@@ -132,7 +132,10 @@ class _LoginPageState extends State<LoginPage> {
                         Align(
                           alignment: Alignment.centerRight,
                           child: TextButton(
-                            onPressed: () => context.go('/forgot-password'),
+                            onPressed: () => context.go(
+                              '/forgot-password',
+                              extra: _emailCtrl.text.trim(),
+                            ),
                             child: const Text('Forgot password?'),
                           ),
                         ),
