@@ -5,30 +5,53 @@ import '../../ai_assistant/services/ai_service.dart';
 
 class SearchProvider extends ChangeNotifier {
   final _ai = AiService();
-  List<SearchResult> _results   = [];
-  List<String>       _history   = [];
-  bool               _loading   = false;
-  String?            _error;
-  String             _lastQuery = '';
+  SearchData? _searchData;
+  List<String> _history = [];
+  bool _loading = false;
+  String? _error;
+  String _lastQuery = '';
+  String _selectedCategory = 'all';
 
-  List<SearchResult> get results   => _results;
-  List<String>       get history   => _history;
-  bool               get isLoading => _loading;
-  String?            get error     => _error;
-  String             get lastQuery => _lastQuery;
+  SearchData? get searchData => _searchData;
+  List<SearchResult> get results {
+    if (_searchData == null) return [];
+    if (_selectedCategory == 'all') return _searchData!.results;
+    return _searchData!.results
+        .where((r) => r.type.toLowerCase() == _selectedCategory.toLowerCase())
+        .toList();
+  }
+
+  String get overview => _searchData?.overview ?? '';
+  List<String> get relatedQueries => _searchData?.relatedQueries ?? [];
+  List<String> get history => _history;
+  bool get isLoading => _loading;
+  String? get error => _error;
+  String get lastQuery => _lastQuery;
+  String get selectedCategory => _selectedCategory;
+
+  void setCategory(String category) {
+    _selectedCategory = category;
+    notifyListeners();
+  }
 
   Future<void> search(String query) async {
-    if (query.trim().isEmpty) return;
-    _lastQuery = query.trim();
-    _loading = true; _error = null; notifyListeners();
+    final clean = query.trim();
+    if (clean.isEmpty) return;
+    _lastQuery = clean;
+    _loading = true;
+    _error = null;
+    _selectedCategory = 'all';
+    notifyListeners();
+
     try {
-      final raw = await _ai.searchResources(query);
-      _results = raw.map((m) => SearchResult.fromMap(m)).toList();
-      await _saveHistory(query.trim());
+      final raw = await _ai.searchAcademicEngine(clean);
+      _searchData = SearchData.fromMap(raw);
+      await _saveHistory(clean);
     } catch (e) {
-      _error = 'Could not fetch results. Check your Gemini API key.';
+      _error = 'Could not fetch search results. Please try again.';
     } finally {
-      _loading = false; notifyListeners();
+      _loading = false;
+      notifyListeners();
     }
   }
 
@@ -43,5 +66,10 @@ class SearchProvider extends ChangeNotifier {
     } catch (_) {}
   }
 
-  void clear() { _results = []; _lastQuery = ''; notifyListeners(); }
+  void clear() {
+    _searchData = null;
+    _lastQuery = '';
+    _selectedCategory = 'all';
+    notifyListeners();
+  }
 }

@@ -84,128 +84,138 @@ class AiService {
     return _generateSmartResponse(userMessage);
   }
 
-  /// Gemini-powered study resource finder
-  Future<List<Map<String, dynamic>>> searchResources(String query) async {
+  /// Gemini-powered academic search engine with structured overview and resources
+  Future<Map<String, dynamic>> searchAcademicEngine(String query) async {
     final apiKey = _apiKey.trim();
+    final cleanQuery = query.trim();
+
     if (apiKey.isEmpty || apiKey == 'your-gemini-api-key-here') {
-      await Future.delayed(const Duration(milliseconds: 400));
-      return _getCuratedResources(query);
+      await Future.delayed(const Duration(milliseconds: 300));
+      return _getFallbackSearchData(cleanQuery);
     }
 
-    final prompt = '${AppConstants.searchSystemPrompt}\n\nSearch query: "$query"';
-    final url = Uri.parse('${AppConstants.geminiBaseUrl}?key=$apiKey');
-    final body = jsonEncode({
-      'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
-      'generationConfig': {'temperature': 0.3, 'maxOutputTokens': 1024},
-    });
+    final prompt = '''
+You are an expert academic search engine and educational resource indexer.
+For the search query: "$cleanQuery", analyze the core topic and return a JSON object with:
+1. "overview": A concise, high-value 2-3 sentence academic overview explaining the fundamental definition, scientific/coding principle, formulas, or applications.
+2. "results": An array of 6 to 8 accurate educational resources. Each resource must contain:
+   - "title": Specific descriptive title (e.g. "What is Newton's Third Law?", "Understanding Async/Await in Dart", "MIT 18.01 Single Variable Calculus").
+   - "description": 1-2 informative sentences explaining what concepts are covered.
+   - "url": Direct working URL (prefer authoritative sources: Khan Academy, Wikipedia, GeeksforGeeks, MDN Web Docs, MIT OpenCourseWare, freeCodeCamp, HyperPhysics, LibreTexts, W3Schools, YouTube, etc.).
+   - "type": One of "article", "video", "course", "documentation", "tool", "textbook".
+   - "source": Name of the publishing platform/university.
+   - "isFree": boolean (true or false).
+3. "related": An array of 4 to 6 related subtopics, search queries, or subsequent concepts students should learn next.
 
-    try {
-      final response = await http
-          .post(url, headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey}, body: body)
-          .timeout(const Duration(seconds: 25));
+Return ONLY valid raw JSON.
+''';
 
-      if (response.statusCode == 200) {
-        final json = jsonDecode(response.body);
-        final text = json['candidates']?[0]?['content']?['parts']?[0]?['text'] as String?;
-        if (text != null) {
-          final jsonStart = text.indexOf('[');
-          final jsonEnd   = text.lastIndexOf(']') + 1;
-          if (jsonStart != -1 && jsonEnd > 0) {
-            final results = jsonDecode(text.substring(jsonStart, jsonEnd)) as List;
-            return results.cast<Map<String, dynamic>>();
+    final modelsToTry = [
+      'gemini-3.6-flash',
+      'gemini-3.7-flash',
+      'gemini-3.5-flash',
+      'gemini-3.1-flash-lite',
+      'gemini-flash-latest',
+    ];
+
+    for (final model in modelsToTry) {
+      try {
+        final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey');
+        final response = await http.post(
+          url,
+          headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey},
+          body: jsonEncode({
+            'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
+            'generationConfig': {
+              'temperature': 0.2,
+              'responseMimeType': 'application/json',
+            },
+          }),
+        ).timeout(const Duration(seconds: 15));
+
+        if (response.statusCode == 200) {
+          final json = jsonDecode(response.body);
+          final text = json['candidates']?[0]?['content']?[0]?['parts']?[0]?['text'] ??
+              json['candidates']?[0]?['content']?['parts']?[0]?['text'];
+          if (text != null && text.toString().trim().isNotEmpty) {
+            final parsed = jsonDecode(text.toString());
+            if (parsed is Map<String, dynamic>) {
+              return parsed;
+            }
           }
         }
+      } catch (e) {
+        debugPrint('Search error on $model: $e');
       }
-      return _getCuratedResources(query);
-    } catch (_) {
-      return _getCuratedResources(query);
     }
+
+    return _getFallbackSearchData(cleanQuery);
+  }
+
+  /// Legacy list helper for compatibility
+  Future<List<Map<String, dynamic>>> searchResources(String query) async {
+    final data = await searchAcademicEngine(query);
+    final results = data['results'] as List? ?? [];
+    return results.cast<Map<String, dynamic>>();
   }
 
   /// Dynamic AI response engine based on user prompt context
   String _generateSmartResponse(String prompt) {
-    final query = prompt.toLowerCase().trim();
-
-    // ── Greetings ─────────────────────────────────────────────────────────────
-    if (RegExp(r'^(hi|hello|hey|greetings|howdy|sup|hola)\b').hasMatch(query)) {
-      return '### 👋 Hello! Welcome to StudySpace AI\n\nI am your 24/7 student assistant. I can help you with:\n\n- 📝 **Explaining Concepts:** Coding, Math, Physics, Engineering\n- 📅 **Study Planning:** Exam schedules and daily routines\n- 💡 **Assignment Help:** Breaking down complex problems step-by-step\n- 🔍 **Summarizing:** Turning long articles into concise notes\n\nWhat are you studying today?';
-    }
-
-    // ── Recursion & Algorithms ────────────────────────────────────────────────
-    if (query.contains('recursion') || query.contains('recursive')) {
-      return '### 🔁 Understanding Recursion\n\n**Definition:** Recursion is when a function calls itself to solve smaller sub-problems until reaching a stopping condition.\n\n#### The Two Vital Rules:\n1. **Base Case:** The condition where the function stops (prevents infinite loop/stack overflow).\n2. **Recursive Step:** Modifies the input and calls itself again.\n\n```python\ndef factorial(n):\n    if n <= 1:          # Base Case\n        return 1\n    return n * factorial(n - 1)  # Recursive Step\n```\n\n💡 *Tip: Think of it like Russian nesting dolls — you open each doll until you reach the smallest solid doll!*';
-    }
-
-    // ── Object Oriented Programming ──────────────────────────────────────────
-    if (query.contains('oop') || query.contains('object oriented') || query.contains('class') || query.contains('inheritance')) {
-      return '### 🏛️ The 4 Pillars of OOP\n\n1. **Encapsulation:** Bundling data and methods that operate on that data within a single class.\n2. **Abstraction:** Hiding complex implementation details and showing only the essential interface.\n3. **Inheritance:** Creating new classes that reuse, extend, and modify properties of a parent class.\n4. **Polymorphism:** Allowing different classes to be treated through the same interface (e.g., method overriding).\n\n*Would you like a code example in Python, Java, or C++?*';
-    }
-
-    // ── Study Methods & Time Management ──────────────────────────────────────
-    if (query.contains('study') || query.contains('exam') || query.contains('focus') || query.contains('routine') || query.contains('plan')) {
-      return '### 🎯 High-Yield Study Techniques for College\n\n1. **The Feynman Technique:**\n   - Pick a concept and explain it aloud in plain English as if teaching a 10-year-old.\n   - Identify where your explanation breaks down and review those exact notes.\n\n2. **Active Recall & Spaced Repetition:**\n   - Test yourself before reading the answer. Review intervals: Day 1 → Day 3 → Day 7 → Day 14.\n\n3. **The 50/10 Rule:**\n   - 50 minutes of hyper-focused study (no phone/distractions) + 10 minutes physical break.\n\nWhich subject do you want to create a study plan for?';
-    }
-
-    // ── Physics / Math ───────────────────────────────────────────────────────
-    if (query.contains('physics') || query.contains('newton') || query.contains('derivative') || query.contains('integral') || query.contains('math')) {
-      return '### 📐 Academic Breakdown\n\n- **Formula / Law:** Understand the physical intuition before memorizing formulas.\n- **Units & Dimensional Analysis:** Always check units (kg·m/s² = N) to verify your derivations.\n- **Practice Strategy:** Solve at least 3 solved examples before attempting unassisted homework questions.\n\nFeel free to type the exact equation or problem statement, and we will solve it step by step!';
-    }
-
-    // ── General Dynamic Academic Fallback ────────────────────────────────────
-    return '### 💡 StudySpace AI Overview for: *"$prompt"*\n\nHere is a structured breakdown:\n\n1. **Core Concept:** Breakdown this topic into fundamental principles and definitions.\n2. **Practical Application:** Connect the theory to concrete examples and exercises.\n3. **Key Takeaway:** Summarize the main formula or rule in one sentence for quick revision.\n\n*(Connect your Google Gemini API Key in `.env` for customized deep explanations!)*';
+    return '### 💡 StudySpace AI Overview for: *"$prompt"*\n\nHere is a structured breakdown:\n\n1. **Core Concept:** Breakdown this topic into fundamental principles and definitions.\n2. **Practical Application:** Connect the theory to concrete examples and exercises.\n3. **Key Takeaway:** Summarize the main formula or rule in one sentence for quick revision.';
   }
 
-  List<Map<String, dynamic>> _getCuratedResources(String query) {
+  Map<String, dynamic> _getFallbackSearchData(String query) {
     final clean = Uri.encodeComponent(query);
-    return [
-      {
-        'title': '$query - YouTube Tutorials & Video Lectures',
-        'description': 'Top-rated video lessons, visual walkthroughs, and crash courses.',
-        'url': 'https://www.youtube.com/results?search_query=$clean+tutorial',
-        'type': 'video',
-        'isFree': true,
-        'source': 'YouTube',
-      },
-      {
-        'title': '$query - GeeksforGeeks Explanation & Code',
-        'description': 'Detailed article with definitions, diagrams, time complexity, and code examples.',
-        'url': 'https://www.geeksforgeeks.org/search/?q=$clean',
-        'type': 'article',
-        'isFree': true,
-        'source': 'GeeksforGeeks',
-      },
-      {
-        'title': '$query - FreeCodeCamp Interactive Guide',
-        'description': 'Comprehensive student-friendly handbook and projects.',
-        'url': 'https://www.freecodecamp.org/news/search/?query=$clean',
-        'type': 'course',
-        'isFree': true,
-        'source': 'FreeCodeCamp',
-      },
-      {
-        'title': '$query - Khan Academy & MIT OpenCourseWare',
-        'description': 'Structured fundamental courses with quizzes and practice exercises.',
-        'url': 'https://www.khanacademy.org/search?page_search_query=$clean',
-        'type': 'course',
-        'isFree': true,
-        'source': 'Khan Academy',
-      },
-      {
-        'title': '$query - MDN / Official Documentation',
-        'description': 'Authoritative reference documentation, syntax standards, and specifications.',
-        'url': 'https://developer.mozilla.org/en-US/search?q=$clean',
-        'type': 'documentation',
-        'isFree': true,
-        'source': 'MDN Web Docs',
-      },
-      {
-        'title': '$query - Wikipedia Academic Overview',
-        'description': 'High-level conceptual summary, history, and mathematical foundations.',
-        'url': 'https://en.wikipedia.org/wiki/Special:Search?search=$clean',
-        'type': 'article',
-        'isFree': true,
-        'source': 'Wikipedia',
-      },
-    ];
+    return {
+      'overview': 'Educational overview and curated learning materials for "$query". Explore foundational tutorials, interactive guides, video lectures, and technical references.',
+      'results': [
+        {
+          'title': '$query - Comprehensive Video Tutorials & Lessons',
+          'description': 'Visual walkthroughs, animated concepts, and problem-solving video lectures.',
+          'url': 'https://www.youtube.com/results?search_query=$clean+lecture',
+          'type': 'video',
+          'isFree': true,
+          'source': 'YouTube Edu',
+        },
+        {
+          'title': '$query - Academic Overview & Definitions',
+          'description': 'Historical context, mathematical formulation, and key definitions.',
+          'url': 'https://en.wikipedia.org/wiki/Special:Search?search=$clean',
+          'type': 'article',
+          'isFree': true,
+          'source': 'Wikipedia',
+        },
+        {
+          'title': '$query - Interactive Guide & Practice Problems',
+          'description': 'Structured fundamental explanations with quizzes, code snippets, and active recall exercises.',
+          'url': 'https://www.khanacademy.org/search?page_search_query=$clean',
+          'type': 'course',
+          'isFree': true,
+          'source': 'Khan Academy',
+        },
+        {
+          'title': '$query - Technical Reference & Documentation',
+          'description': 'Standard syntax documentation, API parameters, and authoritative references.',
+          'url': 'https://developer.mozilla.org/en-US/search?q=$clean',
+          'type': 'documentation',
+          'isFree': true,
+          'source': 'MDN Web Docs',
+        },
+        {
+          'title': '$query - FreeCodeCamp Handbook & Articles',
+          'description': 'Step-by-step practical guides, industry conventions, and coding patterns.',
+          'url': 'https://www.freecodecamp.org/news/search/?query=$clean',
+          'type': 'article',
+          'isFree': true,
+          'source': 'FreeCodeCamp',
+        },
+      ],
+      'related': [
+        '$query Fundamentals',
+        '$query Solved Examples',
+        '$query Advanced Applications',
+        '$query Practice Questions',
+      ],
+    };
   }
 }
