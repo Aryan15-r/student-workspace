@@ -338,10 +338,10 @@ class _MessageBubble extends StatelessWidget {
             else ...[
               MarkdownBody(
                 data: message.content,
-                selectable: true,
                 onTapLink: (text, href, title) => _launchLink(href),
                 builders: {
                   'code': _CodeBlockCustomBuilder(onCopy: (code) => _copyToClipboard(context, code)),
+                  'pre': _CodeBlockCustomBuilder(onCopy: (code) => _copyToClipboard(context, code)),
                 },
                 styleSheet: MarkdownStyleSheet(
                   p: const TextStyle(color: AppColors.textPrimary, fontSize: 14.5, height: 1.6),
