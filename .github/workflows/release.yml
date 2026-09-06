@@ -1,4 +1,4 @@
-name: Build & Publish Release APK
+name: Build & Publish Release APK to Public Repo
 
 on:
   push:
@@ -44,20 +44,21 @@ jobs:
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Build Android Release APK
-        run: flutter build apk --release
+      - name: Build Obfuscated Android Release APK
+        run: flutter build apk --release --obfuscate --split-debug-info=build/app/outputs/symbols
 
       - name: Rename APK for release
         run: |
           cp build/app/outputs/flutter-apk/app-release.apk StudySpace-release.apk
 
-      - name: Publish GitHub Release
+      - name: Publish to Public Releases Repository
         uses: softprops/action-gh-release@v2
         with:
+          repository: Aryan15-r/studyspace-releases
           name: "StudySpace ${{ github.ref_name }}"
           files: StudySpace-release.apk
           generate_release_notes: true
           draft: false
           prerelease: false
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
