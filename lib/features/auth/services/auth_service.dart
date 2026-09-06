@@ -113,33 +113,41 @@ class AuthService {
     required String token,
     required String newPassword,
   }) async {
+    final cleanEmail = email.trim();
+    final cleanToken = token.trim();
+    final cleanPassword = newPassword.trim();
+
     try {
-      // Verify OTP (try recovery first, then magiclink, then signup)
+      // 1. Verify OTP code with recovery type first
       try {
         await _supabase.auth.verifyOTP(
-          email: email,
-          token: token,
+          email: cleanEmail,
+          token: cleanToken,
           type: OtpType.recovery,
         );
-      } catch (_) {
+      } catch (e1) {
         try {
           await _supabase.auth.verifyOTP(
-            email: email,
-            token: token,
-            type: OtpType.magiclink,
+            email: cleanEmail,
+            token: cleanToken,
+            type: OtpType.email,
           );
-        } catch (_) {
-          await _supabase.auth.verifyOTP(
-            email: email,
-            token: token,
-            type: OtpType.signup,
-          );
+        } catch (e2) {
+          try {
+            await _supabase.auth.verifyOTP(
+              email: cleanEmail,
+              token: cleanToken,
+              type: OtpType.magiclink,
+            );
+          } catch (_) {
+            throw e1;
+          }
         }
       }
 
-      // Update password once authenticated
+      // 2. Update password once authenticated
       await _supabase.auth.updateUser(
-        UserAttributes(password: newPassword),
+        UserAttributes(password: cleanPassword),
       );
     } catch (e) {
       throw AppException.from(e);

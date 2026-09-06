@@ -33,8 +33,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
   bool _isDirectLinkRecovery = false;
+  bool _hasSentOtp = false;
 
-  int _resendSeconds = 60;
+  int _resendSeconds = 0;
   Timer? _resendTimer;
 
   @override
@@ -64,7 +65,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   void _startResendCountdown() {
-    setState(() => _resendSeconds = 60);
+    setState(() {
+      _hasSentOtp = true;
+      _resendSeconds = 60;
+    });
     _resendTimer?.cancel();
     _resendTimer = Timer.periodic(const Duration(seconds: 1), (t) {
       if (!mounted) return;
@@ -77,6 +81,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   Future<void> _sendResetCode() async {
+    if (_resendSeconds > 0 && _hasSentOtp) {
+      setState(() => _currentStep = _ResetStep.enterOtpAndNewPassword);
+      return;
+    }
+
     if (!_emailFormKey.currentState!.validate()) return;
     final email = _emailCtrl.text.trim();
     final auth = context.read<AuthProvider>();
@@ -89,7 +98,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       setState(() => _currentStep = _ResetStep.enterOtpAndNewPassword);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Password reset OTP code sent to $email'),
+          content: Text('Verification OTP code sent to $email'),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -97,7 +106,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Failed to send reset code. Please check your email.'),
+          content: Text(auth.error ?? 'Failed to send OTP. Please check your email and try again.'),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -156,12 +165,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     if (ok) {
       auth.clearPasswordRecovery();
-      await auth.signOut(); // Ensure clean session
+      await auth.signOut(); // Clear any temp recovery session
       setState(() => _currentStep = _ResetStep.success);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Failed to reset password. Please verify your OTP code.'),
+          content: Text(auth.error ?? 'Failed to reset password. Please check your OTP code.'),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -201,6 +210,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   }
 
   Widget _buildEmailStep(AuthProvider auth) {
+    final bool isCooldownActive = _hasSentOtp && _resendSeconds > 0;
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -253,7 +264,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: auth.isLoading ? null : _sendResetCode,
+                  onPressed: auth.isLoading || isCooldownActive ? null : _sendResetCode,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     backgroundColor: AppColors.primary,
@@ -265,12 +276,29 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           height: 20,
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
-                      : const Text(
-                          'Send Verification OTP',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                      : Text(
+                          isCooldownActive
+                              ? 'Resend OTP in ${_resendSeconds}s'
+                              : 'Send Verification OTP',
+                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                         ),
                 ),
               ),
+              if (_hasSentOtp) ...[
+                const SizedBox(height: 12),
+                SizedBox(
+                  width: double.infinity,
+                  child: OutlinedButton.icon(
+                    icon: const Icon(Icons.pin_outlined, size: 18, color: AppColors.primary),
+                    label: const Text('Already have OTP? Enter Code ➔', style: TextStyle(color: AppColors.primary)),
+                    style: OutlinedButton.styleFrom(
+                      padding: const EdgeInsets.symmetric(vertical: 14),
+                      side: const BorderSide(color: AppColors.primary),
+                    ),
+                    onPressed: () => setState(() => _currentStep = _ResetStep.enterOtpAndNewPassword),
+                  ),
+                ),
+              ],
               const SizedBox(height: 24),
               Center(
                 child: TextButton.icon(
