@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../../providers/calculator_provider.dart';
+import '../../../auth/providers/auth_provider.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
+import '../../../../shared/widgets/login_prompt_dialog.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
@@ -123,6 +125,17 @@ class _CalcButton extends StatelessWidget {
   bool _isSci(String l) => ['sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'π', 'e'].contains(l);
 
   void _onTap(BuildContext context) {
+    final auth = context.read<AuthProvider>();
+    if (auth.isGuest && _isSci(label)) {
+      LoginPromptDialog.show(
+        context,
+        title: 'Scientific Features Locked',
+        message: 'Trigonometry, logarithms, and advanced constants require logging in. Sign in to unlock full scientific calculations!',
+        icon: Icons.calculate_outlined,
+      );
+      return;
+    }
+
     final calc = context.read<CalculatorProvider>();
     switch (label) {
       case '=':  calc.evaluate(); break;
@@ -134,6 +147,9 @@ class _CalcButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isGuest = context.watch<AuthProvider>().isGuest;
+    final isLocked = isGuest && _isSci(label);
+
     return GestureDetector(
       onTap: () => _onTap(context),
       child: AnimatedContainer(
@@ -148,13 +164,22 @@ class _CalcButton extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 4),
             child: FittedBox(
               fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                style: TextStyle(
-                  fontSize: label.length > 3 ? 13 : 18,
-                  fontWeight: FontWeight.w500,
-                  color: _textColor(),
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: label.length > 3 ? 13 : 18,
+                      fontWeight: FontWeight.w500,
+                      color: isLocked ? AppColors.textMuted : _textColor(),
+                    ),
+                  ),
+                  if (isLocked) ...[
+                    const SizedBox(width: 2),
+                    const Icon(Icons.lock_rounded, size: 10, color: AppColors.textMuted),
+                  ],
+                ],
               ),
             ),
           ),

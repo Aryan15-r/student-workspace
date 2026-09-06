@@ -6,12 +6,17 @@ import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
+import '../../../auth/providers/auth_provider.dart';
+import '../../../../shared/widgets/login_prompt_dialog.dart';
+
 /// Route: /pdf-tools
 class PdfToolsPage extends StatelessWidget {
   const PdfToolsPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+
     return AdaptiveScaffold(
       selectedIndex: 6,
       child: Scaffold(
@@ -23,6 +28,43 @@ class PdfToolsPage extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
+                if (auth.isGuest)
+                  Container(
+                    margin: const EdgeInsets.only(bottom: 16),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.lock_outline_rounded, size: 18, color: AppColors.primary),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'PDF & Presentation tools require sign in.',
+                            style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => LoginPromptDialog.show(
+                            context,
+                            featureName: 'PDF & Document Tools',
+                            customMessage: 'Sign in to process, convert, extract, and compress PDF documents!',
+                          ),
+                          child: Text(
+                            'Sign In',
+                            style: AppTextStyles.labelLarge.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 Text('Convert & Process', style: AppTextStyles.headlineSmall),
                 const SizedBox(height: 6),
                 Text('Select a PDF to get started', style: AppTextStyles.bodySmall),
@@ -33,9 +75,20 @@ class PdfToolsPage extends StatelessWidget {
                   icon: '📄',
                   title: 'PDF → Text / Word',
                   description: 'Extract text from any PDF file. Download the result as a text file.',
-                  onTap: pdf.status == PdfJobStatus.idle || pdf.status == PdfJobStatus.done || pdf.status == PdfJobStatus.error
-                      ? () => context.read<PdfProvider>().pickAndProcess()
-                      : null,
+                  isLocked: auth.isGuest,
+                  onTap: () {
+                    if (auth.isGuest) {
+                      LoginPromptDialog.show(
+                        context,
+                        featureName: 'PDF & Document Tools',
+                        customMessage: 'Guest users cannot convert or generate PDFs. Please sign in to unlock all document tools!',
+                      );
+                      return;
+                    }
+                    if (pdf.status == PdfJobStatus.idle || pdf.status == PdfJobStatus.done || pdf.status == PdfJobStatus.error) {
+                      context.read<PdfProvider>().pickAndProcess();
+                    }
+                  },
                 ).animate().fadeIn(duration: 400.ms),
                 const SizedBox(height: 16),
 
@@ -69,8 +122,9 @@ class PdfToolsPage extends StatelessWidget {
 
 class _ToolCard extends StatelessWidget {
   final String icon, title, description;
+  final bool isLocked;
   final VoidCallback? onTap;
-  const _ToolCard({required this.icon, required this.title, required this.description, this.onTap});
+  const _ToolCard({required this.icon, required this.title, required this.description, this.isLocked = false, this.onTap});
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
@@ -86,11 +140,39 @@ class _ToolCard extends StatelessWidget {
           Text(icon, style: const TextStyle(fontSize: 40)),
           const SizedBox(width: 16),
           Expanded(child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
-            Text(title, style: AppTextStyles.headlineSmall),
+            Row(
+              children: [
+                Expanded(child: Text(title, style: AppTextStyles.headlineSmall)),
+                if (isLocked)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                    decoration: BoxDecoration(color: AppColors.warning.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.lock_rounded, size: 12, color: AppColors.warning),
+                        SizedBox(width: 4),
+                        Text('Sign-in', style: TextStyle(color: AppColors.warning, fontSize: 11, fontWeight: FontWeight.bold)),
+                      ],
+                    ),
+                  ),
+              ],
+            ),
             const SizedBox(height: 4),
             Text(description, style: AppTextStyles.bodySmall),
             const SizedBox(height: 12),
-            Container(padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8), decoration: BoxDecoration(gradient: AppColors.primaryGradient, borderRadius: BorderRadius.circular(20)), child: const Text('Select PDF', style: TextStyle(color: Colors.white, fontSize: 13, fontWeight: FontWeight.w600))),
+            Container(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              decoration: BoxDecoration(
+                gradient: isLocked ? null : AppColors.primaryGradient,
+                color: isLocked ? AppColors.card : null,
+                borderRadius: BorderRadius.circular(20),
+              ),
+              child: Text(
+                isLocked ? 'Locked (Sign In)' : 'Select PDF',
+                style: TextStyle(color: isLocked ? AppColors.textMuted : Colors.white, fontSize: 13, fontWeight: FontWeight.w600),
+              ),
+            ),
           ])),
         ]),
       ),

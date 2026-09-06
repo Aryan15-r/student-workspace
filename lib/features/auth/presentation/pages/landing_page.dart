@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
+import 'package:provider/provider.dart';
+import '../../providers/auth_provider.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 import '../../../../shared/widgets/app_logo.dart';
@@ -256,10 +258,22 @@ class _CTAButtons extends StatelessWidget {
               side: const BorderSide(color: AppColors.border),
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
             ),
-            child: Text(
+            child: const Text(
               'Sign In',
               style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
             ),
+          ),
+        ),
+        const SizedBox(height: 12),
+        TextButton.icon(
+          onPressed: () {
+            context.read<AuthProvider>().continueAsGuest();
+            context.go('/dashboard');
+          },
+          icon: const Icon(Icons.person_outline_rounded, size: 18, color: AppColors.primary),
+          label: const Text(
+            'Continue as Guest (Limited Access)',
+            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primary),
           ),
         ),
       ],

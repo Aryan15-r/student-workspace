@@ -59,19 +59,19 @@ class AiService {
           'contents': contents,
           'generationConfig': {
             'temperature': 0.7,
-            'maxOutputTokens': 1024,
+            'maxOutputTokens': 8192,
           },
         });
 
         final response = await http
             .post(url, headers: headers, body: body)
-            .timeout(const Duration(seconds: 12));
+            .timeout(const Duration(seconds: 25));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
           final candidate = json['candidates']?[0]?['content']?['parts']?[0]?['text'];
           if (candidate != null && candidate.toString().trim().isNotEmpty) {
-            return candidate.toString();
+            return cleanMathFormulas(candidate.toString());
           }
         } else {
           debugPrint('Gemini API ($model) error: ${response.statusCode}, body: ${response.body}');
@@ -140,6 +140,17 @@ Return ONLY valid raw JSON.
           if (text != null && text.toString().trim().isNotEmpty) {
             final parsed = jsonDecode(text.toString());
             if (parsed is Map<String, dynamic>) {
+              if (parsed['overview'] is String) {
+                parsed['overview'] = cleanMathFormulas(parsed['overview'] as String);
+              }
+              final list = parsed['results'] as List?;
+              if (list != null) {
+                for (final item in list) {
+                  if (item is Map<String, dynamic> && item['description'] is String) {
+                    item['description'] = cleanMathFormulas(item['description'] as String);
+                  }
+                }
+              }
               return parsed;
             }
           }
@@ -217,5 +228,60 @@ Return ONLY valid raw JSON.
         '$query Practice Questions',
       ],
     };
+  }
+
+  /// Sanitizes raw unrendered LaTeX tags into clean, human-readable student-friendly math
+  static String cleanMathFormulas(String input) {
+    if (input.isEmpty) return input;
+    var text = input;
+
+    // Replace \text{...} or \mathrm{...} or \mathbf{...}
+    text = text.replaceAllMapped(
+      RegExp(r'\\(?:text|mathrm|mathbf|mathit|textsf)\{([^}]+)\}'),
+      (m) => m[1] ?? '',
+    );
+
+    // Replace \frac{a}{b} with (a / b)
+    text = text.replaceAllMapped(
+      RegExp(r'\\frac\{([^}]+)\}\{([^}]+)\}'),
+      (m) => '(${m[1]} / ${m[2]})',
+    );
+
+    // Replace common LaTeX symbols with clean unicode
+    text = text
+        .replaceAll(r'\cdot', '·')
+        .replaceAll(r'\times', '×')
+        .replaceAll(r'\pm', '±')
+        .replaceAll(r'\approx', '≈')
+        .replaceAll(r'\neq', '≠')
+        .replaceAll(r'\le', '≤')
+        .replaceAll(r'\leq', '≤')
+        .replaceAll(r'\ge', '≥')
+        .replaceAll(r'\geq', '≥')
+        .replaceAll(r'\infty', '∞')
+        .replaceAll(r'\Delta', 'Δ')
+        .replaceAll(r'\theta', 'θ')
+        .replaceAll(r'\lambda', 'λ')
+        .replaceAll(r'\mu', 'μ')
+        .replaceAll(r'\sigma', 'σ')
+        .replaceAll(r'\pi', 'π')
+        .replaceAll(r'\alpha', 'α')
+        .replaceAll(r'\beta', 'β')
+        .replaceAll(r'\omega', 'ω');
+
+    // Replace \sqrt{...}
+    text = text.replaceAllMapped(
+      RegExp(r'\\sqrt\{([^}]+)\}'),
+      (m) => '√(${m[1]})',
+    );
+
+    // Clean up subscript _\{...\} -> _... and exponent \^\{...\} -> ^...
+    text = text.replaceAllMapped(RegExp(r'_\{([^}]+)\}'), (m) => '_${m[1]}');
+    text = text.replaceAllMapped(RegExp(r'\^\{([^}]+)\}'), (m) => '^${m[1]}');
+
+    // Remove single $ or $$ math delimiters
+    text = text.replaceAll(r'$$', '').replaceAll(r'$', '');
+
+    return text;
   }
 }

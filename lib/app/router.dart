@@ -45,6 +45,7 @@ class AppRouter {
     if (!authProvider.initialized) return null;
 
     final isAuth      = authProvider.isAuthenticated;
+    final isGuest     = authProvider.isGuest;
     final location    = state.matchedLocation;
 
     // Pages that don't require login
@@ -54,11 +55,11 @@ class AppRouter {
         location == '/forgot-password' ||
         location.startsWith('/verify-otp');
 
-    // Not logged in and trying to access a protected page → go to landing
-    if (!isAuth && !isPublicPage) return '/';
+    // Not logged in and not in guest mode, trying to access a protected page → go to landing
+    if (!isAuth && !isGuest && !isPublicPage) return '/';
 
-    // Already logged in and trying to visit a public page → go to dashboard
-    if (isAuth && isPublicPage) return '/dashboard';
+    // Already logged in (authenticated) and trying to visit landing/login/signup → go to dashboard
+    if (isAuth && (location == '/' || location == '/login' || location == '/signup')) return '/dashboard';
 
     // No redirect needed
     return null;

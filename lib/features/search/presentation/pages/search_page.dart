@@ -7,6 +7,8 @@ import '../../models/search_result.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../core/widgets/loading_widget.dart';
 import '../../../../core/widgets/empty_state_widget.dart';
+import '../../../auth/providers/auth_provider.dart';
+import '../../../../shared/widgets/login_prompt_dialog.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
@@ -29,6 +31,17 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   Future<void> _openUrl(String urlString) async {
+    final auth = context.read<AuthProvider>();
+    if (auth.isGuest) {
+      LoginPromptDialog.show(
+        context,
+        title: 'Login Required',
+        message: 'You need to log in to access this feature and view external web pages and study resources.',
+        icon: Icons.lock_outline_rounded,
+      );
+      return;
+    }
+
     if (urlString.isEmpty) return;
     final uri = Uri.tryParse(urlString);
     if (uri != null) {

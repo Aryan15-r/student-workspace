@@ -12,6 +12,9 @@ import '../../../../core/widgets/empty_state_widget.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
+import '../../../auth/providers/auth_provider.dart';
+import '../../../../shared/widgets/login_prompt_dialog.dart';
+
 /// Route: /todo
 class TodoPage extends StatefulWidget {
   const TodoPage({super.key});
@@ -36,6 +39,18 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
   void dispose() { _tabs.dispose(); super.dispose(); }
 
   void _openAddTask() {
+    final auth = context.read<AuthProvider>();
+    final todo = context.read<TodoProvider>();
+
+    if (auth.isGuest && todo.tasks.length >= 3) {
+      LoginPromptDialog.show(
+        context,
+        featureName: 'To-Do Lists',
+        customMessage: 'Guest mode is limited to 3 tasks. Please sign in to create unlimited tasks, set reminders, and sync across devices!',
+      );
+      return;
+    }
+
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
@@ -47,6 +62,8 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
 
   @override
   Widget build(BuildContext context) {
+    final auth = context.watch<AuthProvider>();
+
     return AdaptiveScaffold(
       selectedIndex: 1,
       child: Scaffold(
@@ -71,13 +88,56 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
             if (todo.isLoading && todo.tasks.isEmpty) return const LoadingWidget(message: 'Loading tasks...');
             if (todo.error != null && todo.tasks.isEmpty) return AppErrorWidget(message: todo.error!, onRetry: todo.loadTasks);
 
-            return TabBarView(
-              controller: _tabs,
+            return Column(
               children: [
-                // Pending tasks
-                _TaskList(tasks: todo.pendingTasks, emptyTitle: 'No pending tasks', emptySubtitle: 'Tap + to add your first task 🎉'),
-                // Completed tasks
-                _TaskList(tasks: todo.completedTasks, emptyTitle: 'Nothing completed yet', emptySubtitle: 'Complete a task to see it here'),
+                if (auth.isGuest)
+                  Container(
+                    margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
+                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    decoration: BoxDecoration(
+                      color: AppColors.primary.withValues(alpha: 0.08),
+                      borderRadius: BorderRadius.circular(12),
+                      border: Border.all(color: AppColors.primary.withValues(alpha: 0.2)),
+                    ),
+                    child: Row(
+                      children: [
+                        const Icon(Icons.info_outline_rounded, size: 18, color: AppColors.primary),
+                        const SizedBox(width: 8),
+                        Expanded(
+                          child: Text(
+                            'Guest Mode: ${todo.tasks.length} of 3 tasks used.',
+                            style: AppTextStyles.bodySmall.copyWith(color: AppColors.primary),
+                          ),
+                        ),
+                        GestureDetector(
+                          onTap: () => LoginPromptDialog.show(
+                            context,
+                            featureName: 'To-Do Lists',
+                            customMessage: 'Sign in to unlock unlimited task management and cloud sync!',
+                          ),
+                          child: Text(
+                            'Sign In',
+                            style: AppTextStyles.labelLarge.copyWith(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.bold,
+                              decoration: TextDecoration.underline,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                Expanded(
+                  child: TabBarView(
+                    controller: _tabs,
+                    children: [
+                      // Pending tasks
+                      _TaskList(tasks: todo.pendingTasks, emptyTitle: 'No pending tasks', emptySubtitle: 'Tap + to add your first task 🎉'),
+                      // Completed tasks
+                      _TaskList(tasks: todo.completedTasks, emptyTitle: 'Nothing completed yet', emptySubtitle: 'Complete a task to see it here'),
+                    ],
+                  ),
+                ),
               ],
             );
           },

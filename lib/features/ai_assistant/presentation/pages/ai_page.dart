@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_markdown/flutter_markdown.dart';
 import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 import '../../providers/ai_provider.dart';
 import '../../models/chat_message.dart';
+import '../../../auth/providers/auth_provider.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
+import '../../../../shared/widgets/login_prompt_dialog.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
@@ -26,6 +29,20 @@ class _AiPageState extends State<AiPage> {
   void _send() {
     final text = _ctrl.text.trim();
     if (text.isEmpty) return;
+
+    final auth = context.read<AuthProvider>();
+    if (auth.isGuest) {
+      if (!auth.incrementGuestAiQuery()) {
+        LoginPromptDialog.show(
+          context,
+          title: 'Guest AI Limit Reached',
+          message: 'You have used all 3 free guest questions. Sign in or create a free account to get unlimited AI tutor access!',
+          icon: Icons.auto_awesome_rounded,
+        );
+        return;
+      }
+    }
+
     _ctrl.clear();
     context.read<AiProvider>().sendMessage(text);
     _scrollToBottom();
@@ -109,6 +126,30 @@ class _AiPageState extends State<AiPage> {
                       ai.error!,
                       style: const TextStyle(color: AppColors.error, fontSize: 12),
                       textAlign: TextAlign.center,
+                    ),
+                  ),
+                if (context.watch<AuthProvider>().isGuest)
+                  Container(
+                    width: double.infinity,
+                    padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
+                    color: AppColors.primary.withValues(alpha: 0.1),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        const Icon(Icons.info_outline_rounded, size: 14, color: AppColors.primary),
+                        const SizedBox(width: 6),
+                        Text(
+                          'Guest Mode: ${context.watch<AuthProvider>().guestAiQueries} of 3 free questions used • ',
+                          style: const TextStyle(fontSize: 12, color: AppColors.textPrimary),
+                        ),
+                        InkWell(
+                          onTap: () => context.go('/login'),
+                          child: const Text(
+                            'Sign In for Unlimited',
+                            style: TextStyle(fontSize: 12, color: AppColors.primary, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ],
                     ),
                   ),
                 _InputBar(

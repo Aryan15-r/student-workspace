@@ -13,13 +13,45 @@ class AuthProvider extends ChangeNotifier {
   bool _isLoading = false;   // True while performing an async operation
   String? _error;            // Error message to show in the UI
   bool _initialized = false; // True after the initial auth check
+  bool _isGuest = false;     // True when user browses without signing in
+
+  // Guest usage limits
+  int _guestAiQueries = 0;
+  static const int maxGuestAiQueries = 3;
+  static const int maxGuestTodos = 3;
 
   UserProfile? get profile         => _profile;
   bool         get isLoading       => _isLoading;
   String?      get error           => _error;
   bool         get initialized     => _initialized;
+  bool         get isGuest         => _isGuest;
+  int          get guestAiQueries  => _guestAiQueries;
+
+  bool get canAskGuestAi => !_isGuest || _guestAiQueries < maxGuestAiQueries;
+
   // User is authenticated as long as Supabase has an active session or profile
   bool get isAuthenticated => _authService.isAuthenticated || _profile != null;
+
+  void continueAsGuest() {
+    _isGuest = true;
+    _error = null;
+    notifyListeners();
+  }
+
+  void exitGuestMode() {
+    _isGuest = false;
+    notifyListeners();
+  }
+
+  bool incrementGuestAiQuery() {
+    if (!_isGuest) return true;
+    if (_guestAiQueries < maxGuestAiQueries) {
+      _guestAiQueries++;
+      notifyListeners();
+      return true;
+    }
+    return false;
+  }
 
   AuthProvider() {
     _init();

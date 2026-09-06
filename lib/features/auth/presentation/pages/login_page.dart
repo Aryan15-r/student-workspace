@@ -196,6 +196,23 @@ class _LoginPageState extends State<LoginPage> {
                       ],
                     ),
                   ).animate().fadeIn(delay: 500.ms, duration: 400.ms),
+
+                  const SizedBox(height: 20),
+
+                  // Continue as guest
+                  Center(
+                    child: TextButton.icon(
+                      onPressed: () {
+                        context.read<AuthProvider>().continueAsGuest();
+                        context.go('/dashboard');
+                      },
+                      icon: const Icon(Icons.person_outline_rounded, size: 16, color: AppColors.textMuted),
+                      label: const Text(
+                        'Continue as Guest (Limited Access)',
+                        style: TextStyle(color: AppColors.textMuted, fontSize: 13),
+                      ),
+                    ),
+                  ),
                 ],
               ),
             ),
