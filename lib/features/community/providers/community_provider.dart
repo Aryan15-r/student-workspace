@@ -156,10 +156,12 @@ class CommunityProvider extends ChangeNotifier {
     String? description,
   }) async {
     _loading = true;
+    _error = null;
     notifyListeners();
     try {
       final sanitizedName = roomName.trim();
       if (sanitizedName.isEmpty) return null;
+      final user = _db.auth.currentUser;
 
       // 1. Check if community exists with exact name
       final existing = await _db
@@ -172,15 +174,21 @@ class CommunityProvider extends ChangeNotifier {
       if (existing != null) {
         communityId = existing['id'] as String;
       } else {
-        // Create new room community
-        final newComm = await _db.from('communities').insert({
+        if (user == null) {
+          _error = 'Please sign in to create a new room.';
+          return null;
+        }
+        // Create new room community (use valid category enum 'general')
+        final insertData = <String, dynamic>{
           'name': sanitizedName,
           'description': description?.trim().isNotEmpty == true
               ? description!.trim()
               : 'Instant Study Room #$sanitizedName',
           'icon': icon?.trim().isNotEmpty == true ? icon!.trim() : '💬',
-          'category': 'study_rooms',
-        }).select().single();
+          'category': 'general',
+          'created_by': user.id,
+        };
+        final newComm = await _db.from('communities').insert(insertData).select().single();
         communityId = newComm['id'] as String;
       }
 

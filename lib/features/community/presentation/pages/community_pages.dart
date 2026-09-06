@@ -62,6 +62,13 @@ class _CommunityListPageState extends State<CommunityListPage> {
     if (result != null && mounted) {
       _roomCodeController.clear();
       context.go('/community/${result['communityId']}/channel/${result['channelId']}');
+    } else if (mounted) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(cp.error ?? 'Could not join or create room.'),
+          backgroundColor: AppColors.error,
+        ),
+      );
     }
   }
 
@@ -163,6 +170,13 @@ class _CommunityListPageState extends State<CommunityListPage> {
                     );
                     if (res != null && mounted) {
                       context.go('/community/${res['communityId']}/channel/${res['channelId']}');
+                    } else if (mounted) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(cp.error ?? 'Could not create room.'),
+                          backgroundColor: AppColors.error,
+                        ),
+                      );
                     }
                   },
                   child: const Text('Create & Enter Room', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
