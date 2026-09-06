@@ -54,7 +54,7 @@ jobs:
       - name: Publish to Public Releases Repository
         uses: softprops/action-gh-release@v2
         with:
-          repository: Aryan15-r/studyspace-releases
+          repository: Aryan15-r/student-workspace-release
           name: "StudySpace ${{ github.ref_name }}"
           files: StudySpace-release.apk
           generate_release_notes: true
