@@ -5,7 +5,6 @@ import '../features/auth/presentation/pages/landing_page.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/signup_page.dart';
 import '../features/auth/presentation/pages/forgot_password_page.dart';
-import '../features/auth/presentation/pages/reset_password_page.dart';
 import '../features/auth/presentation/pages/otp_verification_page.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/todo/presentation/pages/todo_page.dart';
@@ -87,7 +86,7 @@ class AppRouter {
     ),
     GoRoute(
       path: '/reset-password',
-      builder: (context, state) => ResetPasswordPage(
+      builder: (context, state) => ForgotPasswordPage(
         initialEmail: state.extra as String? ?? (state.uri.queryParameters['email'] ?? ''),
       ),
     ),

@@ -10,7 +10,7 @@ import '../../../../shared/widgets/app_logo.dart';
 
 enum _ResetStep { enterEmail, enterOtpAndNewPassword, success }
 
-/// Route: /forgot-password
+/// Route: /forgot-password or /reset-password
 class ForgotPasswordPage extends StatefulWidget {
   final String? initialEmail;
 
@@ -32,6 +32,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   _ResetStep _currentStep = _ResetStep.enterEmail;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
+  bool _isDirectLinkRecovery = false;
 
   int _resendSeconds = 60;
   Timer? _resendTimer;
@@ -40,6 +41,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   void initState() {
     super.initState();
     _emailCtrl = TextEditingController(text: widget.initialEmail ?? '');
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final auth = context.read<AuthProvider>();
+      if (auth.isPasswordRecovery) {
+        setState(() {
+          _isDirectLinkRecovery = true;
+          _currentStep = _ResetStep.enterOtpAndNewPassword;
+        });
+      }
+    });
   }
 
   @override
@@ -78,7 +89,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       setState(() => _currentStep = _ResetStep.enterOtpAndNewPassword);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Password reset code sent to $email'),
+          content: Text('Password reset OTP code sent to $email'),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -106,7 +117,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       _startResendCountdown();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('A fresh verification code has been sent!'),
+          content: Text('A fresh verification OTP code has been sent!'),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -129,20 +140,28 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     final newPassword = _newPasswordCtrl.text.trim();
 
     final auth = context.read<AuthProvider>();
-    final ok = await auth.resetPasswordWithOtp(
-      email: email,
-      token: token,
-      newPassword: newPassword,
-    );
+    bool ok = false;
+
+    if (_isDirectLinkRecovery) {
+      ok = await auth.updatePassword(newPassword);
+    } else {
+      ok = await auth.resetPasswordWithOtp(
+        email: email,
+        token: token,
+        newPassword: newPassword,
+      );
+    }
 
     if (!mounted) return;
 
     if (ok) {
+      auth.clearPasswordRecovery();
+      await auth.signOut(); // Ensure clean session
       setState(() => _currentStep = _ResetStep.success);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Failed to reset password. Please check your code.'),
+          content: Text(auth.error ?? 'Failed to reset password. Please verify your OTP code.'),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -207,7 +226,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             .animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 8),
         Text(
-          "Enter your registered email and we'll send you a verification code to set a new password.",
+          "Enter your registered email and we'll send you a 6-digit verification OTP code to set a new password.",
           style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 32),
@@ -247,7 +266,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
                       : const Text(
-                          'Send Reset Code',
+                          'Send Verification OTP',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                         ),
                 ),
@@ -275,14 +294,22 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              onPressed: () => setState(() => _currentStep = _ResetStep.enterEmail),
+              onPressed: () {
+                if (_isDirectLinkRecovery) {
+                  auth.clearPasswordRecovery();
+                  context.go('/login');
+                } else {
+                  setState(() => _currentStep = _ResetStep.enterEmail);
+                }
+              },
               icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
               padding: EdgeInsets.zero,
             ),
-            TextButton(
-              onPressed: () => setState(() => _currentStep = _ResetStep.enterEmail),
-              child: const Text('Change email', style: TextStyle(fontSize: 13)),
-            ),
+            if (!_isDirectLinkRecovery)
+              TextButton(
+                onPressed: () => setState(() => _currentStep = _ResetStep.enterEmail),
+                child: const Text('Change email', style: TextStyle(fontSize: 13)),
+              ),
           ],
         ),
         const SizedBox(height: 16),
@@ -299,7 +326,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             .animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 8),
         Text(
-          'Enter the verification code sent to ${_emailCtrl.text.trim()} along with your new password.',
+          _isDirectLinkRecovery
+              ? 'Your recovery link is verified! Enter a new password for your account.'
+              : 'Enter the 6-digit OTP code sent to ${_emailCtrl.text.trim()} and choose your new password.',
           style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 28),
@@ -308,34 +337,39 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TextFormField(
-                controller: _otpCtrl,
-                keyboardType: TextInputType.text,
-                maxLength: 8,
-                textAlign: TextAlign.center,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.w700,
-                  letterSpacing: 4,
-                  color: AppColors.primary,
-                ),
-                decoration: InputDecoration(
-                  counterText: '',
-                  labelText: 'Verification Code',
-                  hintText: '123456',
-                  hintStyle: TextStyle(
+              // OTP Code field (only if not already authenticated via direct link)
+              if (!_isDirectLinkRecovery) ...[
+                TextFormField(
+                  controller: _otpCtrl,
+                  keyboardType: TextInputType.text,
+                  maxLength: 8,
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(
+                    fontSize: 22,
+                    fontWeight: FontWeight.w700,
                     letterSpacing: 4,
-                    color: AppColors.textMuted.withValues(alpha: 0.4),
+                    color: AppColors.primary,
                   ),
-                  prefixIcon: const Icon(Icons.security_rounded, color: AppColors.primary),
+                  decoration: InputDecoration(
+                    counterText: '',
+                    labelText: '6-Digit Verification OTP Code',
+                    hintText: '123456',
+                    hintStyle: TextStyle(
+                      letterSpacing: 4,
+                      color: AppColors.textMuted.withValues(alpha: 0.4),
+                    ),
+                    prefixIcon: const Icon(Icons.security_rounded, color: AppColors.primary),
+                  ),
+                  validator: (v) {
+                    if (v == null || v.trim().isEmpty) return 'Enter the 6-digit OTP code from your email';
+                    if (v.trim().length < 6) return 'Code must be at least 6 digits';
+                    return null;
+                  },
                 ),
-                validator: (v) {
-                  if (v == null || v.trim().isEmpty) return 'Enter the code from your email';
-                  if (v.trim().length < 6) return 'Code must be at least 6 characters';
-                  return null;
-                },
-              ),
-              const SizedBox(height: 20),
+                const SizedBox(height: 20),
+              ],
+
+              // New password
               TextFormField(
                 controller: _newPasswordCtrl,
                 obscureText: _obscurePassword,
@@ -358,6 +392,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 },
               ),
               const SizedBox(height: 16),
+
+              // Confirm password
               TextFormField(
                 controller: _confirmPasswordCtrl,
                 obscureText: _obscureConfirmPassword,
@@ -380,6 +416,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 },
               ),
               const SizedBox(height: 28),
+
+              // Submit
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
@@ -396,31 +434,33 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
                       : const Text(
-                          'Update & Set Password',
+                          'Update Password',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                         ),
                 ),
               ),
-              const SizedBox(height: 20),
-              Center(
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    Text("Didn't receive code? ", style: AppTextStyles.bodySmall),
-                    TextButton(
-                      onPressed: _resendSeconds > 0 ? null : _resendCode,
-                      child: Text(
-                        _resendSeconds > 0 ? 'Resend in ${_resendSeconds}s' : 'Resend Code',
-                        style: TextStyle(
-                          color: _resendSeconds > 0 ? AppColors.textMuted : AppColors.primary,
-                          fontWeight: FontWeight.w600,
-                          fontSize: 13,
+              if (!_isDirectLinkRecovery) ...[
+                const SizedBox(height: 20),
+                Center(
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Text("Didn't receive OTP? ", style: AppTextStyles.bodySmall),
+                      TextButton(
+                        onPressed: _resendSeconds > 0 ? null : _resendCode,
+                        child: Text(
+                          _resendSeconds > 0 ? 'Resend in ${_resendSeconds}s' : 'Resend OTP',
+                          style: TextStyle(
+                            color: _resendSeconds > 0 ? AppColors.textMuted : AppColors.primary,
+                            fontWeight: FontWeight.w600,
+                            fontSize: 13,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ],
           ),
         ).animate().fadeIn(delay: 300.ms),
@@ -442,10 +482,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 48),
         ).animate().fadeIn().scale(),
         const SizedBox(height: 24),
-        Text('Password Reset!', style: AppTextStyles.headlineMedium, textAlign: TextAlign.center),
+        Text('Password Reset Successfully!', style: AppTextStyles.headlineMedium, textAlign: TextAlign.center),
         const SizedBox(height: 12),
         Text(
-          'Your password has been changed successfully. You can now sign in with your new password.',
+          'Your password has been changed. You can now sign in to StudySpace with your new password.',
           style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
           textAlign: TextAlign.center,
         ),
@@ -454,8 +494,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           width: double.infinity,
           child: ElevatedButton(
             onPressed: () async {
-              // Sign out any temporary recovery session so the user logs in cleanly
               await auth.signOut();
+              auth.clearPasswordRecovery();
               if (mounted) context.go('/login');
             },
             style: ElevatedButton.styleFrom(
