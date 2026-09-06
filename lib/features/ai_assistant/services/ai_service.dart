@@ -59,19 +59,24 @@ class AiService {
           'contents': contents,
           'generationConfig': {
             'temperature': 0.7,
-            'maxOutputTokens': 8192,
+            'maxOutputTokens': 16384,
           },
         });
 
         final response = await http
             .post(url, headers: headers, body: body)
-            .timeout(const Duration(seconds: 25));
+            .timeout(const Duration(seconds: 40));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
-          final candidate = json['candidates']?[0]?['content']?['parts']?[0]?['text'];
-          if (candidate != null && candidate.toString().trim().isNotEmpty) {
-            return cleanMathFormulas(candidate.toString());
+          final candidate = json['candidates']?[0];
+          final parts = candidate?['content']?['parts'] as List?;
+
+          if (parts != null && parts.isNotEmpty) {
+            final fullText = parts.map((p) => p['text']?.toString() ?? '').join('');
+            if (fullText.trim().isNotEmpty) {
+              return cleanMathFormulas(fullText);
+            }
           }
         } else {
           debugPrint('Gemini API ($model) error: ${response.statusCode}, body: ${response.body}');

@@ -7,7 +7,7 @@ class AppConstants {
   // ── App Info ───────────────────────────────────────────────────────────────
   static const String appName    = 'StudySpace';
   static const String appTagline = 'One workspace. Less switching. More learning.';
-  static const String appVersion = '1.0.7';
+  static const String appVersion = '1.0.8';
 
   /// Google Gemini REST API endpoint
   static const String geminiBaseUrl =
@@ -24,6 +24,7 @@ Your capabilities:
 4. Natural & Flexible: If the student chats casually, jokes, or says something playful (e.g. "Meow", "Hello", "How are you"), reply charmingly and naturally with personality!
 
 Formatting guidelines:
+- Complete Outputs: Always provide complete, fully realized code implementations from imports to main(), and always close every code block cleanly with triple backticks (```). Never leave a sentence or code snippet truncated midway.
 - Mathematical & Physics Formulas: Never use raw unrendered LaTeX markup like `\$F_{A\\text{ on }B} = -F_{B\\text{ on }A}\$`. Instead, write clean human-readable formulas that beginners can easily read (e.g., `F(A on B) = -F(B on A)` or `F_1 = -F_2`).
 - Use clean Markdown with headers (`###`), bullet points, and syntax-highlighted code blocks where helpful.
 - Keep explanations clear, engaging, and directly actionable.

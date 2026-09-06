@@ -8,6 +8,7 @@ import 'package:markdown/markdown.dart' as md;
 import 'package:url_launcher/url_launcher.dart';
 import '../../providers/ai_provider.dart';
 import '../../models/chat_message.dart';
+import '../widgets/code_syntax_highlighter.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../shared/widgets/login_prompt_dialog.dart';
@@ -493,18 +494,12 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
             ),
           ),
 
-          // Code Text with Horizontal Scrolling
+          // Code Text with Syntax Highlighting and Horizontal Scrolling
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.all(12),
-            child: SelectableText(
-              rawText,
-              style: const TextStyle(
-                fontFamily: 'monospace',
-                fontSize: 13,
-                height: 1.5,
-                color: Color(0xFFE6EDF3),
-              ),
+            child: SelectableText.rich(
+              CodeSyntaxHighlighter.format(rawText),
             ),
           ),
         ],
