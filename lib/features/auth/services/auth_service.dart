@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import '../models/user_profile.dart';
 import '../../../core/errors/app_exception.dart';
@@ -98,7 +99,10 @@ class AuthService {
   // ── Password Reset ─────────────────────────────────────────────────────────
   Future<void> resetPassword(String email) async {
     try {
-      await _supabase.auth.resetPasswordForEmail(email);
+      await _supabase.auth.resetPasswordForEmail(
+        email,
+        redirectTo: kIsWeb ? '${Uri.base.origin}/#/reset-password' : null,
+      );
     } catch (e) {
       throw AppException.from(e);
     }

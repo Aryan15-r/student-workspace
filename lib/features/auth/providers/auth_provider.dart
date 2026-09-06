@@ -14,18 +14,20 @@ class AuthProvider extends ChangeNotifier {
   String? _error;            // Error message to show in the UI
   bool _initialized = false; // True after the initial auth check
   bool _isGuest = false;     // True when user browses without signing in
+  bool _isPasswordRecovery = false; // True when user is in recovery mode to reset password
 
   // Guest usage limits
   int _guestAiQueries = 0;
   static const int maxGuestAiQueries = 3;
   static const int maxGuestTodos = 3;
 
-  UserProfile? get profile         => _profile;
-  bool         get isLoading       => _isLoading;
-  String?      get error           => _error;
-  bool         get initialized     => _initialized;
-  bool         get isGuest         => _isGuest;
-  int          get guestAiQueries  => _guestAiQueries;
+  UserProfile? get profile             => _profile;
+  bool         get isLoading           => _isLoading;
+  String?      get error               => _error;
+  bool         get initialized         => _initialized;
+  bool         get isGuest             => _isGuest;
+  bool         get isPasswordRecovery  => _isPasswordRecovery;
+  int          get guestAiQueries      => _guestAiQueries;
 
   bool get canAskGuestAi => !_isGuest || _guestAiQueries < maxGuestAiQueries;
 
@@ -40,6 +42,16 @@ class AuthProvider extends ChangeNotifier {
 
   void exitGuestMode() {
     _isGuest = false;
+    notifyListeners();
+  }
+
+  void setPasswordRecovery(bool value) {
+    _isPasswordRecovery = value;
+    notifyListeners();
+  }
+
+  void clearPasswordRecovery() {
+    _isPasswordRecovery = false;
     notifyListeners();
   }
 
@@ -67,13 +79,21 @@ class AuthProvider extends ChangeNotifier {
       });
     }
 
-    // 2. Listen for auth changes (token refresh, sign in, sign out)
+    // 2. Listen for auth changes (token refresh, sign in, sign out, password recovery)
     _authService.authStateChanges.listen((authState) async {
       final event = authState.event;
       final user = authState.session?.user ?? _authService.currentUser;
 
       if (event == AuthChangeEvent.signedOut) {
         _profile = null;
+        _isPasswordRecovery = false;
+        _initialized = true;
+        notifyListeners();
+        return;
+      }
+
+      if (event == AuthChangeEvent.passwordRecovery) {
+        _isPasswordRecovery = true;
         _initialized = true;
         notifyListeners();
         return;

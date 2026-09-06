@@ -5,6 +5,7 @@ import '../features/auth/presentation/pages/landing_page.dart';
 import '../features/auth/presentation/pages/login_page.dart';
 import '../features/auth/presentation/pages/signup_page.dart';
 import '../features/auth/presentation/pages/forgot_password_page.dart';
+import '../features/auth/presentation/pages/reset_password_page.dart';
 import '../features/auth/presentation/pages/otp_verification_page.dart';
 import '../features/dashboard/presentation/pages/dashboard_page.dart';
 import '../features/todo/presentation/pages/todo_page.dart';
@@ -46,20 +47,27 @@ class AppRouter {
 
     final isAuth      = authProvider.isAuthenticated;
     final isGuest     = authProvider.isGuest;
+    final isRecovery  = authProvider.isPasswordRecovery;
     final location    = state.matchedLocation;
+
+    // Password recovery flow takes highest priority
+    if (isRecovery && location != '/reset-password') {
+      return '/reset-password';
+    }
 
     // Pages that don't require login
     final isPublicPage = location == '/' ||
         location == '/login' ||
         location == '/signup' ||
         location == '/forgot-password' ||
+        location == '/reset-password' ||
         location.startsWith('/verify-otp');
 
     // Not logged in and not in guest mode, trying to access a protected page → go to landing
     if (!isAuth && !isGuest && !isPublicPage) return '/';
 
     // Already logged in (authenticated) and trying to visit landing/login/signup → go to dashboard
-    if (isAuth && (location == '/' || location == '/login' || location == '/signup')) return '/dashboard';
+    if (isAuth && !isRecovery && (location == '/' || location == '/login' || location == '/signup')) return '/dashboard';
 
     // No redirect needed
     return null;
@@ -74,6 +82,12 @@ class AppRouter {
     GoRoute(
       path: '/forgot-password',
       builder: (context, state) => ForgotPasswordPage(
+        initialEmail: state.extra as String? ?? (state.uri.queryParameters['email'] ?? ''),
+      ),
+    ),
+    GoRoute(
+      path: '/reset-password',
+      builder: (context, state) => ResetPasswordPage(
         initialEmail: state.extra as String? ?? (state.uri.queryParameters['email'] ?? ''),
       ),
     ),

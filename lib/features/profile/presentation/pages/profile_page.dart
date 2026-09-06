@@ -47,6 +47,21 @@ class ProfilePage extends StatelessWidget {
 
                     const SizedBox(height: 32),
 
+                    // Change Password button
+                    SizedBox(
+                      width: double.infinity,
+                      child: OutlinedButton.icon(
+                        icon: const Icon(Icons.lock_reset_rounded, color: AppColors.primary),
+                        label: const Text('Change Password', style: TextStyle(color: AppColors.primary)),
+                        style: OutlinedButton.styleFrom(
+                          side: const BorderSide(color: AppColors.primary),
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                        ),
+                        onPressed: () => context.go('/reset-password'),
+                      ),
+                    ).animate().fadeIn(delay: 450.ms),
+                    const SizedBox(height: 12),
+
                     // Sign out button
                     SizedBox(
                       width: double.infinity,
