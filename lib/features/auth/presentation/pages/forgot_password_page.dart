@@ -8,7 +8,12 @@ import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 import '../../../../shared/widgets/app_logo.dart';
 
-enum _ResetStep { enterEmail, enterOtpAndNewPassword, success }
+enum _ResetStep {
+  enterEmail,     // Step 1: Enter email -> Send OTP
+  enterOtp,       // Step 2: Enter 6-digit OTP only -> Verify OTP
+  setNewPassword, // Step 3: Enter new password & confirm -> Set Password
+  success,        // Step 4: Password changed confirmation -> Back to Login
+}
 
 /// Route: /forgot-password or /reset-password
 class ForgotPasswordPage extends StatefulWidget {
@@ -22,7 +27,8 @@ class ForgotPasswordPage extends StatefulWidget {
 
 class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   final _emailFormKey = GlobalKey<FormState>();
-  final _resetFormKey = GlobalKey<FormState>();
+  final _otpFormKey = GlobalKey<FormState>();
+  final _passwordFormKey = GlobalKey<FormState>();
 
   late final TextEditingController _emailCtrl;
   final _otpCtrl = TextEditingController();
@@ -32,7 +38,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
   _ResetStep _currentStep = _ResetStep.enterEmail;
   bool _obscurePassword = true;
   bool _obscureConfirmPassword = true;
-  bool _isDirectLinkRecovery = false;
   bool _hasSentOtp = false;
 
   int _resendSeconds = 0;
@@ -45,10 +50,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final auth = context.read<AuthProvider>();
-      if (auth.isPasswordRecovery) {
+      // If user arrives via direct email recovery link (already authenticated session)
+      if (auth.isPasswordRecovery || (auth.isAuthenticated && !auth.isGuest)) {
         setState(() {
-          _isDirectLinkRecovery = true;
-          _currentStep = _ResetStep.enterOtpAndNewPassword;
+          _currentStep = _ResetStep.setNewPassword;
         });
       }
     });
@@ -80,9 +85,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     });
   }
 
+  // ── Step 1: Send OTP to Email ─────────────────────────────────────────────
   Future<void> _sendResetCode() async {
     if (_resendSeconds > 0 && _hasSentOtp) {
-      setState(() => _currentStep = _ResetStep.enterOtpAndNewPassword);
+      setState(() => _currentStep = _ResetStep.enterOtp);
       return;
     }
 
@@ -95,10 +101,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
 
     if (ok) {
       _startResendCountdown();
-      setState(() => _currentStep = _ResetStep.enterOtpAndNewPassword);
+      setState(() => _currentStep = _ResetStep.enterOtp);
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Verification OTP code sent to $email'),
+          content: Text('6-digit verification code sent to $email'),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -106,7 +112,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Failed to send OTP. Please check your email and try again.'),
+          content: Text(auth.error ?? 'Failed to send OTP. Please check your email.'),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -126,7 +132,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       _startResendCountdown();
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('A fresh verification OTP code has been sent!'),
+          content: Text('A fresh 6-digit OTP code has been sent!'),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -134,7 +140,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Failed to resend reset code.'),
+          content: Text(auth.error ?? 'Failed to resend OTP.'),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -142,35 +148,47 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     }
   }
 
-  Future<void> _resetPasswordAndSetNew() async {
-    if (!_resetFormKey.currentState!.validate()) return;
+  // ── Step 2: Verify OTP Only ───────────────────────────────────────────────
+  Future<void> _verifyOtpOnly() async {
+    if (!_otpFormKey.currentState!.validate()) return;
     final email = _emailCtrl.text.trim();
     final token = _otpCtrl.text.trim();
-    final newPassword = _newPasswordCtrl.text.trim();
-
     final auth = context.read<AuthProvider>();
-    bool ok = false;
 
-    if (_isDirectLinkRecovery) {
-      ok = await auth.updatePassword(newPassword);
+    final ok = await auth.verifyOtp(email: email, token: token);
+    if (!mounted) return;
+
+    if (ok) {
+      // Advance to Step 3: Enter New Password
+      setState(() => _currentStep = _ResetStep.setNewPassword);
     } else {
-      ok = await auth.resetPasswordWithOtp(
-        email: email,
-        token: token,
-        newPassword: newPassword,
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(auth.error ?? 'Invalid verification code. Please check your 6-digit OTP.'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
       );
     }
+  }
 
+  // ── Step 3: Set New Password ──────────────────────────────────────────────
+  Future<void> _submitNewPassword() async {
+    if (!_passwordFormKey.currentState!.validate()) return;
+    final newPassword = _newPasswordCtrl.text.trim();
+    final auth = context.read<AuthProvider>();
+
+    final ok = await auth.updatePassword(newPassword);
     if (!mounted) return;
 
     if (ok) {
       auth.clearPasswordRecovery();
-      await auth.signOut(); // Clear any temp recovery session
+      await auth.signOut(); // Clear temp session so user logs in cleanly
       setState(() => _currentStep = _ResetStep.success);
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Failed to reset password. Please check your OTP code.'),
+          content: Text(auth.error ?? 'Failed to update password. Please try again.'),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -202,13 +220,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     switch (_currentStep) {
       case _ResetStep.enterEmail:
         return _buildEmailStep(auth);
-      case _ResetStep.enterOtpAndNewPassword:
-        return _buildResetStep(auth);
+      case _ResetStep.enterOtp:
+        return _buildOtpStep(auth);
+      case _ResetStep.setNewPassword:
+        return _buildSetPasswordStep(auth);
       case _ResetStep.success:
         return _buildSuccessStep(auth);
     }
   }
 
+  // ── Step 1: Email Input ───────────────────────────────────────────────────
   Widget _buildEmailStep(AuthProvider auth) {
     final bool isCooldownActive = _hasSentOtp && _resendSeconds > 0;
 
@@ -237,7 +258,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             .animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 8),
         Text(
-          "Enter your registered email and we'll send you a 6-digit verification OTP code to set a new password.",
+          "Enter your registered email and we'll send you a 6-digit verification OTP code.",
           style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 32),
@@ -278,7 +299,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                         )
                       : Text(
                           isCooldownActive
-                              ? 'Resend OTP in ${_resendSeconds}s'
+                              ? 'Resend in ${_resendSeconds}s'
                               : 'Send Verification OTP',
                           style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                         ),
@@ -295,7 +316,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: AppColors.primary),
                     ),
-                    onPressed: () => setState(() => _currentStep = _ResetStep.enterOtpAndNewPassword),
+                    onPressed: () => setState(() => _currentStep = _ResetStep.enterOtp),
                   ),
                 ),
               ],
@@ -314,7 +335,8 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     );
   }
 
-  Widget _buildResetStep(AuthProvider auth) {
+  // ── Step 2: Enter OTP Only (No Passwords Here) ────────────────────────────
+  Widget _buildOtpStep(AuthProvider auth) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -322,22 +344,14 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              onPressed: () {
-                if (_isDirectLinkRecovery) {
-                  auth.clearPasswordRecovery();
-                  context.go('/login');
-                } else {
-                  setState(() => _currentStep = _ResetStep.enterEmail);
-                }
-              },
+              onPressed: () => setState(() => _currentStep = _ResetStep.enterEmail),
               icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
               padding: EdgeInsets.zero,
             ),
-            if (!_isDirectLinkRecovery)
-              TextButton(
-                onPressed: () => setState(() => _currentStep = _ResetStep.enterEmail),
-                child: const Text('Change email', style: TextStyle(fontSize: 13)),
-              ),
+            TextButton(
+              onPressed: () => setState(() => _currentStep = _ResetStep.enterEmail),
+              child: const Text('Change email', style: TextStyle(fontSize: 13)),
+            ),
           ],
         ),
         const SizedBox(height: 16),
@@ -350,54 +364,131 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           child: const Icon(Icons.mark_email_read_outlined, color: AppColors.primary, size: 36),
         ).animate().fadeIn().scale(),
         const SizedBox(height: 20),
-        Text('Create New Password', style: AppTextStyles.headlineLarge)
+        Text('Enter Verification OTP', style: AppTextStyles.headlineLarge)
             .animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 8),
         Text(
-          _isDirectLinkRecovery
-              ? 'Your recovery link is verified! Enter a new password for your account.'
-              : 'Enter the 6-digit OTP code sent to ${_emailCtrl.text.trim()} and choose your new password.',
+          'Please enter the 6-digit verification code sent to ${_emailCtrl.text.trim()}.',
           style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 28),
         Form(
-          key: _resetFormKey,
+          key: _otpFormKey,
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              // OTP Code field (only if not already authenticated via direct link)
-              if (!_isDirectLinkRecovery) ...[
-                TextFormField(
-                  controller: _otpCtrl,
-                  keyboardType: TextInputType.text,
-                  maxLength: 8,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.w700,
-                    letterSpacing: 4,
-                    color: AppColors.primary,
-                  ),
-                  decoration: InputDecoration(
-                    counterText: '',
-                    labelText: '6-Digit Verification OTP Code',
-                    hintText: '123456',
-                    hintStyle: TextStyle(
-                      letterSpacing: 4,
-                      color: AppColors.textMuted.withValues(alpha: 0.4),
-                    ),
-                    prefixIcon: const Icon(Icons.security_rounded, color: AppColors.primary),
-                  ),
-                  validator: (v) {
-                    if (v == null || v.trim().isEmpty) return 'Enter the 6-digit OTP code from your email';
-                    if (v.trim().length < 6) return 'Code must be at least 6 digits';
-                    return null;
-                  },
+              TextFormField(
+                controller: _otpCtrl,
+                keyboardType: TextInputType.text,
+                maxLength: 8,
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.w700,
+                  letterSpacing: 6,
+                  color: AppColors.primary,
                 ),
-                const SizedBox(height: 20),
-              ],
+                decoration: InputDecoration(
+                  counterText: '',
+                  labelText: '6-Digit OTP Code',
+                  hintText: '123456',
+                  hintStyle: TextStyle(
+                    letterSpacing: 6,
+                    color: AppColors.textMuted.withValues(alpha: 0.4),
+                  ),
+                  prefixIcon: const Icon(Icons.security_rounded, color: AppColors.primary),
+                ),
+                validator: (v) {
+                  if (v == null || v.trim().isEmpty) return 'Enter the 6-digit OTP code from your email';
+                  if (v.trim().length < 6) return 'Code must be at least 6 digits';
+                  return null;
+                },
+              ),
+              const SizedBox(height: 28),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: auth.isLoading ? null : _verifyOtpOnly,
+                  style: ElevatedButton.styleFrom(
+                    padding: const EdgeInsets.symmetric(vertical: 18),
+                    backgroundColor: AppColors.primary,
+                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                  ),
+                  child: auth.isLoading
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                        )
+                      : const Text(
+                          'Verify OTP Code',
+                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                        ),
+                ),
+              ),
+              const SizedBox(height: 20),
+              Center(
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Text("Didn't receive OTP? ", style: AppTextStyles.bodySmall),
+                    TextButton(
+                      onPressed: _resendSeconds > 0 ? null : _resendCode,
+                      child: Text(
+                        _resendSeconds > 0 ? 'Resend in ${_resendSeconds}s' : 'Resend OTP',
+                        style: TextStyle(
+                          color: _resendSeconds > 0 ? AppColors.textMuted : AppColors.primary,
+                          fontWeight: FontWeight.w600,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
+          ),
+        ).animate().fadeIn(delay: 300.ms),
+      ],
+    );
+  }
 
-              // New password
+  // ── Step 3: Set New Password ──────────────────────────────────────────────
+  Widget _buildSetPasswordStep(AuthProvider auth) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        IconButton(
+          onPressed: () {
+            auth.clearPasswordRecovery();
+            context.go('/login');
+          },
+          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+          padding: EdgeInsets.zero,
+        ),
+        const SizedBox(height: 16),
+        Container(
+          padding: const EdgeInsets.all(12),
+          decoration: BoxDecoration(
+            color: AppColors.success.withValues(alpha: 0.1),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child: const Icon(Icons.lock_outline_rounded, color: AppColors.success, size: 36),
+        ).animate().fadeIn().scale(),
+        const SizedBox(height: 20),
+        Text('Create New Password', style: AppTextStyles.headlineLarge)
+            .animate().fadeIn(delay: 100.ms),
+        const SizedBox(height: 8),
+        Text(
+          'Your verification is complete. Please choose a strong new password for your account.',
+          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
+        ).animate().fadeIn(delay: 200.ms),
+        const SizedBox(height: 28),
+        Form(
+          key: _passwordFormKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
               TextFormField(
                 controller: _newPasswordCtrl,
                 obscureText: _obscurePassword,
@@ -420,8 +511,6 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 },
               ),
               const SizedBox(height: 16),
-
-              // Confirm password
               TextFormField(
                 controller: _confirmPasswordCtrl,
                 obscureText: _obscureConfirmPassword,
@@ -444,12 +533,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 },
               ),
               const SizedBox(height: 28),
-
-              // Submit
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: auth.isLoading ? null : _resetPasswordAndSetNew,
+                  onPressed: auth.isLoading ? null : _submitNewPassword,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     backgroundColor: AppColors.primary,
@@ -462,33 +549,11 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
                         )
                       : const Text(
-                          'Update Password',
+                          'Set New Password',
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
                         ),
                 ),
               ),
-              if (!_isDirectLinkRecovery) ...[
-                const SizedBox(height: 20),
-                Center(
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Didn't receive OTP? ", style: AppTextStyles.bodySmall),
-                      TextButton(
-                        onPressed: _resendSeconds > 0 ? null : _resendCode,
-                        child: Text(
-                          _resendSeconds > 0 ? 'Resend in ${_resendSeconds}s' : 'Resend OTP',
-                          style: TextStyle(
-                            color: _resendSeconds > 0 ? AppColors.textMuted : AppColors.primary,
-                            fontWeight: FontWeight.w600,
-                            fontSize: 13,
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
             ],
           ),
         ).animate().fadeIn(delay: 300.ms),
@@ -496,6 +561,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     );
   }
 
+  // ── Step 4: Success ───────────────────────────────────────────────────────
   Widget _buildSuccessStep(AuthProvider auth) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.center,
