@@ -1,7 +1,7 @@
 name: student_workspace
 description: "StudySpace — An all-in-one student productivity workspace"
 publish_to: 'none'
-version: 1.0.6+7
+version: 1.0.7+8
 
 environment:
   sdk: ^3.12.2
@@ -37,6 +37,7 @@ dependencies:
   flutter_markdown: ^0.7.7+1
   markdown: ^7.3.0
   url_launcher: ^6.3.1           # Launch external URLs in browser
+  pdf: ^3.11.1                   # Create, format, and generate real PDF documents
 
 dev_dependencies:
   flutter_test:
