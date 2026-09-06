@@ -107481,9 +107481,9 @@ for(d=a9.length,c=t.N,b=t.m0,a=t.z,a0=0;a0<a9.length;a9.length===d||(0,A.B)(a9),
 if(a1.d)continue
 a2=a1.b?"user":"model"
 J.eF(m,A.Z(["role",a2,"parts",A.b([A.Z(["text",a1.a],c,c)],b)],c,a))}J.eF(m,A.Z(["role","user","parts",A.b([A.Z(["text",b0],c,c)],b)],c,a))
-a3=["gemini-1.5-flash","gemini-2.0-flash","gemini-1.5-pro"]
+a3=["gemini-3.6-flash","gemini-3.7-flash","gemini-3.5-flash","gemini-3.1-flash-lite","gemini-flash-latest"]
 d=t.xW,a=t.Ci,a2=t.K,a0=0
-case 6:if(!(a0<3)){s=8
+case 6:if(!(a0<5)){s=8
 break}l=a3[a0]
 p=10
 k=A.cX("https://generativelanguage.googleapis.com/v1beta/models/"+A.l(l)+":generateContent?key="+A.l(a7),0,null)
@@ -107538,7 +107538,7 @@ return A.o(A.ir(B.K1,null,t.z),$async$w4)
 case 5:q=n.Km(a0)
 s=1
 break
-case 4:m=A.cX("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+A.l(b),0,null)
+case 4:m=A.cX("https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key="+A.l(b),0,null)
 e=t.N
 d=t.K
 l=B.a2.qT(A.Z(["contents",A.b([A.Z(["role","user","parts",A.b([A.Z(["text",'You are a study resource finder for college students. When given a search query, respond with 6 high-quality educational resources in valid JSON format only.\n\nEach resource must have:\n- "title": short descriptive title\n- "description": 1-2 sentences about what this resource covers\n- "url": a real, working URL\n- "type": one of "video", "article", "course", "documentation", "tool", "website"\n- "isFree": true or false\n- "source": the website name (e.g. "YouTube", "MDN", "Khan Academy", "GeeksforGeeks")\n\nReturn ONLY a valid JSON array.\n\n\nSearch query: "'+a0+'"'],e,e)],t.m0)],e,d)],t.Mq),"generationConfig",A.Z(["temperature",0.3,"maxOutputTokens",1024],e,t.Ci)],e,d),null)
