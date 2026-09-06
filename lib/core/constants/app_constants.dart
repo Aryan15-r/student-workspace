@@ -11,7 +11,7 @@ class AppConstants {
 
   /// Google Gemini REST API endpoint
   static const String geminiBaseUrl =
-      'https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent';
+      'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent';
 
   /// System prompt that shapes the AI's personality
   static const String aiSystemPrompt = '''
