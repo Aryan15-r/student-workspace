@@ -12,8 +12,20 @@ ALTER TABLE public.channels ADD COLUMN IF NOT EXISTS is_private boolean DEFAULT 
 ALTER TABLE public.channels ADD COLUMN IF NOT EXISTS passcode text DEFAULT '';
 ALTER TABLE public.channels ADD COLUMN IF NOT EXISTS created_by uuid REFERENCES public.profiles(id) ON DELETE SET NULL;
 
--- 3. Enable Realtime Replication for messages (Insert, Update, Delete)
-ALTER PUBLICATION supabase_realtime ADD TABLE public.messages;
+-- 3. Safely Enable Realtime Replication for messages (bypasses 42710 duplicate error if already added)
+DO $$
+BEGIN
+  IF NOT EXISTS (
+    SELECT 1 FROM pg_publication_rel pr
+    JOIN pg_class c ON pr.prrelid = c.oid
+    JOIN pg_publication p ON pr.prpubid = p.oid
+    WHERE p.pubname = 'supabase_realtime' AND c.relname = 'messages'
+  ) THEN
+    ALTER PUBLICATION supabase_realtime ADD TABLE public.messages;
+  END IF;
+EXCEPTION
+  WHEN OTHERS THEN NULL;
+END $$;
 
 -- 4. RLS Policy: Allow message author OR room creator (Admin) to delete messages
 DO $$
