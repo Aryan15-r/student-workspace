@@ -260,52 +260,63 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
 
   // 5. Open Documents (PPT, Excel, Word, etc.) with external viewer
   void _openDocumentViewer() async {
-    final res = await FilePicker.platform.pickFiles(
-      type: FileType.custom,
-      allowedExtensions: [
-        'ppt', 'pptx',           // PowerPoint
-        'xls', 'xlsx', 'csv',   // Excel / Spreadsheet
-        'doc', 'docx',           // Word
-        'pdf',                   // PDF
-        'txt', 'rtf',            // Text
-        'odt', 'ods', 'odp',    // OpenDocument
-      ],
-    );
-
-    if (res == null || res.files.isEmpty) return;
-    if (!mounted) return;
-
-    final file = res.files.first;
-    final filePath = file.path;
-
-    if (filePath == null) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Unable to access the file path.'),
-          backgroundColor: AppColors.error,
-          behavior: SnackBarBehavior.floating,
-        ),
+    try {
+      final res = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: [
+          'ppt', 'pptx',           // PowerPoint
+          'xls', 'xlsx', 'csv',   // Excel / Spreadsheet
+          'doc', 'docx',           // Word
+          'pdf',                   // PDF
+          'txt', 'rtf',            // Text
+          'odt', 'ods', 'odp',    // OpenDocument
+        ],
       );
-      return;
-    }
 
-    final result = await OpenFilex.open(filePath);
+      if (res == null || res.files.isEmpty) return;
+      if (!mounted) return;
 
-    if (!mounted) return;
-    if (result.type != ResultType.done) {
+      final file = res.files.first;
+      final filePath = file.path;
+
+      if (filePath == null) {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Unable to access the file path on this platform.'),
+            backgroundColor: AppColors.error,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+
+      final result = await OpenFilex.open(filePath);
+
+      if (!mounted) return;
+      if (result.type != ResultType.done) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not open file: ${result.message}. Please install a document reader app.'),
+            backgroundColor: AppColors.warning,
+            behavior: SnackBarBehavior.floating,
+            action: SnackBarAction(
+              label: 'Get Viewer',
+              textColor: Colors.white,
+              onPressed: () {
+                launchUrlExternally('https://play.google.com/store/apps/details?id=all.documentreader.filereader.office.viewer');
+              },
+            ),
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Could not open file: ${result.message}. Please install a document reader app.'),
-          backgroundColor: AppColors.warning,
+          content: Text('Error opening document: $e'),
+          backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
-          action: SnackBarAction(
-            label: 'Get Viewer',
-            textColor: Colors.white,
-            onPressed: () {
-              // Direct to a popular document reader on Play Store
-              launchUrlExternally('https://play.google.com/store/apps/details?id=all.documentreader.filereader.office.viewer');
-            },
-          ),
         ),
       );
     }
