@@ -136485,7 +136485,7 @@ g=A.bF(A.bn(A.a0("Please enter the 6-digit verification code sent to "+B.o.b9(g.
 s=A.mw(!1,m.w,A.i4(l,l,l,l,l,l,"",l,!0,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,A.e_(l,l,B.aN.aA(0.4),l,l,l,l,l,l,l,l,l,l,l,l,l,l,!0,l,6,l,l,l,l,l,l),"123456",l,l,l,l,l,l,l,l,"6-Digit OTP Code",!0,!0,!1,l,B.Ap,l,l,l,l,l,l,l,l,l,l,l,l),l,B.ps,8,1,!1,l,l,B.SH,B.bc,new A.aWP())
 r=a.c?l:m.gaKQ()
 q=A.hk(l,l,B.N,l,l,l,l,l,l,l,l,l,B.eI,l,new A.c7(A.aq(14),B.R),l,l,l,l,l)
-r=A.ci(A.iq(a.c?B.iT:B.baj,r,q),l,1/0)
+r=A.ci(A.iq(a.c?B.iT:B.bai,r,q),l,1/0)
 q=A.a0("Didn't receive OTP? ",l,l,l,l,A.bW().$4$color$fontSize$fontWeight$height(B.a6,12,B.T,1.4),l,l,l)
 p=m.ax
 o=p>0
@@ -137781,7 +137781,7 @@ k.push(A.aN(n,A.aX(A.b([B.Aq,B.cw,A.cJ(A.a0("Community chat is locked in Guest M
 r=A.aq(18)
 q=A.cj(B.N.aA(0.3),1)
 p=o.a
-k.push(A.aN(n,A.b7(A.b([A.aX(A.b([B.bak,B.cw,A.a0("Instant Room Access",n,n,n,n,A.bW().$3$color$fontSize$fontWeight(B.a0,14,B.ab),n,n,n)],l),B.J,B.E,B.H,0,n,n),B.dQ,A.a0("Join any room by code, or create a private room in 1 second.",n,n,n,n,A.bW().$4$color$fontSize$fontWeight$height(B.a6,12,B.T,1.4),n,n,n),B.e9,A.aX(A.b([A.cJ(A.kJ(n,B.c0,!1,n,!0,B.X,n,A.lY(),p.d,n,n,n,n,n,2,A.i4(n,new A.f1(4,A.aq(12),B.df),n,B.a_M,n,n,n,n,!0,n,n,n,n,n,n,B.b_,!0,n,n,n,n,n,n,n,n,n,n,n,n,n,B.pB,"Enter room code (e.g. bio-lab)",n,n,n,n,n,!0,n,n,n,!0,!0,!1,n,B.a2I,n,n,n,n,n,n,n,n,n,n,n,n),B.a3,!0,n,!0,n,!1,n,B.ch,n,n,n,n,n,n,n,n,1,n,n,!1,"\u2022",n,n,n,new A.aU8(p),n,!1,n,n,!1,n,!0,n,B.bP,n,n,n,n,n,n,n,n,n,n,n,B.b8Q,!0,B.aH,n,B.d_,n,n,n,n),1,n),B.dO,A.iq(B.bbA,new A.aU9(p),A.hk(n,n,B.N,n,n,n,n,n,n,n,n,n,B.jS,n,new A.c7(A.aq(12),B.R),n,n,n,n,n))],l),B.J,B.E,B.H,0,n,n)],l),B.aq,B.E,B.H),B.I,n,n,new A.ax(n,n,q,r,n,new A.h5(B.ee,B.dX,B.cg,s,n,n),B.V),n,n,n,B.ms,n,n,n))
+k.push(A.aN(n,A.b7(A.b([A.aX(A.b([B.baj,B.cw,A.a0("Instant Room Access",n,n,n,n,A.bW().$3$color$fontSize$fontWeight(B.a0,14,B.ab),n,n,n)],l),B.J,B.E,B.H,0,n,n),B.dQ,A.a0("Join any room by code, or create a private room in 1 second.",n,n,n,n,A.bW().$4$color$fontSize$fontWeight$height(B.a6,12,B.T,1.4),n,n,n),B.e9,A.aX(A.b([A.cJ(A.kJ(n,B.c0,!1,n,!0,B.X,n,A.lY(),p.d,n,n,n,n,n,2,A.i4(n,new A.f1(4,A.aq(12),B.df),n,B.a_M,n,n,n,n,!0,n,n,n,n,n,n,B.b_,!0,n,n,n,n,n,n,n,n,n,n,n,n,n,B.pB,"Enter room code (e.g. bio-lab)",n,n,n,n,n,!0,n,n,n,!0,!0,!1,n,B.a2I,n,n,n,n,n,n,n,n,n,n,n,n),B.a3,!0,n,!0,n,!1,n,B.ch,n,n,n,n,n,n,n,n,1,n,n,!1,"\u2022",n,n,n,new A.aU8(p),n,!1,n,n,!1,n,!0,n,B.bP,n,n,n,n,n,n,n,n,n,n,n,B.b8Q,!0,B.aH,n,B.d_,n,n,n,n),1,n),B.dO,A.iq(B.bbA,new A.aU9(p),A.hk(n,n,B.N,n,n,n,n,n,n,n,n,n,B.jS,n,new A.c7(A.aq(12),B.R),n,n,n,n,n))],l),B.J,B.E,B.H,0,n,n)],l),B.aq,B.E,B.H),B.I,n,n,new A.ax(n,n,q,r,n,new A.h5(B.ee,B.dX,B.cg,s,n,n),B.V),n,n,n,B.ms,n,n,n))
 k.push(B.cZ)
 k.push(A.aX(A.b([A.a0("Active Study Rooms",n,n,n,n,A.ds().$3$color$fontSize$fontWeight(B.a0,18,B.ab),n,n,n),A.zR(B.a2h,B.baH,p.ga74())],l),B.J,B.cf,B.H,0,n,n))
 k.push(B.cE)
@@ -140529,7 +140529,7 @@ return new A.DZ(r,q,p)},
 $S:911}
 A.ab3.prototype={
 J(a){var s=null,r=t.p,q=A.aX(A.b([A.aN(s,B.Xt,B.I,s,s,new A.ax(s,s,s,A.aq(12),A.b([new A.dt(0,B.bY,B.N.aA(0.4),B.kL,10)],t.V),B.tA,B.V),s,38,s,s,s,s,38),B.iR,B.Zd],r),B.J,B.E,B.H,0,s,s),p=A.cJ(A.a2a(s,new A.aVB(this),8,B.z5),1,s),o=B.N.aA(0.12),n=A.aq(20)
-return A.hp(s,B.hW,A.aX(A.b([A.ci(A.aN(s,A.b7(A.b([new A.aE(B.a03,q,s),p,B.yV,new A.aE(B.dx,A.aX(A.b([A.aN(s,B.bag,B.I,s,s,new A.ax(o,s,A.cj(B.N.aA(0.25),1),n,s,s,B.V),s,s,s,B.a_O,s,s,s)],r),B.J,B.ct,B.H,0,s,s),s)],r),B.aq,B.E,B.H),B.I,B.ci,s,s,s,s,s,s,s,s,s),s,250),B.Tg,A.cJ(this.c,1,s)],r),B.J,B.E,B.H,0,s,s),s,!1,s)},
+return A.hp(s,B.hW,A.aX(A.b([A.ci(A.aN(s,A.b7(A.b([new A.aE(B.a03,q,s),p,B.yV,new A.aE(B.dx,A.aX(A.b([A.aN(s,B.bak,B.I,s,s,new A.ax(o,s,A.cj(B.N.aA(0.25),1),n,s,s,B.V),s,s,s,B.a_O,s,s,s)],r),B.J,B.ct,B.H,0,s,s),s)],r),B.aq,B.E,B.H),B.I,B.ci,s,s,s,s,s,s,s,s,s),s,250),B.Tg,A.cJ(this.c,1,s)],r),B.J,B.E,B.H,0,s,s),s,!1,s)},
 gS(){return this.c}}
 A.aVB.prototype={
 $2(a,b){var s=this.a
@@ -140557,7 +140557,7 @@ J(a){var s=null,r=this.c,q=A.aq(r*0.25),p=A.b([new A.dt(0,B.bY,B.N.aA(0.4),B.iD,
 return A.aN(s,A.cQ(A.a0("\u2726",s,s,s,s,A.e_(s,s,B.K,s,s,s,s,s,s,s,s,r*0.5,s,s,s,s,s,!0,s,s,s,s,s,s,s,s),s,s,s),s,s),B.I,s,s,new A.ax(s,s,s,q,p,B.h0,B.V),s,r,s,s,s,s,r)}}
 A.DG.prototype={
 J(a){var s=null,r=A.aq(20)
-return A.are(s,B.b_,new A.e9(B.Vi,new A.aE(B.jT,A.b7(A.b([A.aN(s,A.f0(this.e,B.K,s,28),B.I,s,s,new A.ax(s,s,s,s,s,B.h0,B.bl),s,60,s,s,s,s,60),B.lb,A.a0(this.c,s,s,s,s,A.bW().$3$color$fontSize$fontWeight(B.a0,16,B.ab).aaQ(B.aj),B.bc,s,s),B.eR,A.a0(this.d,s,s,s,s,A.bW().$4$color$fontSize$fontWeight$height(B.a0,14,B.T,1.5).pI(B.a6,1.5),B.bc,s,s),B.cZ,A.ci(A.iq(B.baD,new A.aA_(a),A.hk(s,s,B.N,s,s,s,s,s,s,s,s,s,B.jL,s,new A.c7(A.aq(12),B.R),s,s,s,s,s)),s,1/0),B.eR,A.iM(B.bah,new A.aA0(a),s)],t.p),B.J,B.E,B.aC),s),s),s,s,s,s,B.vF,s,new A.c7(r,B.df),s)}}
+return A.are(s,B.b_,new A.e9(B.Vi,new A.aE(B.jT,A.b7(A.b([A.aN(s,A.f0(this.e,B.K,s,28),B.I,s,s,new A.ax(s,s,s,s,s,B.h0,B.bl),s,60,s,s,s,s,60),B.lb,A.a0(this.c,s,s,s,s,A.bW().$3$color$fontSize$fontWeight(B.a0,16,B.ab).aaQ(B.aj),B.bc,s,s),B.eR,A.a0(this.d,s,s,s,s,A.bW().$4$color$fontSize$fontWeight$height(B.a0,14,B.T,1.5).pI(B.a6,1.5),B.bc,s,s),B.cZ,A.ci(A.iq(B.baD,new A.aA_(a),A.hk(s,s,B.N,s,s,s,s,s,s,s,s,s,B.jL,s,new A.c7(A.aq(12),B.R),s,s,s,s,s)),s,1/0),B.eR,A.iM(B.bag,new A.aA0(a),s)],t.p),B.J,B.E,B.aC),s),s),s,s,s,s,B.vF,s,new A.c7(r,B.df),s)}}
 A.aA1.prototype={
 $1(a){return new A.DG(this.a,this.b,this.c,null)},
 $S:913}
@@ -146122,8 +146122,8 @@ B.Zd=new A.n0(B.aO,B.E,B.H,B.aq,null,B.c9,null,0,B.aOx,null)
 B.aC=new A.a2l(0,"min")
 B.a1y=new A.b5(62956,"MaterialIcons",null,!1)
 B.a2T=new A.aT(B.a1y,48,B.aN,null,null)
-B.bai=new A.aR("Could not render image",null,B.wi,null,null,null,null,null,null,null,null)
-B.asR=s([B.a2T,B.bW,B.bai],t.p)
+B.bah=new A.aR("Could not render image",null,B.wi,null,null,null,null,null,null,null,null)
+B.asR=s([B.a2T,B.bW,B.bah],t.p)
 B.Ze=new A.n0(B.aO,B.E,B.aC,B.J,null,B.c9,null,0,B.asR,null)
 B.Zf=new A.wS(null)
 B.m9=new A.C8(0,"none")
@@ -153247,11 +153247,11 @@ B.ba6=new A.aR("Thinking...",null,B.pC,null,null,null,null,null,null,null,null)
 B.bab=new A.aR("Back to Login",null,B.iV,null,null,null,null,null,null,null,null)
 B.bad=new A.aR("Clear",null,B.SB,null,null,null,null,null,null,null,null)
 B.wr=new A.aR("Cancel",null,null,null,null,null,null,null,null,null,null)
+B.bag=new A.aR("Maybe Later",null,B.pB,null,null,null,null,null,null,null,null)
+B.bai=new A.aR("Verify OTP Code",null,B.iV,null,null,null,null,null,null,null,null)
+B.baj=new A.aR("\u26a1",null,B.pA,null,null,null,null,null,null,null,null)
 B.b78=new A.u(!0,B.br,null,null,null,null,11,B.aj,null,0.3,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.bag=new A.aR("v1.0.16",null,B.b78,null,null,null,null,null,null,null,null)
-B.bah=new A.aR("Maybe Later",null,B.pB,null,null,null,null,null,null,null,null)
-B.baj=new A.aR("Verify OTP Code",null,B.iV,null,null,null,null,null,null,null,null)
-B.bak=new A.aR("\u26a1",null,B.pA,null,null,null,null,null,null,null,null)
+B.bak=new A.aR("v1.0.17",null,B.b78,null,null,null,null,null,null,null,null)
 B.bam=new A.aR("Change Password",null,B.wm,null,null,null,null,null,null,null,null)
 B.SA=new A.u(!0,B.N,null,null,null,null,13,B.ab,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.ban=new A.aR("Sign in",null,B.SA,null,null,null,null,null,null,null,null)
@@ -153298,7 +153298,7 @@ B.b7Q=new A.u(!0,null,null,null,null,null,15,B.ab,null,null,null,null,null,null,
 B.bb8=new A.aR("Add Task",null,B.b7Q,null,null,null,null,null,null,null,null)
 B.bb9=new A.aR("Download PDF",null,B.hw,null,null,null,null,null,null,null,null)
 B.bba=new A.aR("Set New Password",null,B.iV,null,null,null,null,null,null,null,null)
-B.bbb=new A.aR("StudySpace v1.0.16",null,B.Sx,null,null,null,null,null,null,null,null)
+B.bbb=new A.aR("StudySpace v1.0.17",null,B.Sx,null,null,null,null,null,null,null,null)
 B.bbd=new A.aR("Go to home page",null,B.Su,null,null,null,null,null,null,null,null)
 B.bbe=new A.aR("Create & Enter Room",null,B.hw,null,null,null,null,null,null,null,null)
 B.bbf=new A.aR("Export Formatted PDF",null,B.hw,null,null,null,null,null,null,null,null)
