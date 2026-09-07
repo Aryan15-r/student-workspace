@@ -9,7 +9,7 @@ import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
-/// Route: /dashboard
+/// Route: /dashboard — Ultra-Modern Student Dashboard
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
   @override
@@ -41,228 +41,298 @@ class _DashboardPageState extends State<DashboardPage> {
     return AdaptiveScaffold(
       selectedIndex: 0,
       child: Scaffold(
-        backgroundColor: AppColors.background,
+        backgroundColor: const Color(0xFF0B0F17),
         body: SafeArea(
-          child: Center(
-            child: ConstrainedBox(
-              constraints: const BoxConstraints(maxWidth: 1100),
-              child: CustomScrollView(
-                slivers: [
-                  // ── Greeting Header ─────────────────────────────────────────
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Expanded(
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text('${_greeting()}, $name 👋', style: AppTextStyles.headlineLarge)
-                                        .animate().fadeIn(duration: 500.ms).slideX(begin: -0.04, end: 0),
-                                    const SizedBox(height: 6),
-                                    Text("Let's make today productive and achieve your goals.",
-                                        style: AppTextStyles.tagline.copyWith(fontSize: 14))
-                                        .animate().fadeIn(delay: 100.ms),
-                                  ],
-                                ),
-                              ),
-                              if (isDesktop)
-                                Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
-                                  decoration: BoxDecoration(
-                                    color: AppColors.surface,
-                                    borderRadius: BorderRadius.circular(12),
-                                    border: Border.all(color: AppColors.border),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      const Icon(Icons.calendar_today_rounded, size: 16, color: AppColors.primary),
-                                      const SizedBox(width: 8),
-                                      Text(
-                                        '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600, color: AppColors.textPrimary),
-                                      ),
-                                    ],
-                                  ),
-                                ).animate().fadeIn(delay: 150.ms),
-                            ],
-                          ),
-                          const SizedBox(height: 24),
+          child: Stack(
+            children: [
+              // Ambient glowing background accent orbs
+              Positioned(
+                top: -60,
+                right: -60,
+                child: Container(
+                  width: 300,
+                  height: 300,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFF6366F1).withValues(alpha: 0.12),
+                  ),
+                ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2), duration: 4000.ms),
+              ),
+              Positioned(
+                top: 250,
+                left: -80,
+                child: Container(
+                  width: 280,
+                  height: 280,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    color: const Color(0xFFA855F7).withValues(alpha: 0.08),
+                  ),
+                ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(begin: const Offset(1.1, 1.1), end: const Offset(0.9, 0.9), duration: 5000.ms),
+              ),
 
-                          // ── AI Banner ────────────────────────────────────────
-                          GestureDetector(
-                            onTap: () => context.go('/ai'),
-                            child: Container(
-                              padding: const EdgeInsets.all(20),
-                              decoration: BoxDecoration(
-                                gradient: const LinearGradient(
-                                  colors: [Color(0xFF1E1B4B), Color(0xFF312E81)],
-                                  begin: Alignment.topLeft,
-                                  end: Alignment.bottomRight,
-                                ),
-                                borderRadius: BorderRadius.circular(20),
-                                border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: AppColors.primary.withValues(alpha: 0.15),
-                                    blurRadius: 16,
-                                    offset: const Offset(0, 6),
-                                  ),
-                                ],
-                              ),
-                              child: Row(
+              Center(
+                child: ConstrainedBox(
+                  constraints: const BoxConstraints(maxWidth: 1100),
+                  child: CustomScrollView(
+                    slivers: [
+                      // ── Greeting Header ─────────────────────────────────────────
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 28, 24, 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
                                 children: [
-                                  Container(
-                                    width: 52,
-                                    height: 52,
-                                    decoration: BoxDecoration(
-                                      color: AppColors.primary.withValues(alpha: 0.2),
-                                      borderRadius: BorderRadius.circular(14),
-                                    ),
-                                    child: const Center(
-                                      child: Text('🤖', style: TextStyle(fontSize: 26)),
-                                    ),
-                                  ),
-                                  const SizedBox(width: 16),
                                   Expanded(
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
                                       children: [
-                                        const Text(
-                                          'StudySpace AI Tutor',
-                                          style: TextStyle(fontSize: 17, fontWeight: FontWeight.w700, color: Colors.white),
+                                        Row(
+                                          children: [
+                                            Text('${_greeting()}, $name', style: AppTextStyles.headlineLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold))
+                                                .animate().fadeIn(duration: 500.ms).slideX(begin: -0.04, end: 0),
+                                            const SizedBox(width: 8),
+                                            const Text('👋', style: TextStyle(fontSize: 26))
+                                                .animate(onPlay: (c) => c.repeat(reverse: true))
+                                                .rotate(begin: -0.05, end: 0.05, duration: 1200.ms),
+                                          ],
                                         ),
-                                        const SizedBox(height: 3),
+                                        const SizedBox(height: 6),
                                         Text(
-                                          'Ask about study routines, recursion, physics equations, and exam notes',
-                                          style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.8)),
-                                        ),
+                                          "One workspace. Less switching. More learning.",
+                                          style: TextStyle(color: const Color(0xFF94A3B8), fontSize: 14),
+                                        ).animate().fadeIn(delay: 100.ms),
                                       ],
                                     ),
                                   ),
-                                  const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20),
+                                  if (isDesktop)
+                                    Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                      decoration: BoxDecoration(
+                                        color: const Color(0xFF1E293B).withValues(alpha: 0.8),
+                                        borderRadius: BorderRadius.circular(14),
+                                        border: Border.all(color: const Color(0xFF334155)),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          const Icon(Icons.calendar_today_rounded, size: 16, color: Color(0xFF818CF8)),
+                                          const SizedBox(width: 8),
+                                          Text(
+                                            '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
+                                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                    ).animate().fadeIn(delay: 150.ms),
                                 ],
                               ),
-                            ),
-                          ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.08, end: 0),
-                          const SizedBox(height: 28),
+                              const SizedBox(height: 24),
 
-                          // ── Quick Tools Title ─────────────────────────────────
-                          Text('Quick Tools', style: AppTextStyles.titleLarge),
-                          const SizedBox(height: 14),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // ── Quick Tools Grid (Compact & Responsive) ─────────────────
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 130,
-                        mainAxisExtent: 100,
-                        crossAxisSpacing: 14,
-                        mainAxisSpacing: 14,
-                      ),
-                      delegate: SliverChildListDelegate([
-                        _QuickTool(emoji: '🤖', label: 'AI Tutor',   route: '/ai',          delay: 0),
-                        _QuickTool(emoji: '🔍', label: 'Search',     route: '/search',      delay: 40),
-                        _QuickTool(emoji: '🧮', label: 'Calculator', route: '/calculator',  delay: 80),
-                        _QuickTool(emoji: '📄', label: 'PDF Tools',  route: '/pdf-tools',   delay: 120),
-                        _QuickTool(emoji: '✅', label: 'To-Do',      route: '/todo',        delay: 160),
-                        _QuickTool(emoji: '💬', label: 'Community', route: '/community',   delay: 200),
-                        _QuickTool(emoji: '👤', label: 'Profile',    route: '/profile',     delay: 240),
-                      ]),
-                    ),
-                  ),
-
-                  // ── Today's Tasks Header ────────────────────────────────────
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 32, 24, 12),
-                      child: Row(
-                        children: [
-                          Text("Today's Tasks", style: AppTextStyles.titleLarge),
-                          const Spacer(),
-                          TextButton(
-                            onPressed: () => context.go('/todo'),
-                            child: const Text('See All Tasks →'),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-
-                  // ── Today's Tasks List ──────────────────────────────────────
-                  SliverPadding(
-                    padding: const EdgeInsets.symmetric(horizontal: 24),
-                    sliver: SliverToBoxAdapter(
-                      child: dashboard.todayTasks.isEmpty
-                          ? Container(
-                              padding: const EdgeInsets.all(24),
-                              decoration: BoxDecoration(
-                                color: AppColors.surface,
-                                borderRadius: BorderRadius.circular(16),
-                                border: Border.all(color: AppColors.border),
-                              ),
-                              child: Row(
-                                children: [
-                                  const Text('🎉', style: TextStyle(fontSize: 32)),
-                                  const SizedBox(width: 16),
-                                  Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Text('No tasks due today!', style: AppTextStyles.titleMedium),
-                                      const SizedBox(height: 2),
-                                      Text('Enjoy your free time or plan ahead for the week.', style: AppTextStyles.bodySmall),
+                              // ── AI Tutor Hero Banner ──────────────────────────────
+                              GestureDetector(
+                                onTap: () => context.go('/ai'),
+                                child: Container(
+                                  padding: const EdgeInsets.all(22),
+                                  decoration: BoxDecoration(
+                                    gradient: const LinearGradient(
+                                      colors: [Color(0xFF312E81), Color(0xFF4C1D95), Color(0xFF831843)],
+                                      begin: Alignment.topLeft,
+                                      end: Alignment.bottomRight,
+                                    ),
+                                    borderRadius: BorderRadius.circular(22),
+                                    border: Border.all(color: const Color(0xFF818CF8).withValues(alpha: 0.4)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: const Color(0xFF6366F1).withValues(alpha: 0.25),
+                                        blurRadius: 20,
+                                        offset: const Offset(0, 8),
+                                      ),
                                     ],
                                   ),
-                                ],
+                                  child: Row(
+                                    children: [
+                                      Container(
+                                        width: 56,
+                                        height: 56,
+                                        decoration: BoxDecoration(
+                                          color: Colors.white.withValues(alpha: 0.15),
+                                          borderRadius: BorderRadius.circular(16),
+                                        ),
+                                        child: const Center(
+                                          child: Text('🤖', style: TextStyle(fontSize: 28)),
+                                        ),
+                                      ),
+                                      const SizedBox(width: 16),
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Row(
+                                              children: [
+                                                Text(
+                                                  'StudySpace AI Tutor',
+                                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                                                ),
+                                                SizedBox(width: 8),
+                                                Icon(Icons.auto_awesome_rounded, color: Color(0xFFF472B6), size: 16),
+                                              ],
+                                            ),
+                                            const SizedBox(height: 4),
+                                            Text(
+                                              'Instant problem solver, zero-downtime model cascade, copy prompt ready',
+                                              style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.85)),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Container(
+                                        padding: const EdgeInsets.all(10),
+                                        decoration: const BoxDecoration(
+                                          color: Colors.white24,
+                                          shape: BoxShape.circle,
+                                        ),
+                                        child: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.08, end: 0),
+                              const SizedBox(height: 28),
+
+                              // ── Quick Tools Header ───────────────────────────
+                              const Text(
+                                'Quick Tools & Utilities',
+                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
                               ),
-                            )
-                          : Column(
-                              children: dashboard.todayTasks
-                                  .asMap()
-                                  .entries
-                                  .map((e) => TaskCard(task: e.value).animate().fadeIn(delay: Duration(milliseconds: e.key * 60)))
-                                  .toList(),
-                            ),
-                    ),
-                  ),
-
-                  // ── Explore Modules Hub ─────────────────────────────────────
-                  SliverToBoxAdapter(
-                    child: Padding(
-                      padding: const EdgeInsets.fromLTRB(24, 32, 24, 14),
-                      child: Text('Explore Modules', style: AppTextStyles.titleLarge),
-                    ),
-                  ),
-
-                  SliverPadding(
-                    padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
-                    sliver: SliverGrid(
-                      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                        maxCrossAxisExtent: 280,
-                        mainAxisSpacing: 14,
-                        crossAxisSpacing: 14,
-                        childAspectRatio: 1.5,
+                              const SizedBox(height: 14),
+                            ],
+                          ),
+                        ),
                       ),
-                      delegate: SliverChildListDelegate([
-                        _FeatureCard(emoji: '🤖', title: 'AI Assistant', subtitle: 'Academic tutor & coding helper', color: AppColors.secondary, route: '/ai'),
-                        _FeatureCard(emoji: '💬', title: 'Student Community', subtitle: 'Chat in subject channels', color: AppColors.accent, route: '/community'),
-                        _FeatureCard(emoji: '🔍', title: 'Smart Search', subtitle: 'Find academic papers & docs', color: AppColors.success, route: '/search'),
-                        _FeatureCard(emoji: '📄', title: 'PDF Tools', subtitle: 'Merge & convert study notes', color: AppColors.warning, route: '/pdf-tools'),
-                      ]),
-                    ),
+
+                      // ── Quick Tools Grid ─────────────────────────────
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        sliver: SliverGrid(
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 135,
+                            mainAxisExtent: 105,
+                            crossAxisSpacing: 14,
+                            mainAxisSpacing: 14,
+                          ),
+                          delegate: SliverChildListDelegate([
+                            _QuickTool(emoji: '🤖', label: 'AI Tutor',   route: '/ai',          delay: 0),
+                            _QuickTool(emoji: '📄', label: 'PDF Tools',  route: '/pdf-tools',   delay: 40),
+                            _QuickTool(emoji: '✅', label: 'To-Do',      route: '/todo',        delay: 80),
+                            _QuickTool(emoji: '💬', label: 'Community', route: '/community',   delay: 120),
+                            _QuickTool(emoji: '🧮', label: 'Calculator', route: '/calculator',  delay: 160),
+                            _QuickTool(emoji: '🔍', label: 'Search',     route: '/search',      delay: 200),
+                            _QuickTool(emoji: '👤', label: 'Profile',    route: '/profile',     delay: 240),
+                          ]),
+                        ),
+                      ),
+
+                      // ── Today's Tasks Header ────────────────────────────────────
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 32, 24, 12),
+                          child: Row(
+                            children: [
+                              const Text(
+                                "Today's Tasks",
+                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                              ),
+                              const Spacer(),
+                              TextButton(
+                                onPressed: () => context.go('/todo'),
+                                child: const Text(
+                                  'See All Tasks →',
+                                  style: TextStyle(color: Color(0xFF818CF8), fontWeight: FontWeight.bold),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+
+                      // ── Today's Tasks List ──────────────────────────────────────
+                      SliverPadding(
+                        padding: const EdgeInsets.symmetric(horizontal: 24),
+                        sliver: SliverToBoxAdapter(
+                          child: dashboard.todayTasks.isEmpty
+                              ? Container(
+                                  padding: const EdgeInsets.all(24),
+                                  decoration: BoxDecoration(
+                                    color: const Color(0xFF1E293B).withValues(alpha: 0.7),
+                                    borderRadius: BorderRadius.circular(20),
+                                    border: Border.all(color: const Color(0xFF334155)),
+                                  ),
+                                  child: Row(
+                                    children: [
+                                      const Text('🎉', style: TextStyle(fontSize: 34)),
+                                      const SizedBox(width: 16),
+                                      Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'No tasks due today!',
+                                            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                          ),
+                                          const SizedBox(height: 4),
+                                          const Text(
+                                            'All clear! Enjoy your study break or prepare for exams ahead.',
+                                            style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              : Column(
+                                  children: dashboard.todayTasks
+                                      .asMap()
+                                      .entries
+                                      .map((e) => TaskCard(task: e.value).animate().fadeIn(delay: Duration(milliseconds: e.key * 60)))
+                                      .toList(),
+                                ),
+                        ),
+                      ),
+
+                      // ── Explore Modules Hub ─────────────────────────────────────
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 32, 24, 14),
+                          child: const Text(
+                            'Explore Modules',
+                            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+
+                      SliverPadding(
+                        padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
+                        sliver: SliverGrid(
+                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+                            maxCrossAxisExtent: 280,
+                            mainAxisSpacing: 14,
+                            crossAxisSpacing: 14,
+                            childAspectRatio: 1.45,
+                          ),
+                          delegate: SliverChildListDelegate([
+                            _FeatureCard(emoji: '🤖', title: 'AI Assistant', subtitle: 'Academic tutor & coding mentor', color: const Color(0xFF818CF8), route: '/ai'),
+                            _FeatureCard(emoji: '📄', title: 'Document Studio', subtitle: 'View & convert Word, PDF, PPT', color: const Color(0xFFF59E0B), route: '/pdf-tools'),
+                            _FeatureCard(emoji: '💬', title: 'Student Lounge', subtitle: 'Real-time subject chat rooms', color: const Color(0xFF38BDF8), route: '/community'),
+                            _FeatureCard(emoji: '🔍', title: 'Smart Search', subtitle: 'Find academic papers & textbooks', color: const Color(0xFF4ADE80), route: '/search'),
+                          ]),
+                        ),
+                      ),
+                    ],
                   ),
-                ],
+                ),
               ),
-            ),
+            ],
           ),
         ),
       ),
@@ -279,18 +349,18 @@ class _QuickTool extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => context.go(route),
-      borderRadius: BorderRadius.circular(16),
+      borderRadius: BorderRadius.circular(18),
       child: Container(
         padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
         decoration: BoxDecoration(
-          color: AppColors.surface,
-          borderRadius: BorderRadius.circular(16),
-          border: Border.all(color: AppColors.border),
+          color: const Color(0xFF1E293B).withValues(alpha: 0.8),
+          borderRadius: BorderRadius.circular(18),
+          border: Border.all(color: const Color(0xFF334155)),
           boxShadow: [
             BoxShadow(
-              color: Colors.black.withValues(alpha: 0.1),
-              blurRadius: 6,
-              offset: const Offset(0, 2),
+              color: Colors.black.withValues(alpha: 0.2),
+              blurRadius: 8,
+              offset: const Offset(0, 3),
             ),
           ],
         ),
@@ -305,8 +375,8 @@ class _QuickTool extends StatelessWidget {
                 label,
                 style: const TextStyle(
                   fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                  color: AppColors.textPrimary,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
                 ),
                 textAlign: TextAlign.center,
               ),
@@ -314,7 +384,7 @@ class _QuickTool extends StatelessWidget {
           ],
         ),
       ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay + 100)).scale(begin: const Offset(0.9, 0.9));
+    ).animate().fadeIn(delay: Duration(milliseconds: delay + 100)).scale(begin: const Offset(0.92, 0.92));
   }
 }
 
@@ -327,23 +397,37 @@ class _FeatureCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return InkWell(
       onTap: () => context.go(route),
-      borderRadius: BorderRadius.circular(18),
+      borderRadius: BorderRadius.circular(20),
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.08),
-          borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: color.withValues(alpha: 0.25)),
+          color: color.withValues(alpha: 0.1),
+          borderRadius: BorderRadius.circular(20),
+          border: Border.all(color: color.withValues(alpha: 0.3)),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withValues(alpha: 0.15),
+              blurRadius: 10,
+              offset: const Offset(0, 4),
+            ),
+          ],
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(emoji, style: const TextStyle(fontSize: 28)),
-            const SizedBox(height: 8),
-            Text(title, style: AppTextStyles.titleMedium),
+            Container(
+              padding: const EdgeInsets.all(8),
+              decoration: BoxDecoration(
+                color: color.withValues(alpha: 0.18),
+                shape: BoxShape.circle,
+              ),
+              child: Text(emoji, style: const TextStyle(fontSize: 22)),
+            ),
+            const SizedBox(height: 10),
+            Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
             const SizedBox(height: 2),
-            Text(subtitle, style: AppTextStyles.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text(subtitle, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis),
           ],
         ),
       ),

@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:archive/archive.dart';
+import 'package:flutter_markdown/flutter_markdown.dart';
 import '../widgets/embedded_viewer.dart';
 import '../../../../core/utils/file_saver.dart';
 import '../../providers/pdf_provider.dart';
@@ -1185,7 +1186,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
     ];
   }
 
-  // DOCX Parser
+  // Intelligent DOCX Parser — Preserves paragraph indents, headings, list bullets, tabs, and formatting
   String _parseDocxText(Uint8List bytes) {
     try {
       final archive = ZipDecoder().decodeBytes(bytes);
@@ -1196,19 +1197,93 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
 
       if (docFile.content.isNotEmpty) {
         final xmlContent = utf8.decode(docFile.content as List<int>, allowMalformed: true);
-        final withParagraphs = xmlContent.replaceAll('</w:p>', '\n\n');
-        final matches = RegExp(r'<w:t[^>]*>(.*?)</w:t>').allMatches(withParagraphs);
+        final pMatches = RegExp(r'<w:p[^>]*>(.*?)</w:p>', dotAll: true).allMatches(xmlContent);
 
-        final buffer = StringBuffer();
-        for (final m in matches) {
-          final text = m.group(1);
-          if (text != null) {
-            final cleanText = text.replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&');
-            buffer.write(cleanText);
+        final docBuffer = StringBuffer();
+
+        for (final pMatch in pMatches) {
+          final pXml = pMatch.group(1) ?? '';
+          final pBuffer = StringBuffer();
+
+          // Heading Detection
+          String headingPrefix = '';
+          final styleMatch = RegExp(r'<w:pStyle\s+w:val="([^"]+)"').firstMatch(pXml);
+          if (styleMatch != null) {
+            final styleVal = styleMatch.group(1)?.toLowerCase() ?? '';
+            if (styleVal.contains('heading1') || styleVal == 'title') {
+              headingPrefix = '# ';
+            } else if (styleVal.contains('heading2')) {
+              headingPrefix = '## ';
+            } else if (styleVal.contains('heading3')) {
+              headingPrefix = '### ';
+            }
+          }
+
+          // List / Bullet Point Detection
+          String listPrefix = '';
+          if (pXml.contains('<w:numPr>') || pXml.contains('ListParagraph')) {
+            final ilvlMatch = RegExp(r'<w:ilvl\s+w:val="(\d+)"').firstMatch(pXml);
+            final level = int.tryParse(ilvlMatch?.group(1) ?? '0') ?? 0;
+            final indentSpaces = '  ' * level;
+            listPrefix = '$indentSpaces• ';
+          }
+
+          // Indentation Detection (Left margin)
+          String indentPrefix = '';
+          final indMatch = RegExp(r'<w:ind\s+[^>]*w:left="(\d+)"').firstMatch(pXml);
+          if (indMatch != null && listPrefix.isEmpty) {
+            final leftVal = int.tryParse(indMatch.group(1) ?? '0') ?? 0;
+            if (leftVal > 360) {
+              final tabCount = (leftVal / 360).round().clamp(1, 4);
+              indentPrefix = '&nbsp;&nbsp;&nbsp;&nbsp;' * tabCount;
+            }
+          }
+
+          // Parse Runs (<w:r>)
+          final rMatches = RegExp(r'<w:r[^>]*>(.*?)</w:r>', dotAll: true).allMatches(pXml);
+          for (final rMatch in rMatches) {
+            final rXml = rMatch.group(1) ?? '';
+            final isBold = rXml.contains('<w:b/>') || rXml.contains('<w:b ');
+            final isItalic = rXml.contains('<w:i/>') || rXml.contains('<w:i ');
+
+            if (rXml.contains('<w:tab/>') || rXml.contains('<w:tab ')) {
+              pBuffer.write('&nbsp;&nbsp;&nbsp;&nbsp;');
+            }
+            if (rXml.contains('<w:br/>') || rXml.contains('<w:br ')) {
+              pBuffer.write('\n');
+            }
+
+            final tMatches = RegExp(r'<w:t[^>]*>(.*?)</w:t>', dotAll: true).allMatches(rXml);
+            for (final tMatch in tMatches) {
+              var tText = tMatch.group(1) ?? '';
+              tText = tText
+                  .replaceAll('&lt;', '<')
+                  .replaceAll('&gt;', '>')
+                  .replaceAll('&amp;', '&')
+                  .replaceAll('&quot;', '"')
+                  .replaceAll('&apos;', "'");
+
+              if (tText.isNotEmpty) {
+                if (isBold && isItalic) {
+                  pBuffer.write('***$tText***');
+                } else if (isBold) {
+                  pBuffer.write('**$tText**');
+                } else if (isItalic) {
+                  pBuffer.write('*$tText*');
+                } else {
+                  pBuffer.write(tText);
+                }
+              }
+            }
+          }
+
+          final paragraphText = pBuffer.toString().trimRight();
+          if (paragraphText.isNotEmpty) {
+            docBuffer.writeln('$indentPrefix$listPrefix$headingPrefix$paragraphText\n');
           }
         }
 
-        final result = buffer.toString().trim();
+        final result = docBuffer.toString().trim();
         if (result.isNotEmpty) return result;
       }
     } catch (e) {
@@ -1618,7 +1693,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
       );
     }
 
-    // 5. Text / Word Document Reader
+    // 5. Text / Word Document Reader with Formatted Indentation & Headings
     return Padding(
       padding: const EdgeInsets.all(16),
       child: Column(
@@ -1626,17 +1701,24 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                '${_parsedTextDoc.split('\n').length} lines • ${_parsedTextDoc.length} characters',
-                style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+              Container(
+                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF6366F1).withValues(alpha: 0.15),
+                  borderRadius: BorderRadius.circular(8),
+                ),
+                child: Text(
+                  '${_parsedTextDoc.split('\n').length} paragraphs • Indented View Ready',
+                  style: const TextStyle(color: Color(0xFF818CF8), fontSize: 12, fontWeight: FontWeight.bold),
+                ),
               ),
               TextButton.icon(
-                icon: const Icon(Icons.copy_rounded, size: 14, color: AppColors.primary),
-                label: const Text('Copy Text', style: TextStyle(color: AppColors.primary, fontSize: 12)),
+                icon: const Icon(Icons.copy_rounded, size: 14, color: Color(0xFF818CF8)),
+                label: const Text('Copy Document Text', style: TextStyle(color: Color(0xFF818CF8), fontSize: 12)),
                 onPressed: () {
                   Clipboard.setData(ClipboardData(text: _parsedTextDoc));
                   ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Copied text to clipboard!'), behavior: SnackBarBehavior.floating),
+                    const SnackBar(content: Text('Copied document text to clipboard! 📋'), behavior: SnackBarBehavior.floating),
                   );
                 },
               ),
@@ -1646,16 +1728,44 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
           Expanded(
             child: Container(
               width: double.infinity,
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.all(20),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
-                borderRadius: BorderRadius.circular(12),
-                border: Border.all(color: AppColors.border.withValues(alpha: 0.3)),
+                color: const Color(0xFF0F172A),
+                borderRadius: BorderRadius.circular(16),
+                border: Border.all(color: const Color(0xFF334155)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.black.withValues(alpha: 0.3),
+                    blurRadius: 10,
+                    offset: const Offset(0, 4),
+                  ),
+                ],
               ),
               child: SingleChildScrollView(
-                child: SelectableText(
-                  _parsedTextDoc,
-                  style: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.6),
+                child: MarkdownBody(
+                  data: _parsedTextDoc,
+                  selectable: true,
+                  styleSheet: MarkdownStyleSheet(
+                    p: const TextStyle(color: Color(0xFFF1F5F9), fontSize: 14, height: 1.6),
+                    h1: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold, height: 1.4),
+                    h2: const TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold, height: 1.4),
+                    h3: const TextStyle(color: Color(0xFF818CF8), fontSize: 16, fontWeight: FontWeight.bold, height: 1.4),
+                    listBullet: const TextStyle(color: Color(0xFF818CF8), fontWeight: FontWeight.bold),
+                    blockquote: const TextStyle(color: Color(0xFFCBD5E1), fontStyle: FontStyle.italic),
+                    blockquoteDecoration: BoxDecoration(
+                      border: const Border(left: BorderSide(color: Color(0xFF818CF8), width: 3)),
+                      color: const Color(0xFF6366F1).withValues(alpha: 0.08),
+                    ),
+                    blockquotePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    strong: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
+                    em: const TextStyle(fontStyle: FontStyle.italic, color: Color(0xFF94A3B8)),
+                    code: const TextStyle(
+                      backgroundColor: Color(0xFF1E293B),
+                      color: Color(0xFF38BDF8),
+                      fontFamily: 'monospace',
+                      fontSize: 13,
+                    ),
+                  ),
                 ),
               ),
             ),
