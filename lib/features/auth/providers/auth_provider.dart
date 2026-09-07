@@ -128,6 +128,9 @@ class AuthProvider extends ChangeNotifier {
           );
         }
       }
+      if (_profile != null) {
+        _isGuest = false; // Signed in successfully — exit guest mode!
+      }
     } catch (e) {
       debugPrint('Error loading profile: $e');
       final user = _authService.currentUser;
@@ -142,6 +145,7 @@ class AuthProvider extends ChangeNotifier {
           branch: '',
           createdAt: DateTime.now(),
         );
+        _isGuest = false;
       }
     }
   }
