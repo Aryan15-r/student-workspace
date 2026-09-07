@@ -38,6 +38,8 @@ dependencies:
   markdown: ^7.3.0
   url_launcher: ^6.3.1           # Launch external URLs in browser
   pdf: ^3.11.1                   # Create, format, and generate real PDF documents
+  path_provider: ^2.1.6
+  open_filex: ^4.7.0
 
 dev_dependencies:
   flutter_test:

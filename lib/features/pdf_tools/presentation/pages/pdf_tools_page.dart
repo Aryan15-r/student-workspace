@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:open_filex/open_filex.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../../providers/pdf_provider.dart';
 import '../../models/presentation_slide.dart';
 import '../../../auth/providers/auth_provider.dart';
@@ -256,6 +258,66 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
     });
   }
 
+  // 5. Open Documents (PPT, Excel, Word, etc.) with external viewer
+  void _openDocumentViewer() async {
+    final res = await FilePicker.platform.pickFiles(
+      type: FileType.custom,
+      allowedExtensions: [
+        'ppt', 'pptx',           // PowerPoint
+        'xls', 'xlsx', 'csv',   // Excel / Spreadsheet
+        'doc', 'docx',           // Word
+        'pdf',                   // PDF
+        'txt', 'rtf',            // Text
+        'odt', 'ods', 'odp',    // OpenDocument
+      ],
+    );
+
+    if (res == null || res.files.isEmpty) return;
+    if (!mounted) return;
+
+    final file = res.files.first;
+    final filePath = file.path;
+
+    if (filePath == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Unable to access the file path.'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+      return;
+    }
+
+    final result = await OpenFilex.open(filePath);
+
+    if (!mounted) return;
+    if (result.type != ResultType.done) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Could not open file: ${result.message}. Please install a document reader app.'),
+          backgroundColor: AppColors.warning,
+          behavior: SnackBarBehavior.floating,
+          action: SnackBarAction(
+            label: 'Get Viewer',
+            textColor: Colors.white,
+            onPressed: () {
+              // Direct to a popular document reader on Play Store
+              launchUrlExternally('https://play.google.com/store/apps/details?id=all.documentreader.filereader.office.viewer');
+            },
+          ),
+        ),
+      );
+    }
+  }
+
+  void launchUrlExternally(String url) async {
+    final uri = Uri.parse(url);
+    if (await canLaunchUrl(uri)) {
+      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     final auth = context.watch<AuthProvider>();
@@ -499,6 +561,15 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
                         isLocked: auth.isGuest,
                         gradientColors: [const Color(0xFF10B981), const Color(0xFF059669)],
                         onTap: _openPdfExtractDialog,
+                      ),
+                      _ActiveToolCard(
+                        icon: '📂',
+                        title: 'Document Viewer',
+                        description: 'Open PPT, Excel, Word, and other documents directly from your device with your preferred reader.',
+                        buttonLabel: 'Open a Document',
+                        isLocked: false,
+                        gradientColors: [const Color(0xFFF59E0B), const Color(0xFFEF4444)],
+                        onTap: _openDocumentViewer,
                       ),
                     ],
                   );
