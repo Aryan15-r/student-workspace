@@ -14,6 +14,8 @@ class CommunityProvider extends ChangeNotifier {
   List<Community>        get communities => _communities;
   List<Channel>          get channels    => _channels;
   List<CommunityMessage> get messages    => _messages;
+  List<ChannelMember>    _channelMembers = [];
+  List<ChannelMember>    get channelMembers => _channelMembers;
   bool                   get isLoading   => _loading;
   String?                get error       => _error;
 
@@ -60,12 +62,24 @@ class CommunityProvider extends ChangeNotifier {
       _messages = (data as List).map((m) => CommunityMessage.fromMap(m)).toList();
       _error = null;
       _subscribeRealtime(channelId);
+      await loadChannelMembers(channelId);
     } catch (e) {
       _error = 'Could not load messages';
     } finally {
       _loading = false;
       notifyListeners();
     }
+  }
+
+  Future<void> loadChannelMembers(String channelId) async {
+    try {
+      final data = await _db
+          .from('channel_members')
+          .select('*, profiles(username, avatar_url)')
+          .eq('channel_id', channelId);
+      _channelMembers = (data as List).map((m) => ChannelMember.fromMap(m)).toList();
+      notifyListeners();
+    } catch (_) {}
   }
 
   void _subscribeRealtime(String channelId) {
@@ -173,97 +187,188 @@ class CommunityProvider extends ChangeNotifier {
     }
   }
 
-  /// Create or join a Room with Private Passcode support
-  Future<Map<String, String>?> joinOrCreateRoom({
-    required String roomName,
-    String? icon,
-    String? description,
-    bool isPrivate = false,
-    String? passcode,
+  /// STRICT Join Room by Code (DOES NOT create new room if missing)
+  Future<Map<String, String>?> joinRoomByCode({
+    required String roomCode,
     String? inputPasscode,
   }) async {
     _loading = true;
     _error = null;
     notifyListeners();
     try {
-      final sanitizedName = roomName.trim();
-      if (sanitizedName.isEmpty) return null;
+      final sanitizedCode = roomCode.trim();
+      if (sanitizedCode.isEmpty) {
+        _error = 'Please enter a valid room code or name.';
+        return null;
+      }
       final user = _db.auth.currentUser;
 
-      // 1. Check if community exists with exact name
+      // Check if community exists matching exact code/name
+      final existing = await _db
+          .from('communities')
+          .select()
+          .ilike('name', sanitizedCode)
+          .maybeSingle();
+
+      if (existing == null) {
+        _error = 'Room code "$sanitizedCode" not found! Check the code or create a new room in "New Room" section.';
+        return null;
+      }
+
+      final communityId = existing['id'] as String;
+      final roomIsPrivate = existing['is_private'] as bool? ?? false;
+      final roomPasscode  = existing['passcode'] as String? ?? '';
+      final roomCreatorId = existing['created_by'] as String?;
+
+      if (roomIsPrivate && roomPasscode.isNotEmpty) {
+        final isCreator = user != null && user.id == roomCreatorId;
+        final providedPass = (inputPasscode ?? '').trim();
+        if (!isCreator && providedPass != roomPasscode.trim()) {
+          _error = 'Incorrect passcode for private room "$sanitizedCode".';
+          return null;
+        }
+      }
+
+      // Join channel_members
+      if (user != null) {
+        await _db.from('channel_members').upsert({
+          'channel_id': communityId,
+          'user_id': user.id,
+          'role': user.id == roomCreatorId ? 'admin' : 'member',
+        }, onConflict: 'channel_id, user_id');
+      }
+
+      final channelData = await _db
+          .from('channels')
+          .select()
+          .eq('community_id', communityId)
+          .maybeSingle();
+
+      final channelId = channelData != null ? channelData['id'] as String : communityId;
+
+      await loadCommunities();
+      return {'communityId': communityId, 'channelId': channelId};
+    } catch (e) {
+      _error = 'Could not join room: $e';
+      return null;
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
+  }
+
+  /// Create a New Public or Private Room
+  Future<Map<String, String>?> createNewRoom({
+    required String roomName,
+    String? icon,
+    String? description,
+    bool isPrivate = false,
+    String? passcode,
+  }) async {
+    _loading = true;
+    _error = null;
+    notifyListeners();
+    try {
+      final sanitizedName = roomName.trim();
+      if (sanitizedName.isEmpty) {
+        _error = 'Room name cannot be empty.';
+        return null;
+      }
+      final user = _db.auth.currentUser;
+      if (user == null) {
+        _error = 'Please sign in to create a room.';
+        return null;
+      }
+
       final existing = await _db
           .from('communities')
           .select()
           .ilike('name', sanitizedName)
           .maybeSingle();
 
-      String communityId;
       if (existing != null) {
-        communityId = existing['id'] as String;
-        final roomIsPrivate = existing['is_private'] as bool? ?? false;
-        final roomPasscode  = existing['passcode'] as String? ?? '';
-        final roomCreatorId = existing['created_by'] as String?;
-
-        // Verify private room passcode if user is not creator
-        if (roomIsPrivate && roomPasscode.isNotEmpty) {
-          final isCreator = user != null && user.id == roomCreatorId;
-          final providedPass = (inputPasscode ?? passcode ?? '').trim();
-          if (!isCreator && providedPass != roomPasscode.trim()) {
-            _error = 'Incorrect passcode for private room "$sanitizedName".';
-            return null;
-          }
-        }
-      } else {
-        if (user == null) {
-          _error = 'Please sign in to create a new room.';
-          return null;
-        }
-
-        final insertData = <String, dynamic>{
-          'name': sanitizedName,
-          'description': description?.trim().isNotEmpty == true
-              ? description!.trim()
-              : (isPrivate ? 'Private Room #$sanitizedName' : 'Instant Study Room #$sanitizedName'),
-          'icon': icon?.trim().isNotEmpty == true ? icon!.trim() : (isPrivate ? '🔒' : '💬'),
-          'category': 'general',
-          'is_private': isPrivate,
-          'passcode': isPrivate ? (passcode?.trim() ?? '') : '',
-          'created_by': user.id,
-        };
-        final newComm = await _db.from('communities').insert(insertData).select().single();
-        communityId = newComm['id'] as String;
+        _error = 'A room named "$sanitizedName" already exists! Please use a unique room code or name.';
+        return null;
       }
 
-      // 2. Fetch or create default channel
-      var channelData = await _db
-          .from('channels')
-          .select()
-          .eq('community_id', communityId)
-          .maybeSingle();
+      final insertData = <String, dynamic>{
+        'name': sanitizedName,
+        'description': description?.trim().isNotEmpty == true
+            ? description!.trim()
+            : (isPrivate ? 'Private Study Room #$sanitizedName' : 'Public Lounge #$sanitizedName'),
+        'icon': icon?.trim().isNotEmpty == true ? icon!.trim() : (isPrivate ? '🔒' : '💬'),
+        'category': 'general',
+        'is_private': isPrivate,
+        'passcode': isPrivate ? (passcode?.trim() ?? '') : '',
+        'created_by': user.id,
+      };
 
-      String channelId;
-      if (channelData != null) {
-        channelId = channelData['id'] as String;
-      } else {
-        final newChannel = await _db.from('channels').insert({
-          'community_id': communityId,
-          'name': 'general',
-          'description': 'Main discussion in $sanitizedName',
-          'is_private': isPrivate,
-          'passcode': isPrivate ? (passcode?.trim() ?? '') : '',
-          'created_by': user?.id,
-        }).select().single();
-        channelId = newChannel['id'] as String;
-      }
+      final newComm = await _db.from('communities').insert(insertData).select().single();
+      final communityId = newComm['id'] as String;
+
+      final newChannel = await _db.from('channels').insert({
+        'community_id': communityId,
+        'name': 'general',
+        'description': 'Main channel in $sanitizedName',
+        'is_private': isPrivate,
+        'passcode': isPrivate ? (passcode?.trim() ?? '') : '',
+        'created_by': user.id,
+      }).select().single();
+      final channelId = newChannel['id'] as String;
+
+      // Add creator as Admin member
+      await _db.from('channel_members').insert({
+        'channel_id': channelId,
+        'user_id': user.id,
+        'role': 'admin',
+      });
 
       await loadCommunities();
       return {'communityId': communityId, 'channelId': channelId};
     } catch (e) {
-      _error = 'Could not join or create room: $e';
+      _error = 'Could not create room: $e';
       return null;
     } finally {
       _loading = false;
       notifyListeners();
+    }
+  }
+
+  /// Delete entire Chat/Room & Community (Admin only)
+  Future<bool> deleteRoomAndCommunity(String communityId) async {
+    try {
+      await _db.from('communities').delete().eq('id', communityId);
+      await loadCommunities();
+      return true;
+    } catch (e) {
+      _error = 'Failed to delete room: $e';
+      notifyListeners();
+      return false;
+    }
+  }
+
+  /// Kick Member from Channel (Admin only)
+  Future<bool> kickMember(String channelId, String userId) async {
+    try {
+      await _db.from('channel_members').delete().match({'channel_id': channelId, 'user_id': userId});
+      await loadChannelMembers(channelId);
+      return true;
+    } catch (e) {
+      _error = 'Failed to kick member: $e';
+      return false;
+    }
+  }
+
+  /// Leave Channel
+  Future<bool> leaveChannel(String channelId) async {
+    final user = _db.auth.currentUser;
+    if (user == null) return false;
+    try {
+      await _db.from('channel_members').delete().match({'channel_id': channelId, 'user_id': user.id});
+      return true;
+    } catch (e) {
+      _error = 'Failed to leave channel: $e';
+      return false;
     }
   }
 
@@ -273,3 +378,4 @@ class CommunityProvider extends ChangeNotifier {
     super.dispose();
   }
 }
+

@@ -272,19 +272,21 @@ class _DashboardPageState extends State<DashboardPage> {
                                     children: [
                                       const Text('🎉', style: TextStyle(fontSize: 34)),
                                       const SizedBox(width: 16),
-                                      Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          const Text(
-                                            'No tasks due today!',
-                                            style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
-                                          ),
-                                          const SizedBox(height: 4),
-                                          const Text(
-                                            'All clear! Enjoy your study break or prepare for exams ahead.',
-                                            style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
-                                          ),
-                                        ],
+                                      Expanded(
+                                        child: Column(
+                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'No tasks due today!',
+                                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                            ),
+                                            const SizedBox(height: 4),
+                                            const Text(
+                                              'All clear! Enjoy your study break or prepare for exams ahead.',
+                                              style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                                            ),
+                                          ],
+                                        ),
                                       ),
                                     ],
                                   ),

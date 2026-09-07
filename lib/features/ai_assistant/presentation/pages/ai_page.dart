@@ -799,21 +799,19 @@ class _InputBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.fromLTRB(16, 10, 16, 16),
-      decoration: const BoxDecoration(
-        color: Color(0xFF0F172A),
-        border: Border(top: BorderSide(color: Color(0xFF1E293B))),
-      ),
+      padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
+      color: const Color(0xFF090D16),
       child: Row(
         children: [
           Expanded(
             child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: BoxDecoration(
                 color: const Color(0xFF1E293B),
-                borderRadius: BorderRadius.circular(22),
+                borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                   color: focusNode.hasFocus ? const Color(0xFF818CF8) : const Color(0xFF334155),
+                  width: 1.2,
                 ),
               ),
               child: Row(
@@ -822,7 +820,7 @@ class _InputBar extends StatelessWidget {
                     child: TextField(
                       controller: ctrl,
                       focusNode: focusNode,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: Colors.white, fontSize: 14.5),
                       maxLines: 4,
                       minLines: 1,
                       textInputAction: TextInputAction.send,
@@ -830,6 +828,9 @@ class _InputBar extends StatelessWidget {
                       decoration: const InputDecoration(
                         hintText: 'Ask a study question or paste code/math...',
                         border: InputBorder.none,
+                        enabledBorder: InputBorder.none,
+                        focusedBorder: InputBorder.none,
+                        contentPadding: EdgeInsets.symmetric(vertical: 10),
                         hintStyle: TextStyle(color: Color(0xFF64748B), fontSize: 14),
                         filled: false,
                       ),

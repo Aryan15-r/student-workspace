@@ -215,7 +215,7 @@ Return ONLY valid raw JSON.
   Map<String, dynamic> _getFallbackSearchData(String query) {
     final clean = Uri.encodeComponent(query);
     return {
-      'overview': 'Educational overview and curated learning materials for "$query". Explore foundational tutorials, interactive guides, video lectures, and technical references.',
+      'overview': 'Educational overview and curated learning materials for "$query". Explore foundational tutorials, interactive guides, video lectures, textbooks, and technical references.',
       'results': [
         {
           'title': '$query - Comprehensive Video Tutorials & Lessons',
@@ -224,6 +224,30 @@ Return ONLY valid raw JSON.
           'type': 'video',
           'isFree': true,
           'source': 'YouTube Edu',
+        },
+        {
+          'title': '$query - OpenStax Peer-Reviewed Textbooks',
+          'description': 'Free open-source textbooks, chapter breakdowns, practice problems, and study guides.',
+          'url': 'https://openstax.org/subjects',
+          'type': 'textbook',
+          'isFree': true,
+          'source': 'OpenStax Textbooks',
+        },
+        {
+          'title': '$query - Google Books & Reference Manuals',
+          'description': 'Standard reference textbooks, academic publications, and university subject guides.',
+          'url': 'https://www.google.com/search?tbm=bks&q=$clean',
+          'type': 'textbook',
+          'isFree': true,
+          'source': 'Google Books',
+        },
+        {
+          'title': '$query - arXiv Academic Research Papers',
+          'description': 'Open-access scientific papers, preprints, and research literature.',
+          'url': 'https://arxiv.org/search/?query=$clean&searchtype=all',
+          'type': 'article',
+          'isFree': true,
+          'source': 'arXiv Library',
         },
         {
           'title': '$query - Academic Overview & Definitions',
@@ -248,14 +272,6 @@ Return ONLY valid raw JSON.
           'type': 'documentation',
           'isFree': true,
           'source': 'MDN Web Docs',
-        },
-        {
-          'title': '$query - FreeCodeCamp Handbook & Articles',
-          'description': 'Step-by-step practical guides, industry conventions, and coding patterns.',
-          'url': 'https://www.freecodecamp.org/news/search/?query=$clean',
-          'type': 'article',
-          'isFree': true,
-          'source': 'FreeCodeCamp',
         },
       ],
       'related': [
