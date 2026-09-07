@@ -6,7 +6,6 @@ import '../../providers/dashboard_provider.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../todo/presentation/widgets/task_card.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
-import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
 /// Route: /dashboard — Ultra-Modern Student Dashboard
