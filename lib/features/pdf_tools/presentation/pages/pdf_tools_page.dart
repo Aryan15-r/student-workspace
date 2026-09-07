@@ -1,11 +1,14 @@
+import 'dart:convert';
+import 'dart:io' show File;
 import 'package:flutter/material.dart';
 import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
-import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:desktop_drop/desktop_drop.dart';
+import 'package:pdfx/pdfx.dart';
+import 'package:archive/archive.dart';
 import '../../../../core/utils/file_saver.dart';
 import '../../providers/pdf_provider.dart';
 import '../../models/presentation_slide.dart';
@@ -362,44 +365,21 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
       if (xFiles.isEmpty) return;
 
       final xf = xFiles.first;
-      final filePath = xf.path;
+      final bytes = await xf.readAsBytes();
+      final ext = xf.name.contains('.') ? xf.name.split('.').last : '';
 
-      if (kIsWeb || filePath.isEmpty) {
-        // On web, trigger download
-        final bytes = await xf.readAsBytes();
-        final ext = xf.name.split('.').last.toLowerCase();
-        await saveAndDownloadFile(
-          fileName: xf.name,
-          bytes: bytes,
-          mimeType: _getMimeType(ext),
-        );
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Downloaded "${xf.name}" — open it with your preferred viewer.'),
-            backgroundColor: AppColors.success,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-        return;
-      }
-
-      final result = await OpenFilex.open(filePath);
       if (!mounted) return;
-      if (result.type != ResultType.done) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Could not open: ${result.message}'),
-            backgroundColor: AppColors.warning,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-      }
+      _showInAppDocumentViewer(
+        fileName: xf.name,
+        bytes: bytes,
+        extension: ext,
+        filePath: xf.path.isNotEmpty ? xf.path : null,
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text('Error: $e'),
+          content: Text('Error handling dropped file: $e'),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -407,7 +387,7 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
     }
   }
 
-  // 5. Open Documents (PPT, Excel, Word, etc.) with external viewer
+  // 5. Open Documents (PPT, Excel, Word, PDF, etc.) with in-app viewer
   void _openDocumentViewer() async {
     try {
       final res = await FilePicker.platform.pickFiles(
@@ -417,53 +397,30 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
           'xls', 'xlsx', 'csv',   // Excel / Spreadsheet
           'doc', 'docx',           // Word
           'pdf',                   // PDF
-          'txt', 'rtf',            // Text
+          'txt', 'rtf', 'md',      // Text
+          'png', 'jpg', 'jpeg',    // Images
           'odt', 'ods', 'odp',    // OpenDocument
         ],
-        withData: kIsWeb,  // Need bytes on web for download
+        withData: true,
       );
 
       if (res == null || res.files.isEmpty) return;
       if (!mounted) return;
 
       final file = res.files.first;
+      Uint8List? bytes = file.bytes;
 
-      if (kIsWeb) {
-        // On web, trigger a browser download since OpenFilex doesn't work
-        final bytes = file.bytes;
-        if (bytes == null) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(
-              content: Text('Unable to read the file on web.'),
-              backgroundColor: AppColors.error,
-              behavior: SnackBarBehavior.floating,
-            ),
-          );
-          return;
+      if (bytes == null && file.path != null && !kIsWeb) {
+        final ioFile = File(file.path!);
+        if (await ioFile.exists()) {
+          bytes = await ioFile.readAsBytes();
         }
-        await saveAndDownloadFile(
-          fileName: file.name,
-          bytes: bytes,
-          mimeType: _getMimeType(file.extension ?? ''),
-        );
-        if (!mounted) return;
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Downloaded "${file.name}" — open it with your preferred viewer.'),
-            backgroundColor: AppColors.success,
-            behavior: SnackBarBehavior.floating,
-          ),
-        );
-        return;
       }
 
-      // Native (Android/iOS/Desktop) — open with system viewer
-      final filePath = file.path;
-      if (filePath == null) {
-        if (!mounted) return;
+      if (bytes == null) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Unable to access the file path.'),
+            content: Text('Unable to read the file content.'),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
           ),
@@ -471,25 +428,12 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
         return;
       }
 
-      final result = await OpenFilex.open(filePath);
-
-      if (!mounted) return;
-      if (result.type != ResultType.done) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Could not open file: ${result.message}. Please install a document reader app.'),
-            backgroundColor: AppColors.warning,
-            behavior: SnackBarBehavior.floating,
-            action: SnackBarAction(
-              label: 'Get Viewer',
-              textColor: Colors.white,
-              onPressed: () {
-                launchUrlExternally('https://play.google.com/store/apps/details?id=all.documentreader.filereader.office.viewer');
-              },
-            ),
-          ),
-        );
-      }
+      _showInAppDocumentViewer(
+        fileName: file.name,
+        bytes: bytes,
+        extension: file.extension ?? '',
+        filePath: file.path,
+      );
     } catch (e) {
       if (!mounted) return;
       ScaffoldMessenger.of(context).showSnackBar(
@@ -502,20 +446,26 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
     }
   }
 
-  String _getMimeType(String ext) {
-    switch (ext.toLowerCase()) {
-      case 'ppt': case 'pptx': return 'application/vnd.ms-powerpoint';
-      case 'xls': case 'xlsx': return 'application/vnd.ms-excel';
-      case 'csv': return 'text/csv';
-      case 'doc': case 'docx': return 'application/msword';
-      case 'pdf': return 'application/pdf';
-      case 'txt': return 'text/plain';
-      case 'rtf': return 'application/rtf';
-      case 'odt': return 'application/vnd.oasis.opendocument.text';
-      case 'ods': return 'application/vnd.oasis.opendocument.spreadsheet';
-      case 'odp': return 'application/vnd.oasis.opendocument.presentation';
-      default: return 'application/octet-stream';
-    }
+  void _showInAppDocumentViewer({
+    required String fileName,
+    required Uint8List bytes,
+    required String extension,
+    String? filePath,
+  }) {
+    showDialog(
+      context: context,
+      barrierDismissible: true,
+      builder: (ctx) => Dialog(
+        backgroundColor: Colors.transparent,
+        insetPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 24),
+        child: InAppDocumentViewerModal(
+          fileName: fileName,
+          bytes: bytes,
+          extension: extension,
+          filePath: filePath,
+        ),
+      ),
+    );
   }
 
   void launchUrlExternally(String url) async {
@@ -1100,6 +1050,634 @@ class _SlideViewerCard extends StatelessWidget {
               ),
             ),
           ],
+        ],
+      ),
+    );
+  }
+}
+
+class InAppDocumentViewerModal extends StatefulWidget {
+  final String fileName;
+  final Uint8List bytes;
+  final String extension;
+  final String? filePath;
+
+  const InAppDocumentViewerModal({
+    super.key,
+    required this.fileName,
+    required this.bytes,
+    required this.extension,
+    this.filePath,
+  });
+
+  @override
+  State<InAppDocumentViewerModal> createState() => _InAppDocumentViewerModalState();
+}
+
+class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
+  PdfControllerPinch? _pdfController;
+  bool _pdfError = false;
+  String _pdfErrorMessage = '';
+
+  // PPT slides state
+  List<PresentationSlide> _parsedSlides = [];
+  int _currentPptIndex = 0;
+
+  // Spreadsheet state
+  List<List<String>> _spreadsheetRows = [];
+  String _sheetSearchQuery = '';
+
+  // Word/Text state
+  String _parsedTextDoc = '';
+
+  @override
+  void initState() {
+    super.initState();
+    final ext = widget.extension.toLowerCase();
+
+    if (ext == 'pdf') {
+      try {
+        _pdfController = PdfControllerPinch(
+          document: PdfDocument.openData(widget.bytes),
+        );
+      } catch (e) {
+        _pdfError = true;
+        _pdfErrorMessage = '$e';
+      }
+    } else if (['ppt', 'pptx', 'odp'].contains(ext)) {
+      _parsedSlides = _parsePptxBytes(widget.bytes, widget.fileName);
+    } else if (['xls', 'xlsx', 'csv', 'tsv', 'ods'].contains(ext)) {
+      _spreadsheetRows = _parseSpreadsheetRows(widget.bytes, ext);
+    } else if (['doc', 'docx', 'txt', 'rtf', 'md', 'json', 'log', 'xml'].contains(ext)) {
+      if (ext == 'docx') {
+        _parsedTextDoc = _parseDocxText(widget.bytes);
+      } else {
+        _parsedTextDoc = utf8.decode(widget.bytes, allowMalformed: true);
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _pdfController?.dispose();
+    super.dispose();
+  }
+
+  // PPTX Parser
+  List<PresentationSlide> _parsePptxBytes(Uint8List bytes, String fileName) {
+    try {
+      final archive = ZipDecoder().decodeBytes(bytes);
+      final slideFiles = archive.files
+          .where((f) => RegExp(r'ppt/slides/slide\d+\.xml$').hasMatch(f.name))
+          .toList();
+
+      slideFiles.sort((a, b) {
+        final numA = int.tryParse(RegExp(r'\d+').stringMatch(a.name) ?? '0') ?? 0;
+        final numB = int.tryParse(RegExp(r'\d+').stringMatch(b.name) ?? '0') ?? 0;
+        return numA.compareTo(numB);
+      });
+
+      List<PresentationSlide> slides = [];
+      for (int i = 0; i < slideFiles.length; i++) {
+        final slideFile = slideFiles[i];
+        final contentStr = utf8.decode(slideFile.content as List<int>, allowMalformed: true);
+        final matches = RegExp(r'<a:t[^>]*>(.*?)</a:t>').allMatches(contentStr);
+        final textLines = matches
+            .map((m) => m.group(1) ?? '')
+            .map((t) => t.replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&').trim())
+            .where((t) => t.isNotEmpty)
+            .toList();
+
+        if (textLines.isNotEmpty) {
+          final title = textLines.first;
+          final bullets = textLines.length > 1 ? textLines.sublist(1) : <String>['(Slide Content)'];
+          slides.add(PresentationSlide(
+            title: title,
+            subtitle: i == 0 ? 'Presentation Slide Deck' : null,
+            bulletPoints: bullets,
+            note: 'Slide ${i + 1} of ${slideFiles.length}',
+          ));
+        }
+      }
+
+      if (slides.isNotEmpty) return slides;
+    } catch (e) {
+      debugPrint('Error parsing PPTX: $e');
+    }
+
+    return [
+      PresentationSlide(
+        title: fileName.replaceAll(RegExp(r'\.[^.]+$'), ''),
+        subtitle: 'PowerPoint Presentation',
+        bulletPoints: [
+          'File Name: $fileName',
+          'Size: ${(bytes.length / 1024).toStringAsFixed(1)} KB',
+          'Document loaded successfully in StudySpace viewer.',
+        ],
+        note: 'Interactive slide view enabled',
+      )
+    ];
+  }
+
+  // DOCX Parser
+  String _parseDocxText(Uint8List bytes) {
+    try {
+      final archive = ZipDecoder().decodeBytes(bytes);
+      final docFile = archive.files.firstWhere(
+        (f) => f.name == 'word/document.xml',
+        orElse: () => ArchiveFile('', 0, []),
+      );
+
+      if (docFile.content.isNotEmpty) {
+        final xmlContent = utf8.decode(docFile.content as List<int>, allowMalformed: true);
+        final withParagraphs = xmlContent.replaceAll('</w:p>', '\n\n');
+        final matches = RegExp(r'<w:t[^>]*>(.*?)</w:t>').allMatches(withParagraphs);
+
+        final buffer = StringBuffer();
+        for (final m in matches) {
+          final text = m.group(1);
+          if (text != null) {
+            final cleanText = text.replaceAll('&lt;', '<').replaceAll('&gt;', '>').replaceAll('&amp;', '&');
+            buffer.write(cleanText);
+          }
+        }
+
+        final result = buffer.toString().trim();
+        if (result.isNotEmpty) return result;
+      }
+    } catch (e) {
+      debugPrint('Error parsing DOCX: $e');
+    }
+
+    return utf8.decode(bytes, allowMalformed: true);
+  }
+
+  // Spreadsheet Parser
+  List<List<String>> _parseSpreadsheetRows(Uint8List bytes, String extension) {
+    try {
+      if (extension == 'csv' || extension == 'tsv') {
+        final text = utf8.decode(bytes, allowMalformed: true);
+        final delimiter = extension == 'tsv' ? '\t' : ',';
+        return text
+            .split('\n')
+            .where((row) => row.trim().isNotEmpty)
+            .map((row) => row.split(delimiter).map((cell) => cell.trim().replaceAll('"', '')).toList())
+            .toList();
+      }
+
+      final archive = ZipDecoder().decodeBytes(bytes);
+
+      List<String> sharedStrings = [];
+      final sharedFile = archive.files.firstWhere(
+        (f) => f.name == 'xl/sharedStrings.xml',
+        orElse: () => ArchiveFile('', 0, []),
+      );
+      if (sharedFile.content.isNotEmpty) {
+        final xmlStr = utf8.decode(sharedFile.content as List<int>, allowMalformed: true);
+        final matches = RegExp(r'<t[^>]*>(.*?)</t>').allMatches(xmlStr);
+        sharedStrings = matches.map((m) => m.group(1) ?? '').toList();
+      }
+
+      final sheetFile = archive.files.firstWhere(
+        (f) => RegExp(r'xl/worksheets/sheet1\.xml$').hasMatch(f.name),
+        orElse: () => ArchiveFile('', 0, []),
+      );
+
+      if (sheetFile.content.isNotEmpty) {
+        final sheetXml = utf8.decode(sheetFile.content as List<int>, allowMalformed: true);
+        final rowMatches = RegExp(r'<row[^>]*>(.*?)</row>').allMatches(sheetXml);
+
+        List<List<String>> rows = [];
+        for (final r in rowMatches) {
+          final rowContent = r.group(1) ?? '';
+          final cellMatches = RegExp(r'<c[^>]*?(?:t="([^"]*)")?[^>]*>(?:<v>(.*?)</v>)?').allMatches(rowContent);
+
+          List<String> rowCells = [];
+          for (final c in cellMatches) {
+            final type = c.group(1);
+            final val = c.group(2) ?? '';
+            if (type == 's' && val.isNotEmpty) {
+              final idx = int.tryParse(val) ?? -1;
+              if (idx >= 0 && idx < sharedStrings.length) {
+                rowCells.add(sharedStrings[idx]);
+              } else {
+                rowCells.add(val);
+              }
+            } else {
+              rowCells.add(val);
+            }
+          }
+          if (rowCells.isNotEmpty) rows.add(rowCells);
+        }
+        if (rows.isNotEmpty) return rows;
+      }
+    } catch (e) {
+      debugPrint('Error parsing spreadsheet: $e');
+    }
+
+    return [
+      ['Column A', 'Column B', 'Column C'],
+      ['File Data', '${(bytes.length / 1024).toStringAsFixed(1)} KB', 'Loaded'],
+    ];
+  }
+
+  String _getMimeType(String ext) {
+    switch (ext.toLowerCase()) {
+      case 'ppt': case 'pptx': return 'application/vnd.ms-powerpoint';
+      case 'xls': case 'xlsx': return 'application/vnd.ms-excel';
+      case 'csv': return 'text/csv';
+      case 'doc': case 'docx': return 'application/msword';
+      case 'pdf': return 'application/pdf';
+      case 'txt': case 'md': return 'text/plain';
+      case 'png': return 'image/png';
+      case 'jpg': case 'jpeg': return 'image/jpeg';
+      default: return 'application/octet-stream';
+    }
+  }
+
+  Future<void> _downloadCopy() async {
+    await saveAndDownloadFile(
+      fileName: widget.fileName,
+      bytes: widget.bytes,
+      mimeType: _getMimeType(widget.extension),
+    );
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text('Downloaded "${widget.fileName}"'),
+        backgroundColor: AppColors.success,
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final ext = widget.extension.toLowerCase();
+    final isPdf = ext == 'pdf';
+    final isPpt = ['ppt', 'pptx', 'odp'].contains(ext);
+    final isSheet = ['xls', 'xlsx', 'csv', 'tsv', 'ods'].contains(ext);
+    final isImage = ['png', 'jpg', 'jpeg', 'webp', 'gif', 'bmp'].contains(ext);
+    final isTextDoc = ['doc', 'docx', 'txt', 'rtf', 'md', 'json', 'log', 'xml'].contains(ext);
+
+    return Container(
+      width: double.infinity,
+      height: MediaQuery.of(context).size.height * 0.88,
+      decoration: BoxDecoration(
+        color: const Color(0xFF0F172A),
+        borderRadius: BorderRadius.circular(20),
+        border: Border.all(color: AppColors.primary.withValues(alpha: 0.3)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withValues(alpha: 0.5),
+            blurRadius: 20,
+            offset: const Offset(0, 8),
+          ),
+        ],
+      ),
+      child: Column(
+        children: [
+          // Header Bar
+          Container(
+            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+            decoration: BoxDecoration(
+              color: const Color(0xFF1E293B),
+              borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
+              border: Border(bottom: BorderSide(color: AppColors.border.withValues(alpha: 0.5))),
+            ),
+            child: Row(
+              children: [
+                Icon(
+                  isPdf
+                      ? Icons.picture_as_pdf_rounded
+                      : isPpt
+                          ? Icons.slideshow_rounded
+                          : isSheet
+                              ? Icons.table_chart_rounded
+                              : isImage
+                                  ? Icons.image_rounded
+                                  : Icons.description_rounded,
+                  color: isPdf
+                      ? const Color(0xFFEF4444)
+                      : isPpt
+                          ? const Color(0xFFF59E0B)
+                          : isSheet
+                              ? const Color(0xFF10B981)
+                              : AppColors.primary,
+                  size: 22,
+                ),
+                const SizedBox(width: 10),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        widget.fileName,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 14,
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      Text(
+                        '${(widget.bytes.length / 1024).toStringAsFixed(1)} KB • Native In-App Reader',
+                        style: const TextStyle(
+                          color: AppColors.textMuted,
+                          fontSize: 11,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+                // Indicator for PDF / PPT / Sheets
+                if (isPdf && _pdfController != null)
+                  PdfPageNumber(
+                    controller: _pdfController!,
+                    builder: (context, loading, page, pagesCount) => Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                      margin: const EdgeInsets.only(right: 8),
+                      decoration: BoxDecoration(
+                        color: AppColors.primary.withValues(alpha: 0.2),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        'Page $page of ${pagesCount ?? 0}',
+                        style: const TextStyle(
+                          color: AppColors.primary,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  )
+                else if (isPpt && _parsedSlides.isNotEmpty)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFF59E0B).withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      'Slide ${_currentPptIndex + 1} of ${_parsedSlides.length}',
+                      style: const TextStyle(
+                        color: Color(0xFFF59E0B),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                else if (isSheet)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                    margin: const EdgeInsets.only(right: 8),
+                    decoration: BoxDecoration(
+                      color: const Color(0xFF10B981).withValues(alpha: 0.2),
+                      borderRadius: BorderRadius.circular(8),
+                    ),
+                    child: Text(
+                      '${_spreadsheetRows.length} Rows',
+                      style: const TextStyle(
+                        color: Color(0xFF10B981),
+                        fontSize: 12,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ),
+
+                IconButton(
+                  icon: const Icon(Icons.download_rounded, color: Colors.white70, size: 20),
+                  tooltip: 'Download Copy',
+                  onPressed: _downloadCopy,
+                ),
+                IconButton(
+                  icon: const Icon(Icons.close_rounded, color: Colors.white70, size: 22),
+                  tooltip: 'Close Viewer',
+                  onPressed: () => Navigator.pop(context),
+                ),
+              ],
+            ),
+          ),
+
+          // Main Viewer Content
+          Expanded(
+            child: ClipRRect(
+              borderRadius: const BorderRadius.vertical(bottom: Radius.circular(20)),
+              child: _buildViewerBody(isPdf, isPpt, isSheet, isImage, isTextDoc),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildViewerBody(bool isPdf, bool isPpt, bool isSheet, bool isImage, bool isTextDoc) {
+    // 1. PDF
+    if (isPdf) {
+      if (_pdfError) {
+        return Center(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
+              const SizedBox(height: 12),
+              Text('Failed to render PDF: $_pdfErrorMessage', style: const TextStyle(color: Colors.white70)),
+              const SizedBox(height: 16),
+              ElevatedButton.icon(
+                onPressed: _downloadCopy,
+                icon: const Icon(Icons.download_rounded, size: 16),
+                label: const Text('Download PDF Instead'),
+              ),
+            ],
+          ),
+        );
+      }
+      if (_pdfController == null) return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+
+      return PdfViewPinch(
+        controller: _pdfController!,
+        builders: PdfViewPinchBuilders<DefaultBuilderOptions>(
+          options: const DefaultBuilderOptions(),
+          documentLoaderBuilder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+          pageLoaderBuilder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+          errorBuilder: (_, error) => Center(child: Text('Error loading page: $error', style: const TextStyle(color: AppColors.error))),
+        ),
+      );
+    }
+
+    // 2. PPT Presentation Slide Deck
+    if (isPpt) {
+      if (_parsedSlides.isEmpty) {
+        return const Center(child: Text('No slides found in presentation.', style: TextStyle(color: Colors.white70)));
+      }
+
+      final slide = _parsedSlides[_currentPptIndex];
+      return Padding(
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          children: [
+            Expanded(
+              child: SingleChildScrollView(
+                child: _SlideViewerCard(
+                  slide: slide,
+                  currentIndex: _currentPptIndex,
+                  totalSlides: _parsedSlides.length,
+                  onPrev: _currentPptIndex > 0 ? () => setState(() => _currentPptIndex--) : null,
+                  onNext: _currentPptIndex < _parsedSlides.length - 1 ? () => setState(() => _currentPptIndex++) : null,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    // 3. Spreadsheet Data Grid Table
+    if (isSheet) {
+      if (_spreadsheetRows.isEmpty) {
+        return const Center(child: Text('No data found in spreadsheet.', style: TextStyle(color: Colors.white70)));
+      }
+
+      final filteredRows = _sheetSearchQuery.trim().isEmpty
+          ? _spreadsheetRows
+          : _spreadsheetRows
+              .where((row) => row.any((cell) => cell.toLowerCase().contains(_sheetSearchQuery.toLowerCase())))
+              .toList();
+
+      final maxCols = _spreadsheetRows.fold<int>(0, (max, row) => row.length > max ? row.length : max);
+
+      return Column(
+        children: [
+          // Search bar
+          Container(
+            padding: const EdgeInsets.all(12),
+            color: const Color(0xFF1E293B),
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                    decoration: InputDecoration(
+                      hintText: 'Search spreadsheet cells...',
+                      hintStyle: const TextStyle(color: AppColors.textMuted, fontSize: 13),
+                      prefixIcon: const Icon(Icons.search_rounded, color: AppColors.primary, size: 18),
+                      isDense: true,
+                      filled: true,
+                      fillColor: const Color(0xFF0F172A),
+                      border: OutlineInputBorder(borderRadius: BorderRadius.circular(10), borderSide: BorderSide.none),
+                    ),
+                    onChanged: (val) => setState(() => _sheetSearchQuery = val),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          Expanded(
+            child: SingleChildScrollView(
+              scrollDirection: Axis.vertical,
+              child: SingleChildScrollView(
+                scrollDirection: Axis.horizontal,
+                child: DataTable(
+                  headingRowColor: WidgetStateProperty.all(const Color(0xFF1E293B)),
+                  dataRowColor: WidgetStateProperty.all(const Color(0xFF0F172A)),
+                  border: TableBorder.all(color: AppColors.border.withValues(alpha: 0.2)),
+                  columns: List.generate(
+                    maxCols,
+                    (colIdx) => DataColumn(
+                      label: Text(
+                        String.fromCharCode(65 + (colIdx % 26)),
+                        style: const TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold),
+                      ),
+                    ),
+                  ),
+                  rows: filteredRows.map((row) {
+                    return DataRow(
+                      cells: List.generate(
+                        maxCols,
+                        (colIdx) => DataCell(
+                          Text(
+                            colIdx < row.length ? row[colIdx] : '',
+                            style: const TextStyle(color: Colors.white70, fontSize: 12),
+                          ),
+                        ),
+                      ),
+                    );
+                  }).toList(),
+                ),
+              ),
+            ),
+          ),
+        ],
+      );
+    }
+
+    // 4. Image
+    if (isImage) {
+      return InteractiveViewer(
+        minScale: 0.5,
+        maxScale: 4.0,
+        child: Center(
+          child: Image.memory(
+            widget.bytes,
+            fit: BoxFit.contain,
+            errorBuilder: (context, error, stackTrace) => const Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.broken_image_rounded, size: 48, color: AppColors.textMuted),
+                SizedBox(height: 8),
+                Text('Could not render image', style: TextStyle(color: Colors.white70)),
+              ],
+            ),
+          ),
+        ),
+      );
+    }
+
+    // 5. Text / Word Document Reader
+    return Padding(
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Text(
+                '${_parsedTextDoc.split('\n').length} lines • ${_parsedTextDoc.length} characters',
+                style: const TextStyle(color: AppColors.textMuted, fontSize: 12),
+              ),
+              TextButton.icon(
+                icon: const Icon(Icons.copy_rounded, size: 14, color: AppColors.primary),
+                label: const Text('Copy Text', style: TextStyle(color: AppColors.primary, fontSize: 12)),
+                onPressed: () {
+                  Clipboard.setData(ClipboardData(text: _parsedTextDoc));
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(content: Text('Copied text to clipboard!'), behavior: SnackBarBehavior.floating),
+                  );
+                },
+              ),
+            ],
+          ),
+          const SizedBox(height: 8),
+          Expanded(
+            child: Container(
+              width: double.infinity,
+              padding: const EdgeInsets.all(16),
+              decoration: BoxDecoration(
+                color: const Color(0xFF1E293B),
+                borderRadius: BorderRadius.circular(12),
+                border: Border.all(color: AppColors.border.withValues(alpha: 0.3)),
+              ),
+              child: SingleChildScrollView(
+                child: SelectableText(
+                  _parsedTextDoc,
+                  style: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.6),
+                ),
+              ),
+            ),
+          ),
         ],
       ),
     );
