@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:open_filex/open_filex.dart';
 import 'package:url_launcher/url_launcher.dart';
+import 'package:desktop_drop/desktop_drop.dart';
+import '../../../../core/utils/file_saver.dart';
 import '../../providers/pdf_provider.dart';
 import '../../models/presentation_slide.dart';
 import '../../../auth/providers/auth_provider.dart';
@@ -258,6 +261,152 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
     });
   }
 
+  // ── Drop Handlers ──────────────────────────────────────────────────────────
+
+  /// Handle images dropped onto the Images→PDF card
+  void _handleDroppedImages(List<DropDoneDetails> details) async {
+    _checkGuestGuard(() async {
+      final xFiles = details.expand((d) => d.files).toList();
+      if (xFiles.isEmpty) return;
+
+      final imageExts = {'jpg', 'jpeg', 'png', 'webp'};
+      final platformFiles = <PlatformFile>[];
+
+      for (final xf in xFiles) {
+        final ext = xf.name.split('.').last.toLowerCase();
+        if (!imageExts.contains(ext)) continue;
+        final bytes = await xf.readAsBytes();
+        platformFiles.add(PlatformFile(
+          name: xf.name,
+          size: bytes.length,
+          bytes: bytes,
+        ));
+      }
+
+      if (platformFiles.isEmpty || !mounted) return;
+
+      final titleCtrl = TextEditingController(text: 'StudyNotes_Images');
+      showDialog(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          backgroundColor: AppColors.surface,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20), side: const BorderSide(color: AppColors.border)),
+          title: Text('Convert ${platformFiles.length} Dropped Images to PDF', style: AppTextStyles.headlineSmall),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text('${platformFiles.length} images ready for conversion.', style: AppTextStyles.bodySmall),
+              const SizedBox(height: 16),
+              TextField(
+                controller: titleCtrl,
+                style: const TextStyle(color: AppColors.textPrimary),
+                decoration: InputDecoration(
+                  labelText: 'Document Name',
+                  prefixIcon: const Icon(Icons.picture_as_pdf_rounded, color: AppColors.primary),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(onPressed: () => Navigator.pop(ctx), child: const Text('Cancel')),
+            ElevatedButton(
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
+              onPressed: () async {
+                Navigator.pop(ctx);
+                await context.read<PdfProvider>().convertImagesToPdf(
+                  files: platformFiles,
+                  documentTitle: titleCtrl.text.trim(),
+                );
+              },
+              child: const Text('Generate & Download PDF', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+            ),
+          ],
+        ),
+      );
+    });
+  }
+
+  /// Handle PDF dropped onto the Extract card
+  void _handleDroppedPdf(List<DropDoneDetails> details) async {
+    _checkGuestGuard(() async {
+      final xFiles = details.expand((d) => d.files).toList();
+      if (xFiles.isEmpty) return;
+
+      final xf = xFiles.first;
+      final ext = xf.name.split('.').last.toLowerCase();
+      if (ext != 'pdf') {
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Please drop a PDF file.'),
+            backgroundColor: AppColors.warning,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+
+      final bytes = await xf.readAsBytes();
+      if (!mounted) return;
+      await context.read<PdfProvider>().extractTextFromPdf(
+        PlatformFile(name: xf.name, size: bytes.length, bytes: bytes),
+      );
+    });
+  }
+
+  /// Handle documents dropped onto the Document Viewer card
+  void _handleDroppedDocument(List<DropDoneDetails> details) async {
+    try {
+      final xFiles = details.expand((d) => d.files).toList();
+      if (xFiles.isEmpty) return;
+
+      final xf = xFiles.first;
+      final filePath = xf.path;
+
+      if (kIsWeb || filePath.isEmpty) {
+        // On web, trigger download
+        final bytes = await xf.readAsBytes();
+        final ext = xf.name.split('.').last.toLowerCase();
+        await saveAndDownloadFile(
+          fileName: xf.name,
+          bytes: bytes,
+          mimeType: _getMimeType(ext),
+        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Downloaded "${xf.name}" — open it with your preferred viewer.'),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+
+      final result = await OpenFilex.open(filePath);
+      if (!mounted) return;
+      if (result.type != ResultType.done) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Could not open: ${result.message}'),
+            backgroundColor: AppColors.warning,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+      }
+    } catch (e) {
+      if (!mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Error: $e'),
+          backgroundColor: AppColors.error,
+          behavior: SnackBarBehavior.floating,
+        ),
+      );
+    }
+  }
+
   // 5. Open Documents (PPT, Excel, Word, etc.) with external viewer
   void _openDocumentViewer() async {
     try {
@@ -271,19 +420,50 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
           'txt', 'rtf',            // Text
           'odt', 'ods', 'odp',    // OpenDocument
         ],
+        withData: kIsWeb,  // Need bytes on web for download
       );
 
       if (res == null || res.files.isEmpty) return;
       if (!mounted) return;
 
       final file = res.files.first;
-      final filePath = file.path;
 
+      if (kIsWeb) {
+        // On web, trigger a browser download since OpenFilex doesn't work
+        final bytes = file.bytes;
+        if (bytes == null) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Unable to read the file on web.'),
+              backgroundColor: AppColors.error,
+              behavior: SnackBarBehavior.floating,
+            ),
+          );
+          return;
+        }
+        await saveAndDownloadFile(
+          fileName: file.name,
+          bytes: bytes,
+          mimeType: _getMimeType(file.extension ?? ''),
+        );
+        if (!mounted) return;
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Downloaded "${file.name}" — open it with your preferred viewer.'),
+            backgroundColor: AppColors.success,
+            behavior: SnackBarBehavior.floating,
+          ),
+        );
+        return;
+      }
+
+      // Native (Android/iOS/Desktop) — open with system viewer
+      final filePath = file.path;
       if (filePath == null) {
         if (!mounted) return;
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('Unable to access the file path on this platform.'),
+            content: Text('Unable to access the file path.'),
             backgroundColor: AppColors.error,
             behavior: SnackBarBehavior.floating,
           ),
@@ -319,6 +499,22 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
           behavior: SnackBarBehavior.floating,
         ),
       );
+    }
+  }
+
+  String _getMimeType(String ext) {
+    switch (ext.toLowerCase()) {
+      case 'ppt': case 'pptx': return 'application/vnd.ms-powerpoint';
+      case 'xls': case 'xlsx': return 'application/vnd.ms-excel';
+      case 'csv': return 'text/csv';
+      case 'doc': case 'docx': return 'application/msword';
+      case 'pdf': return 'application/pdf';
+      case 'txt': return 'text/plain';
+      case 'rtf': return 'application/rtf';
+      case 'odt': return 'application/vnd.oasis.opendocument.text';
+      case 'ods': return 'application/vnd.oasis.opendocument.spreadsheet';
+      case 'odp': return 'application/vnd.oasis.opendocument.presentation';
+      default: return 'application/octet-stream';
     }
   }
 
@@ -540,11 +736,14 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
                       _ActiveToolCard(
                         icon: '📸',
                         title: 'Images → PDF',
-                        description: 'Select photos or diagrams and assemble them into a clean, multi-page PDF document.',
+                        description: 'Select or drop photos/diagrams to assemble into a multi-page PDF.',
                         buttonLabel: 'Select Images',
+                        dropHint: 'Drop images here',
+                        acceptedExtensions: const ['jpg', 'jpeg', 'png', 'webp'],
                         isLocked: auth.isGuest,
                         gradientColors: [const Color(0xFF6366F1), const Color(0xFF8B5CF6)],
                         onTap: _openImagesToPdfDialog,
+                        onFilesDropped: (details) => _handleDroppedImages([details]),
                       ),
                       _ActiveToolCard(
                         icon: '📝',
@@ -567,20 +766,26 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
                       _ActiveToolCard(
                         icon: '📄',
                         title: 'PDF → Text & Notes',
-                        description: 'Extract raw text, paragraphs, and formulas from any PDF to copy or study.',
+                        description: 'Select or drop a PDF to extract raw text, paragraphs, and formulas.',
                         buttonLabel: 'Extract from PDF',
+                        dropHint: 'Drop PDF here',
+                        acceptedExtensions: const ['pdf'],
                         isLocked: auth.isGuest,
                         gradientColors: [const Color(0xFF10B981), const Color(0xFF059669)],
                         onTap: _openPdfExtractDialog,
+                        onFilesDropped: (details) => _handleDroppedPdf([details]),
                       ),
                       _ActiveToolCard(
                         icon: '📂',
                         title: 'Document Viewer',
-                        description: 'Open PPT, Excel, Word, and other documents directly from your device with your preferred reader.',
+                        description: 'Drop or select PPT, Excel, Word, and other documents to open with your reader.',
                         buttonLabel: 'Open a Document',
+                        dropHint: 'Drop document here',
+                        acceptedExtensions: const ['ppt', 'pptx', 'xls', 'xlsx', 'csv', 'doc', 'docx', 'pdf', 'txt', 'rtf', 'odt', 'ods', 'odp'],
                         isLocked: false,
                         gradientColors: [const Color(0xFFF59E0B), const Color(0xFFEF4444)],
                         onTap: _openDocumentViewer,
+                        onFilesDropped: (details) => _handleDroppedDocument([details]),
                       ),
                     ],
                   );
@@ -594,47 +799,72 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
   }
 }
 
-class _ActiveToolCard extends StatelessWidget {
+class _ActiveToolCard extends StatefulWidget {
   final String icon, title, description, buttonLabel;
+  final String? dropHint;
+  final List<String>? acceptedExtensions;
   final List<Color> gradientColors;
   final bool isLocked;
   final VoidCallback onTap;
+  final void Function(DropDoneDetails)? onFilesDropped;
 
   const _ActiveToolCard({
     required this.icon,
     required this.title,
     required this.description,
     required this.buttonLabel,
+    this.dropHint,
+    this.acceptedExtensions,
     required this.gradientColors,
     required this.isLocked,
     required this.onTap,
+    this.onFilesDropped,
   });
 
   @override
+  State<_ActiveToolCard> createState() => _ActiveToolCardState();
+}
+
+class _ActiveToolCardState extends State<_ActiveToolCard> {
+  bool _isDragHovering = false;
+
+  @override
   Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
+    final bool supportsDrops = widget.onFilesDropped != null && !widget.isLocked;
+
+    Widget card = GestureDetector(
+      onTap: widget.onTap,
+      child: AnimatedContainer(
+        duration: const Duration(milliseconds: 200),
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: AppColors.surface,
+          color: _isDragHovering
+              ? widget.gradientColors.first.withValues(alpha: 0.18)
+              : AppColors.surface,
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: gradientColors.first.withValues(alpha: 0.3)),
-          gradient: LinearGradient(
-            colors: [
-              gradientColors.first.withValues(alpha: 0.12),
-              gradientColors.last.withValues(alpha: 0.04),
-            ],
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
+          border: Border.all(
+            color: _isDragHovering
+                ? widget.gradientColors.first
+                : widget.gradientColors.first.withValues(alpha: 0.3),
+            width: _isDragHovering ? 2 : 1,
           ),
+          gradient: _isDragHovering
+              ? null
+              : LinearGradient(
+                  colors: [
+                    widget.gradientColors.first.withValues(alpha: 0.12),
+                    widget.gradientColors.last.withValues(alpha: 0.04),
+                  ],
+                  begin: Alignment.topLeft,
+                  end: Alignment.bottomRight,
+                ),
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
               children: [
-                Text(icon, style: const TextStyle(fontSize: 32)),
+                Text(widget.icon, style: const TextStyle(fontSize: 32)),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
@@ -642,8 +872,8 @@ class _ActiveToolCard extends StatelessWidget {
                     children: [
                       Row(
                         children: [
-                          Expanded(child: Text(title, style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.bold))),
-                          if (isLocked)
+                          Expanded(child: Text(widget.title, style: AppTextStyles.titleMedium.copyWith(fontWeight: FontWeight.bold))),
+                          if (widget.isLocked)
                             Container(
                               padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
                               decoration: BoxDecoration(color: AppColors.warning.withValues(alpha: 0.15), borderRadius: BorderRadius.circular(8)),
@@ -659,47 +889,116 @@ class _ActiveToolCard extends StatelessWidget {
                         ],
                       ),
                       const SizedBox(height: 2),
-                      Text(description, style: AppTextStyles.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
+                      Text(widget.description, style: AppTextStyles.bodySmall, maxLines: 2, overflow: TextOverflow.ellipsis),
                     ],
                   ),
                 ),
               ],
             ),
-            const Spacer(),
-            Align(
-              alignment: Alignment.bottomRight,
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
-                decoration: BoxDecoration(
-                  gradient: isLocked ? null : LinearGradient(colors: gradientColors),
-                  color: isLocked ? AppColors.card : null,
-                  borderRadius: BorderRadius.circular(12),
+            // Drop zone hint when hovering
+            if (_isDragHovering && widget.dropHint != null)
+              Expanded(
+                child: Center(
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(Icons.file_download_outlined, size: 32, color: widget.gradientColors.first),
+                      const SizedBox(height: 6),
+                      Text(
+                        widget.dropHint!,
+                        style: TextStyle(
+                          color: widget.gradientColors.first,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Text(
-                      isLocked ? 'Locked (Sign In)' : buttonLabel,
-                      style: TextStyle(
-                        color: isLocked ? AppColors.textMuted : Colors.white,
-                        fontSize: 12,
-                        fontWeight: FontWeight.bold,
+              )
+            else
+              const Spacer(),
+            // Bottom row: drop badge + action button
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Drop badge for cards that support drops
+                if (supportsDrops && !_isDragHovering)
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    decoration: BoxDecoration(
+                      color: widget.gradientColors.first.withValues(alpha: 0.1),
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: widget.gradientColors.first.withValues(alpha: 0.25),
                       ),
                     ),
-                    const SizedBox(width: 4),
-                    Icon(
-                      isLocked ? Icons.lock_outline_rounded : Icons.arrow_forward_rounded,
-                      size: 14,
-                      color: isLocked ? AppColors.textMuted : Colors.white,
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.file_download_outlined, size: 12, color: widget.gradientColors.first.withValues(alpha: 0.7)),
+                        const SizedBox(width: 4),
+                        Text(
+                          'Drop',
+                          style: TextStyle(
+                            color: widget.gradientColors.first.withValues(alpha: 0.7),
+                            fontSize: 10,
+                            fontWeight: FontWeight.w600,
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
+                  )
+                else
+                  const SizedBox.shrink(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                  decoration: BoxDecoration(
+                    gradient: widget.isLocked ? null : LinearGradient(colors: widget.gradientColors),
+                    color: widget.isLocked ? AppColors.card : null,
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Text(
+                        widget.isLocked ? 'Locked (Sign In)' : widget.buttonLabel,
+                        style: TextStyle(
+                          color: widget.isLocked ? AppColors.textMuted : Colors.white,
+                          fontSize: 12,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      const SizedBox(width: 4),
+                      Icon(
+                        widget.isLocked ? Icons.lock_outline_rounded : Icons.arrow_forward_rounded,
+                        size: 14,
+                        color: widget.isLocked ? AppColors.textMuted : Colors.white,
+                      ),
+                    ],
+                  ),
                 ),
-              ),
+              ],
             ),
           ],
         ),
       ),
     );
+
+    // Wrap with DropTarget only if the card supports drops
+    if (supportsDrops) {
+      card = DropTarget(
+        onDragEntered: (_) => setState(() => _isDragHovering = true),
+        onDragExited: (_) => setState(() => _isDragHovering = false),
+        onDragDone: (details) {
+          setState(() => _isDragHovering = false);
+          widget.onFilesDropped?.call(details);
+        },
+        child: card,
+      );
+    }
+
+    return card;
   }
 }
 
