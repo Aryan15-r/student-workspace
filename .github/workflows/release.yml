@@ -51,15 +51,14 @@ jobs:
         run: |
           cp build/app/outputs/flutter-apk/app-release.apk StudySpace-release.apk
 
-      - name: Publish to Public Releases Repository
+      - name: Publish Release APK
         uses: softprops/action-gh-release@v2
         with:
-          repository: Aryan15-r/student-workspace-release
-          token: ${{ secrets.RELEASE_TOKEN }}
+          token: ${{ secrets.RELEASE_TOKEN || secrets.GITHUB_TOKEN }}
           tag_name: ${{ github.ref_name }}
           name: "StudySpace ${{ github.ref_name }}"
-          body: "Official release build for StudySpace ${{ github.ref_name }}. Download `StudySpace-release.apk` below to install."
+          body: "Official release build for StudySpace ${{ github.ref_name }}. Download `StudySpace-release.apk` below to install on your Android device."
           files: StudySpace-release.apk
-          generate_release_notes: false
+          generate_release_notes: true
           draft: false
           prerelease: false
