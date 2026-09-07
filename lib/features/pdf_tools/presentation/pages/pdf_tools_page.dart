@@ -1097,13 +1097,16 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
     final ext = widget.extension.toLowerCase();
 
     if (ext == 'pdf') {
-      try {
-        _pdfController = PdfControllerPinch(
-          document: PdfDocument.openData(widget.bytes),
-        );
-      } catch (e) {
-        _pdfError = true;
-        _pdfErrorMessage = '$e';
+      _parsedTextDoc = _extractPdfTextFromBytes(widget.bytes);
+      if (!kIsWeb) {
+        try {
+          _pdfController = PdfControllerPinch(
+            document: PdfDocument.openData(widget.bytes),
+          );
+        } catch (e) {
+          _pdfError = true;
+          _pdfErrorMessage = '$e';
+        }
       }
     } else if (['ppt', 'pptx', 'odp'].contains(ext)) {
       _parsedSlides = _parsePptxBytes(widget.bytes, widget.fileName);
@@ -1660,26 +1663,96 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
     );
   }
 
+  String _extractPdfTextFromBytes(Uint8List bytes) {
+    try {
+      final rawStr = utf8.decode(bytes, allowMalformed: true);
+      final textMatches = RegExp(r'\((.*?)\)Tj|\[(.*?)\]TJ').allMatches(rawStr);
+
+      final buffer = StringBuffer();
+      for (final m in textMatches) {
+        final text = m.group(1) ?? m.group(2);
+        if (text != null && text.trim().isNotEmpty) {
+          final clean = text
+              .replaceAll(r'\(', '(')
+              .replaceAll(r'\)', ')')
+              .replaceAll(r'\\', '\\');
+          buffer.writeln(clean);
+        }
+      }
+
+      final result = buffer.toString().trim();
+      if (result.isNotEmpty && result.length > 20) return result;
+    } catch (_) {}
+
+    return '';
+  }
+
   Widget _buildNativePdfView() {
-    if (_pdfError) {
+    if (_pdfError || _pdfController == null) {
+      if (_parsedTextDoc.isNotEmpty) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text('Extracted PDF Text & Formulas', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 13)),
+                  TextButton.icon(
+                    icon: const Icon(Icons.copy_rounded, size: 14, color: AppColors.primary),
+                    label: const Text('Copy Text', style: TextStyle(color: AppColors.primary, fontSize: 12)),
+                    onPressed: () {
+                      Clipboard.setData(ClipboardData(text: _parsedTextDoc));
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(content: Text('Copied text to clipboard!'), behavior: SnackBarBehavior.floating),
+                      );
+                    },
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Expanded(
+                child: Container(
+                  width: double.infinity,
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF1E293B),
+                    borderRadius: BorderRadius.circular(12),
+                    border: Border.all(color: AppColors.border.withValues(alpha: 0.3)),
+                  ),
+                  child: SingleChildScrollView(
+                    child: SelectableText(
+                      _parsedTextDoc,
+                      style: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.6),
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        );
+      }
+
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
-            const SizedBox(height: 12),
-            Text('Failed to render PDF: $_pdfErrorMessage', style: const TextStyle(color: Colors.white70)),
-            const SizedBox(height: 16),
+            const Icon(Icons.picture_as_pdf_rounded, size: 54, color: AppColors.primary),
+            const SizedBox(height: 14),
+            Text(widget.fileName, style: const TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+            const SizedBox(height: 6),
+            Text('${(widget.bytes.length / 1024).toStringAsFixed(1)} KB • PDF Document', style: const TextStyle(color: AppColors.textMuted, fontSize: 12)),
+            const SizedBox(height: 20),
             ElevatedButton.icon(
+              style: ElevatedButton.styleFrom(backgroundColor: AppColors.primary),
               onPressed: _downloadCopy,
-              icon: const Icon(Icons.download_rounded, size: 16),
-              label: const Text('Download PDF Instead'),
+              icon: const Icon(Icons.download_rounded, size: 16, color: Colors.white),
+              label: const Text('Download PDF', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
             ),
           ],
         ),
       );
     }
-    if (_pdfController == null) return const Center(child: CircularProgressIndicator(color: AppColors.primary));
 
     return PdfViewPinch(
       controller: _pdfController!,
@@ -1687,7 +1760,21 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
         options: const DefaultBuilderOptions(),
         documentLoaderBuilder: (context) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
         pageLoaderBuilder: (context) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
-        errorBuilder: (context, error) => Center(child: Text('Error loading page: $error', style: const TextStyle(color: AppColors.error))),
+        errorBuilder: (context, error) {
+          if (_parsedTextDoc.isNotEmpty) {
+            return SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: SelectableText(_parsedTextDoc, style: const TextStyle(color: Colors.white70, fontSize: 13, height: 1.6)),
+            );
+          }
+          return Center(
+            child: ElevatedButton.icon(
+              onPressed: _downloadCopy,
+              icon: const Icon(Icons.download_rounded, size: 16),
+              label: const Text('Download PDF Copy'),
+            ),
+          );
+        },
       ),
     );
   }
