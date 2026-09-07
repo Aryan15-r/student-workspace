@@ -261,7 +261,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                     ),
                     Switch(
                       value: isPrivateRoom,
-                      activeColor: const Color(0xFF818CF8),
+                      activeThumbColor: const Color(0xFF818CF8),
                       onChanged: (val) => setSheetState(() => isPrivateRoom = val),
                     ),
                   ],
@@ -630,7 +630,7 @@ class _RoomCard extends StatelessWidget {
 // ── Channel List ───────────────────────────────────────────────────────────────
 class ChannelListPage extends StatefulWidget {
   final String communityId;
-  const ChannelListPage({super, required this.communityId});
+  const ChannelListPage({super.key, required this.communityId});
   @override
   State<ChannelListPage> createState() => _ChannelListPageState();
 }
@@ -721,7 +721,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
 // ── Instant Chat Page with Admin/Author Message Deletion ───────────────────────
 class ChatPage extends StatefulWidget {
   final String channelId, communityId;
-  const ChatPage({super, required this.channelId, required this.communityId});
+  const ChatPage({super.key, required this.channelId, required this.communityId});
   @override
   State<ChatPage> createState() => _ChatPageState();
 }
