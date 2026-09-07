@@ -13,7 +13,6 @@ import '../widgets/code_syntax_highlighter.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../shared/widgets/login_prompt_dialog.dart';
-import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
 /// Route: /ai — StudySpace AI Assistant Page with ultra-modern UI & Copy Prompt capabilities
