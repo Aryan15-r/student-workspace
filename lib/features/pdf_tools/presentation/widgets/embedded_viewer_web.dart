@@ -41,7 +41,8 @@ class _EmbeddedWebDocumentViewerState extends State<_EmbeddedWebDocumentViewer> 
     _viewId = 'web_doc_iframe_${DateTime.now().microsecondsSinceEpoch}';
 
     String iframeSrc;
-    if (widget.url != null && widget.url!.startsWith('http')) {
+    final parsedUri = widget.url != null ? Uri.tryParse(widget.url!) : null;
+    if (parsedUri != null && (parsedUri.isScheme('http') || parsedUri.isScheme('https'))) {
       iframeSrc = 'https://docs.google.com/viewer?embedded=true&url=${Uri.encodeComponent(widget.url!)}';
     } else {
       final blob = html.Blob([widget.bytes], widget.mimeType);
@@ -49,13 +50,15 @@ class _EmbeddedWebDocumentViewerState extends State<_EmbeddedWebDocumentViewer> 
       iframeSrc = _objectUrl!;
     }
 
-    // Register iframe view factory
+    // Register iframe view factory with security sandbox & no-referrer policy
     ui_web.platformViewRegistry.registerViewFactory(_viewId, (int viewId) {
       final iframe = html.IFrameElement()
         ..src = iframeSrc
         ..style.border = 'none'
         ..style.width = '100%'
-        ..style.height = '100%';
+        ..style.height = '100%'
+        ..setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms')
+        ..setAttribute('referrerpolicy', 'no-referrer');
       return iframe;
     });
   }

@@ -470,9 +470,11 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
   }
 
   void launchUrlExternally(String url) async {
-    final uri = Uri.parse(url);
-    if (await canLaunchUrl(uri)) {
-      await launchUrl(uri, mode: LaunchMode.externalApplication);
+    final uri = Uri.tryParse(url);
+    if (uri != null && (uri.isScheme('http') || uri.isScheme('https'))) {
+      if (await canLaunchUrl(uri)) {
+        await launchUrl(uri, mode: LaunchMode.externalApplication);
+      }
     }
   }
 

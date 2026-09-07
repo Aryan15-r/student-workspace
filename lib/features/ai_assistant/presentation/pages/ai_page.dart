@@ -245,7 +245,7 @@ class _MessageBubble extends StatelessWidget {
   Future<void> _launchLink(String? href) async {
     if (href == null || href.isEmpty) return;
     final uri = Uri.tryParse(href);
-    if (uri != null) {
+    if (uri != null && (uri.isScheme('http') || uri.isScheme('https'))) {
       await launchUrl(uri, mode: LaunchMode.externalApplication);
     }
   }

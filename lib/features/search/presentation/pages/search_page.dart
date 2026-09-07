@@ -44,7 +44,7 @@ class _SearchPageState extends State<SearchPage> {
 
     if (urlString.isEmpty) return;
     final uri = Uri.tryParse(urlString);
-    if (uri != null) {
+    if (uri != null && (uri.isScheme('http') || uri.isScheme('https'))) {
       try {
         await launchUrl(uri, mode: LaunchMode.externalApplication);
       } catch (e) {

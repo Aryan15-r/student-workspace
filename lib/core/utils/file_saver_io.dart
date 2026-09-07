@@ -40,7 +40,9 @@ Future<void> saveFileImpl({
     }
   }
 
-  final filePath = '${targetDir.path}${Platform.pathSeparator}$fileName';
+  // Sanitize fileName to prevent Directory Traversal (e.g., ../ or special characters)
+  final safeFileName = fileName.replaceAll(RegExp(r'[/\\]'), '_').replaceAll(RegExp(r'[^a-zA-Z0-9_\-\.]'), '_');
+  final filePath = '${targetDir.path}${Platform.pathSeparator}$safeFileName';
   final file = File(filePath);
   await file.writeAsBytes(bytes);
 
