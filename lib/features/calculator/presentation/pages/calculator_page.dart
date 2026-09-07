@@ -1,13 +1,10 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:flutter_animate/flutter_animate.dart';
 import 'package:provider/provider.dart';
 import '../../providers/calculator_provider.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../shared/widgets/login_prompt_dialog.dart';
-import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
 /// Route: /calculator — Ultra-Modern Offline Scientific Calculator
@@ -85,7 +82,7 @@ class CalculatorPage extends StatelessWidget {
                     child: ListView.separated(
                       shrinkWrap: true,
                       itemCount: history.length,
-                      separatorBuilder: (_, __) => const Divider(color: Color(0xFF1E293B), height: 1),
+                      separatorBuilder: (_, _) => const Divider(color: Color(0xFF1E293B), height: 1),
                       itemBuilder: (_, i) {
                         final item = history[i];
                         return ListTile(
