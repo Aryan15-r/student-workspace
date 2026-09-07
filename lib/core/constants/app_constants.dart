@@ -7,7 +7,7 @@ class AppConstants {
   // ── App Info ───────────────────────────────────────────────────────────────
   static const String appName    = 'StudySpace';
   static const String appTagline = 'One workspace. Less switching. More learning.';
-  static const String appVersion = '1.0.23';
+  static const String appVersion = '1.0.24';
 
   /// Google Gemini REST API endpoint
   static const String geminiBaseUrl =
