@@ -57,6 +57,12 @@ class AiService {
             'parts': [{'text': AppConstants.aiSystemPrompt}],
           },
           'contents': contents,
+          'safetySettings': [
+            {'category': 'HARM_CATEGORY_HARASSMENT', 'threshold': 'BLOCK_NONE'},
+            {'category': 'HARM_CATEGORY_HATE_SPEECH', 'threshold': 'BLOCK_NONE'},
+            {'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold': 'BLOCK_NONE'},
+            {'category': 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold': 'BLOCK_NONE'},
+          ],
           'generationConfig': {
             'temperature': 0.7,
             'maxOutputTokens': 16384,
@@ -69,13 +75,22 @@ class AiService {
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
-          final candidate = json['candidates']?[0];
-          final parts = candidate?['content']?['parts'] as List?;
+          final candidates = json['candidates'] as List?;
+          
+          if (candidates != null && candidates.isNotEmpty) {
+            final candidate = candidates[0];
+            final finishReason = candidate['finishReason'];
 
-          if (parts != null && parts.isNotEmpty) {
-            final fullText = parts.map((p) => p['text']?.toString() ?? '').join('');
-            if (fullText.trim().isNotEmpty) {
-              return cleanMathFormulas(fullText);
+            if (finishReason == 'SAFETY') {
+              return "I'm unable to generate a response for this specific prompt due to content safety policy restrictions. If you have an academic, biological, scientific, or general study question, please rephrase and ask!";
+            }
+
+            final parts = candidate['content']?['parts'] as List?;
+            if (parts != null && parts.isNotEmpty) {
+              final fullText = parts.map((p) => p['text']?.toString() ?? '').join('');
+              if (fullText.trim().isNotEmpty) {
+                return cleanMathFormulas(fullText);
+              }
             }
           }
         } else {
@@ -175,9 +190,26 @@ Return ONLY valid raw JSON.
     return results.cast<Map<String, dynamic>>();
   }
 
-  /// Dynamic AI response engine based on user prompt context
+  /// Dynamic AI response engine based on user prompt context when offline or fallback mode
   String _generateSmartResponse(String prompt) {
-    return '### 💡 StudySpace AI Overview for: *"$prompt"*\n\nHere is a structured breakdown:\n\n1. **Core Concept:** Breakdown this topic into fundamental principles and definitions.\n2. **Practical Application:** Connect the theory to concrete examples and exercises.\n3. **Key Takeaway:** Summarize the main formula or rule in one sentence for quick revision.';
+    final lower = prompt.toLowerCase().trim();
+
+    if (lower.contains('sex') || lower.contains('naughty') || lower.contains('adult')) {
+      return '### 🔬 Biological & Health Education Overview\n\n'
+          'Sexuality and reproductive health are fundamental topics in human biology, anatomy, and health education.\n\n'
+          'Key Academic Concepts:\n'
+          '- **Biology & Reproduction:** The biological process of human reproduction involving male and female gametes (sperm and egg cells).\n'
+          '- **Health & Education:** Comprehensive sex education covers reproductive anatomy, consent, safe practices, STI prevention, and emotional maturity.\n'
+          '- **Hormonal Regulation:** Estrogen, progesterone, and testosterone regulate human reproductive anatomy and secondary sexual characteristics.\n\n'
+          'If you have specific biology or health science questions, feel free to ask!';
+    }
+
+    return '### 💡 StudySpace AI Assistant\n\n'
+        'Here is an explanation regarding your query on **"$prompt"**:\n\n'
+        '1. **Core Concept:** Understanding the foundational definitions and principles of "$prompt".\n'
+        '2. **Key Insights:** Connecting theoretical knowledge to practical academic applications and real-world examples.\n'
+        '3. **Summary:** Reviewing the essential formulas, rules, or key takeaways for your study session.\n\n'
+        '*Tip: Configure your `GEMINI_API_KEY` in `.env` for full real-time AI capabilities!*';
   }
 
   Map<String, dynamic> _getFallbackSearchData(String query) {
