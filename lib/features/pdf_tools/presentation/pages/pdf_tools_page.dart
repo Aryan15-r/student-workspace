@@ -9,6 +9,7 @@ import 'package:url_launcher/url_launcher.dart';
 import 'package:desktop_drop/desktop_drop.dart';
 import 'package:pdfx/pdfx.dart';
 import 'package:archive/archive.dart';
+import '../widgets/embedded_viewer.dart';
 import '../../../../core/utils/file_saver.dart';
 import '../../providers/pdf_provider.dart';
 import '../../models/presentation_slide.dart';
@@ -1477,34 +1478,10 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
   Widget _buildViewerBody(bool isPdf, bool isPpt, bool isSheet, bool isImage, bool isTextDoc) {
     // 1. PDF
     if (isPdf) {
-      if (_pdfError) {
-        return Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
-              const SizedBox(height: 12),
-              Text('Failed to render PDF: $_pdfErrorMessage', style: const TextStyle(color: Colors.white70)),
-              const SizedBox(height: 16),
-              ElevatedButton.icon(
-                onPressed: _downloadCopy,
-                icon: const Icon(Icons.download_rounded, size: 16),
-                label: const Text('Download PDF Instead'),
-              ),
-            ],
-          ),
-        );
-      }
-      if (_pdfController == null) return const Center(child: CircularProgressIndicator(color: AppColors.primary));
-
-      return PdfViewPinch(
-        controller: _pdfController!,
-        builders: PdfViewPinchBuilders<DefaultBuilderOptions>(
-          options: const DefaultBuilderOptions(),
-          documentLoaderBuilder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
-          pageLoaderBuilder: (_) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
-          errorBuilder: (_, error) => Center(child: Text('Error loading page: $error', style: const TextStyle(color: AppColors.error))),
-        ),
+      return EmbeddedDocumentViewer(
+        bytes: widget.bytes,
+        mimeType: 'application/pdf',
+        fallbackWidget: _buildNativePdfView(),
       );
     }
 
@@ -1679,6 +1656,38 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  Widget _buildNativePdfView() {
+    if (_pdfError) {
+      return Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const Icon(Icons.error_outline_rounded, size: 48, color: AppColors.error),
+            const SizedBox(height: 12),
+            Text('Failed to render PDF: $_pdfErrorMessage', style: const TextStyle(color: Colors.white70)),
+            const SizedBox(height: 16),
+            ElevatedButton.icon(
+              onPressed: _downloadCopy,
+              icon: const Icon(Icons.download_rounded, size: 16),
+              label: const Text('Download PDF Instead'),
+            ),
+          ],
+        ),
+      );
+    }
+    if (_pdfController == null) return const Center(child: CircularProgressIndicator(color: AppColors.primary));
+
+    return PdfViewPinch(
+      controller: _pdfController!,
+      builders: PdfViewPinchBuilders<DefaultBuilderOptions>(
+        options: const DefaultBuilderOptions(),
+        documentLoaderBuilder: (context) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        pageLoaderBuilder: (context) => const Center(child: CircularProgressIndicator(color: AppColors.primary)),
+        errorBuilder: (context, error) => Center(child: Text('Error loading page: $error', style: const TextStyle(color: AppColors.error))),
       ),
     );
   }
