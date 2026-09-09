@@ -15,6 +15,7 @@ import 'features/calculator/providers/calculator_provider.dart';
 import 'features/pdf_tools/providers/pdf_provider.dart';
 import 'features/profile/providers/profile_provider.dart';
 import 'features/dashboard/providers/dashboard_provider.dart';
+import 'features/study_tools/providers/study_tools_provider.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
 /// main.dart — Entry point of StudySpace
@@ -55,6 +56,7 @@ Future<void> main() async {
         ChangeNotifierProvider(create: (_) => PdfProvider()),
         ChangeNotifierProvider(create: (_) => ProfileProvider()),
         ChangeNotifierProvider(create: (_) => DashboardProvider()),
+        ChangeNotifierProvider(create: (_) => StudyToolsProvider()),
       ],
       child: const StudySpaceApp(),
     ),
