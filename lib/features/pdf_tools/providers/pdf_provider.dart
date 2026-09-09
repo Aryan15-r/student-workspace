@@ -67,7 +67,10 @@ class PdfProvider extends ChangeNotifier {
       }
 
       final pdfBytes = await doc.save();
-      final sanitizedName = documentTitle.replaceAll(RegExp(r'[^a-zA-Z0-9_\-]'), '_');
+      final sanitizedName = documentTitle.replaceAll(
+        RegExp(r'[^a-zA-Z0-9_\-]'),
+        '_',
+      );
       final fileName = '$sanitizedName.pdf';
 
       await saveAndDownloadFile(
@@ -77,7 +80,8 @@ class PdfProvider extends ChangeNotifier {
       );
 
       _status = PdfJobStatus.done;
-      _successMessage = 'Successfully created and downloaded "$fileName" (${files.length} pages)!';
+      _successMessage =
+          'Successfully created and downloaded "$fileName" (${files.length} pages)!';
       notifyListeners();
       return true;
     } catch (e) {
@@ -112,13 +116,28 @@ class PdfProvider extends ChangeNotifier {
               margin: const pw.EdgeInsets.only(bottom: 20),
               padding: const pw.EdgeInsets.only(bottom: 8),
               decoration: const pw.BoxDecoration(
-                border: pw.Border(bottom: pw.BorderSide(color: PdfColors.indigo400, width: 1.5)),
+                border: pw.Border(
+                  bottom: pw.BorderSide(color: PdfColors.orange, width: 1.5),
+                ),
               ),
               child: pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('StudySpace Academic Notes', style: pw.TextStyle(color: PdfColors.indigo700, fontWeight: pw.FontWeight.bold, fontSize: 10)),
-                  pw.Text(dateStr, style: const pw.TextStyle(color: PdfColors.grey600, fontSize: 9)),
+                  pw.Text(
+                    'StudySpace Academic Notes',
+                    style: pw.TextStyle(
+                      color: PdfColors.orange,
+                      fontWeight: pw.FontWeight.bold,
+                      fontSize: 10,
+                    ),
+                  ),
+                  pw.Text(
+                    dateStr,
+                    style: const pw.TextStyle(
+                      color: PdfColors.grey600,
+                      fontSize: 9,
+                    ),
+                  ),
                 ],
               ),
             );
@@ -129,27 +148,62 @@ class PdfProvider extends ChangeNotifier {
               child: pw.Row(
                 mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                 children: [
-                  pw.Text('Subject: $subject', style: const pw.TextStyle(color: PdfColors.grey600, fontSize: 9)),
-                  pw.Text('Page ${context.pageNumber} of ${context.pagesCount}', style: const pw.TextStyle(color: PdfColors.grey600, fontSize: 9)),
+                  pw.Text(
+                    'Subject: $subject',
+                    style: const pw.TextStyle(
+                      color: PdfColors.grey600,
+                      fontSize: 9,
+                    ),
+                  ),
+                  pw.Text(
+                    'Page ${context.pageNumber} of ${context.pagesCount}',
+                    style: const pw.TextStyle(
+                      color: PdfColors.grey600,
+                      fontSize: 9,
+                    ),
+                  ),
                 ],
               ),
             );
           },
           build: (pw.Context context) => [
-            pw.Text(title, style: pw.TextStyle(fontSize: 22, fontWeight: pw.FontWeight.bold, color: PdfColors.indigo900)),
+            pw.Text(
+              title,
+              style: pw.TextStyle(
+                fontSize: 22,
+                fontWeight: pw.FontWeight.bold,
+                color: PdfColors.orange,
+              ),
+            ),
             pw.SizedBox(height: 6),
             pw.Row(
               children: [
                 pw.Container(
-                  padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                  padding: const pw.EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
                   decoration: pw.BoxDecoration(
-                    color: PdfColors.indigo50,
+                    color: PdfColors.orange,
                     borderRadius: pw.BorderRadius.circular(6),
                   ),
-                  child: pw.Text(subject.toUpperCase(), style: pw.TextStyle(fontSize: 9, fontWeight: pw.FontWeight.bold, color: PdfColors.indigo800)),
+                  child: pw.Text(
+                    subject.toUpperCase(),
+                    style: pw.TextStyle(
+                      fontSize: 9,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.orange,
+                    ),
+                  ),
                 ),
                 pw.SizedBox(width: 10),
-                pw.Text('Author: $studentName', style: const pw.TextStyle(fontSize: 10, color: PdfColors.grey700)),
+                pw.Text(
+                  'Author: $studentName',
+                  style: const pw.TextStyle(
+                    fontSize: 10,
+                    color: PdfColors.grey700,
+                  ),
+                ),
               ],
             ),
             pw.SizedBox(height: 20),
@@ -157,14 +211,21 @@ class PdfProvider extends ChangeNotifier {
             pw.SizedBox(height: 14),
             pw.Paragraph(
               text: notesContent,
-              style: const pw.TextStyle(fontSize: 11, lineSpacing: 3, color: PdfColors.grey900),
+              style: const pw.TextStyle(
+                fontSize: 11,
+                lineSpacing: 3,
+                color: PdfColors.grey900,
+              ),
             ),
           ],
         ),
       );
 
       final pdfBytes = await doc.save();
-      final sanitizedName = title.trim().replaceAll(RegExp(r'[^a-zA-Z0-9_\-]'), '_');
+      final sanitizedName = title.trim().replaceAll(
+        RegExp(r'[^a-zA-Z0-9_\-]'),
+        '_',
+      );
       final fileName = 'Notes_$sanitizedName.pdf';
 
       await saveAndDownloadFile(
@@ -211,7 +272,8 @@ class PdfProvider extends ChangeNotifier {
 
       String extracted = buffer.toString().trim();
       if (extracted.isEmpty) {
-        extracted = 'Extracted Document Metadata for "${file.name}":\n\n'
+        extracted =
+            'Extracted Document Metadata for "${file.name}":\n\n'
             '• File Name: ${file.name}\n'
             '• File Size: ${(file.size / 1024).toStringAsFixed(1)} KB\n'
             '• Content Type: PDF Document (Binary text objects detected)\n\n'
@@ -244,7 +306,8 @@ class PdfProvider extends ChangeNotifier {
       List<PresentationSlide> slides = [];
 
       if (apiKey.isNotEmpty && apiKey != 'your-gemini-api-key-here') {
-        final prompt = '''
+        final prompt =
+            '''
 Create a 5-slide study presentation on the topic: "$sanitizedTopic".
 Format your response ONLY as a JSON array of 5 objects with keys:
 - "title": (string, short title of the slide)
@@ -255,7 +318,9 @@ Format your response ONLY as a JSON array of 5 objects with keys:
 Do not add extra explanation or markdown fences outside the JSON. Return only the JSON array.
 ''';
 
-        final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=$apiKey');
+        final url = Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/gemini-3.6-flash:generateContent?key=$apiKey',
+        );
         final response = await http.post(
           url,
           headers: {'Content-Type': 'application/json'},
@@ -263,22 +328,32 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
             'contents': [
               {
                 'role': 'user',
-                'parts': [{'text': prompt}]
-              }
+                'parts': [
+                  {'text': prompt},
+                ],
+              },
             ],
             'generationConfig': {
               'temperature': 0.7,
               'responseMimeType': 'application/json',
-            }
+            },
           }),
         );
 
         if (response.statusCode == 200) {
           final data = jsonDecode(response.body) as Map<String, dynamic>;
-          final text = data['candidates']?[0]?['content']?['parts']?[0]?['text'] as String? ?? '[]';
-          final cleanJson = text.replaceAll('```json', '').replaceAll('```', '').trim();
+          final text =
+              data['candidates']?[0]?['content']?['parts']?[0]?['text']
+                  as String? ??
+              '[]';
+          final cleanJson = text
+              .replaceAll('```json', '')
+              .replaceAll('```', '')
+              .trim();
           final list = jsonDecode(cleanJson) as List<dynamic>;
-          slides = list.map((e) => PresentationSlide.fromJson(e as Map<String, dynamic>)).toList();
+          slides = list
+              .map((e) => PresentationSlide.fromJson(e as Map<String, dynamic>))
+              .toList();
         }
       }
 
@@ -303,7 +378,8 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
               'Essential terminology and standard unit representations',
               'Historical context and theoretical background',
             ],
-            note: 'Mastering the basics is crucial for advanced problem solving',
+            note:
+                'Mastering the basics is crucial for advanced problem solving',
           ),
           PresentationSlide(
             title: '2. Deep Dive & Mechanism',
@@ -333,14 +409,16 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
               'Important relationships and review checklist',
               'Ready for examination and collaborative study',
             ],
-            note: 'Test your understanding by explaining each point in your own words',
+            note:
+                'Test your understanding by explaining each point in your own words',
           ),
         ];
       }
 
       _generatedSlides = slides;
       _status = PdfJobStatus.done;
-      _successMessage = 'Generated ${slides.length} presentation slides for "$sanitizedTopic"!';
+      _successMessage =
+          'Generated ${slides.length} presentation slides for "$sanitizedTopic"!';
       notifyListeners();
       return true;
     } catch (e) {
@@ -371,7 +449,7 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
             build: (pw.Context context) {
               return pw.Container(
                 decoration: const pw.BoxDecoration(
-                  color: PdfColor.fromInt(0xFF0F172A), // Dark slate blue
+                  color: PdfColor.fromInt(0xFFFFFCF8), // Dark slate blue
                 ),
                 padding: const pw.EdgeInsets.all(36),
                 child: pw.Column(
@@ -381,12 +459,25 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                     pw.Row(
                       mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                       children: [
-                        pw.Text('StudySpace Presentation', style: pw.TextStyle(color: PdfColors.indigo300, fontSize: 10, fontWeight: pw.FontWeight.bold)),
-                        pw.Text('Slide ${i + 1} of ${_generatedSlides.length}', style: const pw.TextStyle(color: PdfColors.grey400, fontSize: 10)),
+                        pw.Text(
+                          'StudySpace Presentation',
+                          style: pw.TextStyle(
+                            color: PdfColors.orange,
+                            fontSize: 10,
+                            fontWeight: pw.FontWeight.bold,
+                          ),
+                        ),
+                        pw.Text(
+                          'Slide ${i + 1} of ${_generatedSlides.length}',
+                          style: const pw.TextStyle(
+                            color: PdfColors.grey400,
+                            fontSize: 10,
+                          ),
+                        ),
                       ],
                     ),
                     pw.SizedBox(height: 16),
-                    pw.Divider(color: PdfColors.indigo800),
+                    pw.Divider(color: PdfColors.orange),
                     pw.SizedBox(height: isTitleSlide ? 40 : 16),
 
                     // Slide Title
@@ -402,35 +493,47 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                       pw.SizedBox(height: 6),
                       pw.Text(
                         slide.subtitle!,
-                        style: const pw.TextStyle(fontSize: 14, color: PdfColors.cyan200),
+                        style: const pw.TextStyle(
+                          fontSize: 14,
+                          color: PdfColors.cyan200,
+                        ),
                       ),
                     ],
                     pw.SizedBox(height: isTitleSlide ? 30 : 20),
 
                     // Bullet points
-                    ...slide.bulletPoints.map((point) => pw.Padding(
-                          padding: const pw.EdgeInsets.only(bottom: 12),
-                          child: pw.Row(
-                            crossAxisAlignment: pw.CrossAxisAlignment.start,
-                            children: [
-                              pw.Container(
-                                width: 8,
-                                height: 8,
-                                margin: const pw.EdgeInsets.only(top: 4, right: 12),
-                                decoration: const pw.BoxDecoration(
-                                  color: PdfColors.indigo400,
-                                  shape: pw.BoxShape.circle,
+                    ...slide.bulletPoints.map(
+                      (point) => pw.Padding(
+                        padding: const pw.EdgeInsets.only(bottom: 12),
+                        child: pw.Row(
+                          crossAxisAlignment: pw.CrossAxisAlignment.start,
+                          children: [
+                            pw.Container(
+                              width: 8,
+                              height: 8,
+                              margin: const pw.EdgeInsets.only(
+                                top: 4,
+                                right: 12,
+                              ),
+                              decoration: const pw.BoxDecoration(
+                                color: PdfColors.orange,
+                                shape: pw.BoxShape.circle,
+                              ),
+                            ),
+                            pw.Expanded(
+                              child: pw.Text(
+                                point,
+                                style: const pw.TextStyle(
+                                  fontSize: 13,
+                                  color: PdfColors.grey200,
+                                  lineSpacing: 2,
                                 ),
                               ),
-                              pw.Expanded(
-                                child: pw.Text(
-                                  point,
-                                  style: const pw.TextStyle(fontSize: 13, color: PdfColors.grey200, lineSpacing: 2),
-                                ),
-                              ),
-                            ],
-                          ),
-                        )),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
 
                     pw.Spacer(),
 
@@ -440,13 +543,16 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                         width: double.infinity,
                         padding: const pw.EdgeInsets.all(10),
                         decoration: pw.BoxDecoration(
-                          color: const PdfColor.fromInt(0xFF1E293B),
+                          color: const PdfColor.fromInt(0xFFF7EBDD),
                           borderRadius: pw.BorderRadius.circular(8),
-                          border: pw.Border.all(color: PdfColors.indigo900),
+                          border: pw.Border.all(color: PdfColors.orange),
                         ),
                         child: pw.Text(
                           '💡 Note: ${slide.note}',
-                          style: const pw.TextStyle(fontSize: 10, color: PdfColors.indigo200),
+                          style: const pw.TextStyle(
+                            fontSize: 10,
+                            color: PdfColors.orange,
+                          ),
                         ),
                       ),
                   ],
@@ -458,7 +564,10 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
       }
 
       final pdfBytes = await doc.save();
-      final topicName = _currentPresentationTopic.replaceAll(RegExp(r'[^a-zA-Z0-9_\-]'), '_');
+      final topicName = _currentPresentationTopic.replaceAll(
+        RegExp(r'[^a-zA-Z0-9_\-]'),
+        '_',
+      );
       final fileName = 'Presentation_$topicName.pdf';
 
       await saveAndDownloadFile(
@@ -468,7 +577,8 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
       );
 
       _status = PdfJobStatus.done;
-      _successMessage = 'Successfully exported and downloaded "$fileName" slide deck!';
+      _successMessage =
+          'Successfully exported and downloaded "$fileName" slide deck!';
       notifyListeners();
       return true;
     } catch (e) {

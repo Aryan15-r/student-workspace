@@ -105,9 +105,10 @@ class ChannelMember {
     channelId: m['channel_id'] as String,
     userId: m['user_id'] as String,
     role: m['role'] as String? ?? 'member',
-    joinedAt: m['joined_at'] != null ? DateTime.parse(m['joined_at'] as String) : DateTime.now(),
+    joinedAt: m['joined_at'] != null
+        ? DateTime.parse(m['joined_at'] as String)
+        : DateTime.now(),
     username: m['profiles']?['username'] as String?,
     avatarUrl: m['profiles']?['avatar_url'] as String?,
   );
 }
-

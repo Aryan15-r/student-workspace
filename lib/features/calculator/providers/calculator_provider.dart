@@ -5,17 +5,21 @@ class CalculatorHistoryItem {
   final String expression;
   final String result;
   final DateTime timestamp;
-  CalculatorHistoryItem({required this.expression, required this.result, required this.timestamp});
+  CalculatorHistoryItem({
+    required this.expression,
+    required this.result,
+    required this.timestamp,
+  });
 }
 
 class CalculatorProvider extends ChangeNotifier {
   String _expression = ''; // What user has typed
-  String _result     = '0'; // Displayed result
-  bool   _justEvaled = false;
+  String _result = '0'; // Displayed result
+  bool _justEvaled = false;
   final List<CalculatorHistoryItem> _history = [];
 
   String get expression => _expression;
-  String get result     => _result;
+  String get result => _result;
   List<CalculatorHistoryItem> get history => List.unmodifiable(_history);
 
   void input(String val) {
@@ -56,11 +60,14 @@ class CalculatorProvider extends ChangeNotifier {
   void evaluate() {
     _evaluate(commit: true);
     if (_result != 'Error' && _expression.isNotEmpty) {
-      _history.insert(0, CalculatorHistoryItem(
-        expression: _expression,
-        result: _result,
-        timestamp: DateTime.now(),
-      ));
+      _history.insert(
+        0,
+        CalculatorHistoryItem(
+          expression: _expression,
+          result: _result,
+          timestamp: DateTime.now(),
+        ),
+      );
       _expression = _result;
       _justEvaled = true;
     }
@@ -93,12 +100,15 @@ class CalculatorProvider extends ChangeNotifier {
           .replaceAll('%', '/100');
 
       // Fix leading decimals: e.g. ".25" -> "0.25", "+.5" -> "+0.5", "(.2" -> "(0.2"
-      expr = expr.replaceAllMapped(RegExp(r'(^|[^0-9])\.([0-9])'), (m) => '${m[1]}0.${m[2]}');
+      expr = expr.replaceAllMapped(
+        RegExp(r'(^|[^0-9])\.([0-9])'),
+        (m) => '${m[1]}0.${m[2]}',
+      );
 
-      final parser  = GrammarParser();
-      final exp     = parser.parse(expr);
+      final parser = GrammarParser();
+      final exp = parser.parse(expr);
       final context = ContextModel();
-      final val     = exp.evaluate(EvaluationType.REAL, context) as double;
+      final val = exp.evaluate(EvaluationType.REAL, context) as double;
 
       if (val.isNaN || val.isInfinite) {
         _result = 'Error';
@@ -106,7 +116,9 @@ class CalculatorProvider extends ChangeNotifier {
       }
 
       // Format as int if whole number
-      _result = val == val.truncateToDouble() ? val.toInt().toString() : _trim(val.toString());
+      _result = val == val.truncateToDouble()
+          ? val.toInt().toString()
+          : _trim(val.toString());
     } catch (_) {
       _result = commit ? 'Error' : (_expression.isNotEmpty ? '...' : '0');
     }

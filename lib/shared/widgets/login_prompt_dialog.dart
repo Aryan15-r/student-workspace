@@ -24,8 +24,15 @@ class LoginPromptDialog extends StatelessWidget {
     String? customMessage,
     IconData icon = Icons.lock_outline_rounded,
   }) {
-    final effectiveTitle = title ?? (featureName != null ? '$featureName Requires Sign In' : 'Sign In Required');
-    final effectiveMessage = message ?? (customMessage ?? 'Please sign in or create a free account to unlock this feature and all tools!');
+    final effectiveTitle =
+        title ??
+        (featureName != null
+            ? '$featureName Requires Sign In'
+            : 'Sign In Required');
+    final effectiveMessage =
+        message ??
+        (customMessage ??
+            'Please sign in or create a free account to unlock this feature and all tools!');
 
     return showDialog(
       context: context,
@@ -64,7 +71,9 @@ class LoginPromptDialog extends StatelessWidget {
               const SizedBox(height: 18),
               Text(
                 title,
-                style: AppTextStyles.titleLarge.copyWith(fontWeight: FontWeight.w700),
+                style: AppTextStyles.titleLarge.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
                 textAlign: TextAlign.center,
               ),
               const SizedBox(height: 10),
@@ -87,11 +96,17 @@ class LoginPromptDialog extends StatelessWidget {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 14),
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                   child: const Text(
                     'Sign In / Create Account',
-                    style: TextStyle(fontSize: 15, fontWeight: FontWeight.w600, color: Colors.white),
+                    style: TextStyle(
+                      fontSize: 15,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
                   ),
                 ),
               ),

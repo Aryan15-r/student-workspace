@@ -4,20 +4,20 @@ import '../models/community_models.dart';
 
 class CommunityProvider extends ChangeNotifier {
   final _db = Supabase.instance.client;
-  List<Community>        _communities = [];
-  List<Channel>          _channels    = [];
-  List<CommunityMessage> _messages    = [];
-  bool    _loading = false;
+  List<Community> _communities = [];
+  List<Channel> _channels = [];
+  List<CommunityMessage> _messages = [];
+  bool _loading = false;
   String? _error;
   RealtimeChannel? _realtimeChannel;
 
-  List<Community>        get communities => _communities;
-  List<Channel>          get channels    => _channels;
-  List<CommunityMessage> get messages    => _messages;
-  List<ChannelMember>    _channelMembers = [];
-  List<ChannelMember>    get channelMembers => _channelMembers;
-  bool                   get isLoading   => _loading;
-  String?                get error       => _error;
+  List<Community> get communities => _communities;
+  List<Channel> get channels => _channels;
+  List<CommunityMessage> get messages => _messages;
+  List<ChannelMember> _channelMembers = [];
+  List<ChannelMember> get channelMembers => _channelMembers;
+  bool get isLoading => _loading;
+  String? get error => _error;
 
   Future<void> loadCommunities() async {
     _loading = true;
@@ -38,7 +38,11 @@ class CommunityProvider extends ChangeNotifier {
     _loading = true;
     notifyListeners();
     try {
-      final data = await _db.from('channels').select().eq('community_id', communityId).order('name');
+      final data = await _db
+          .from('channels')
+          .select()
+          .eq('community_id', communityId)
+          .order('name');
       _channels = (data as List).map((m) => Channel.fromMap(m)).toList();
       _error = null;
     } catch (e) {
@@ -59,7 +63,9 @@ class CommunityProvider extends ChangeNotifier {
           .eq('channel_id', channelId)
           .order('created_at')
           .limit(100);
-      _messages = (data as List).map((m) => CommunityMessage.fromMap(m)).toList();
+      _messages = (data as List)
+          .map((m) => CommunityMessage.fromMap(m))
+          .toList();
       _error = null;
       _subscribeRealtime(channelId);
       await loadChannelMembers(channelId);
@@ -77,55 +83,71 @@ class CommunityProvider extends ChangeNotifier {
           .from('channel_members')
           .select('*, profiles(username, avatar_url)')
           .eq('channel_id', channelId);
-      _channelMembers = (data as List).map((m) => ChannelMember.fromMap(m)).toList();
+      _channelMembers = (data as List)
+          .map((m) => ChannelMember.fromMap(m))
+          .toList();
       notifyListeners();
     } catch (_) {}
   }
 
   void _subscribeRealtime(String channelId) {
     _realtimeChannel?.unsubscribe();
-    _realtimeChannel = _db.channel('messages-$channelId')
-      .onPostgresChanges(
-        event: PostgresChangeEvent.insert,
-        schema: 'public',
-        table: 'messages',
-        filter: PostgresChangeFilter(type: PostgresChangeFilterType.eq, column: 'channel_id', value: channelId),
-        callback: (payload) async {
-          final newId = payload.newRecord['id'] as String?;
-          if (newId == null) return;
-          if (_messages.any((m) => m.id == newId)) return;
+    _realtimeChannel = _db
+        .channel('messages-$channelId')
+        .onPostgresChanges(
+          event: PostgresChangeEvent.insert,
+          schema: 'public',
+          table: 'messages',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'channel_id',
+            value: channelId,
+          ),
+          callback: (payload) async {
+            final newId = payload.newRecord['id'] as String?;
+            if (newId == null) return;
+            if (_messages.any((m) => m.id == newId)) return;
 
-          try {
-            final data = await _db
-                .from('messages')
-                .select('*, profiles(username, avatar_url)')
-                .eq('id', newId)
-                .maybeSingle();
-            if (data != null) {
-              final newMsg = CommunityMessage.fromMap(data);
-              _messages.removeWhere((m) => m.id.startsWith('temp-') && m.userId == newMsg.userId && m.content == newMsg.content);
-              if (!_messages.any((m) => m.id == newMsg.id)) {
-                _messages.add(newMsg);
-                notifyListeners();
+            try {
+              final data = await _db
+                  .from('messages')
+                  .select('*, profiles(username, avatar_url)')
+                  .eq('id', newId)
+                  .maybeSingle();
+              if (data != null) {
+                final newMsg = CommunityMessage.fromMap(data);
+                _messages.removeWhere(
+                  (m) =>
+                      m.id.startsWith('temp-') &&
+                      m.userId == newMsg.userId &&
+                      m.content == newMsg.content,
+                );
+                if (!_messages.any((m) => m.id == newMsg.id)) {
+                  _messages.add(newMsg);
+                  notifyListeners();
+                }
               }
+            } catch (_) {}
+          },
+        )
+        .onPostgresChanges(
+          event: PostgresChangeEvent.delete,
+          schema: 'public',
+          table: 'messages',
+          filter: PostgresChangeFilter(
+            type: PostgresChangeFilterType.eq,
+            column: 'channel_id',
+            value: channelId,
+          ),
+          callback: (payload) {
+            final oldId = payload.oldRecord['id'] as String?;
+            if (oldId != null) {
+              _messages.removeWhere((m) => m.id == oldId);
+              notifyListeners();
             }
-          } catch (_) {}
-        },
-      )
-      .onPostgresChanges(
-        event: PostgresChangeEvent.delete,
-        schema: 'public',
-        table: 'messages',
-        filter: PostgresChangeFilter(type: PostgresChangeFilterType.eq, column: 'channel_id', value: channelId),
-        callback: (payload) {
-          final oldId = payload.oldRecord['id'] as String?;
-          if (oldId != null) {
-            _messages.removeWhere((m) => m.id == oldId);
-            notifyListeners();
-          }
-        },
-      )
-      .subscribe();
+          },
+        )
+        .subscribe();
   }
 
   /// Instant Optimistic Message Sending
@@ -135,7 +157,10 @@ class CommunityProvider extends ChangeNotifier {
     final trimmed = content.trim();
 
     final tempId = 'temp-${DateTime.now().millisecondsSinceEpoch}';
-    final userName = user.userMetadata?['full_name'] as String? ?? user.email?.split('@').first ?? 'You';
+    final userName =
+        user.userMetadata?['full_name'] as String? ??
+        user.email?.split('@').first ??
+        'You';
 
     final optimisticMsg = CommunityMessage(
       id: tempId,
@@ -150,11 +175,15 @@ class CommunityProvider extends ChangeNotifier {
     notifyListeners();
 
     try {
-      final res = await _db.from('messages').insert({
-        'channel_id': channelId,
-        'user_id': user.id,
-        'content': trimmed,
-      }).select('*, profiles(username, avatar_url)').maybeSingle();
+      final res = await _db
+          .from('messages')
+          .insert({
+            'channel_id': channelId,
+            'user_id': user.id,
+            'content': trimmed,
+          })
+          .select('*, profiles(username, avatar_url)')
+          .maybeSingle();
 
       if (res != null) {
         final realMsg = CommunityMessage.fromMap(res);
@@ -211,13 +240,14 @@ class CommunityProvider extends ChangeNotifier {
           .maybeSingle();
 
       if (existing == null) {
-        _error = 'Room code "$sanitizedCode" not found! Check the code or create a new room in "New Room" section.';
+        _error =
+            'Room code "$sanitizedCode" not found! Check the code or create a new room in "New Room" section.';
         return null;
       }
 
       final communityId = existing['id'] as String;
       final roomIsPrivate = existing['is_private'] as bool? ?? false;
-      final roomPasscode  = existing['passcode'] as String? ?? '';
+      final roomPasscode = existing['passcode'] as String? ?? '';
       final roomCreatorId = existing['created_by'] as String?;
 
       if (roomIsPrivate && roomPasscode.isNotEmpty) {
@@ -244,7 +274,9 @@ class CommunityProvider extends ChangeNotifier {
           .eq('community_id', communityId)
           .maybeSingle();
 
-      final channelId = channelData != null ? channelData['id'] as String : communityId;
+      final channelId = channelData != null
+          ? channelData['id'] as String
+          : communityId;
 
       await loadCommunities();
       return {'communityId': communityId, 'channelId': channelId};
@@ -287,7 +319,8 @@ class CommunityProvider extends ChangeNotifier {
           .maybeSingle();
 
       if (existing != null) {
-        _error = 'A room named "$sanitizedName" already exists! Please use a unique room code or name.';
+        _error =
+            'A room named "$sanitizedName" already exists! Please use a unique room code or name.';
         return null;
       }
 
@@ -295,25 +328,37 @@ class CommunityProvider extends ChangeNotifier {
         'name': sanitizedName,
         'description': description?.trim().isNotEmpty == true
             ? description!.trim()
-            : (isPrivate ? 'Private Study Room #$sanitizedName' : 'Public Lounge #$sanitizedName'),
-        'icon': icon?.trim().isNotEmpty == true ? icon!.trim() : (isPrivate ? '🔒' : '💬'),
+            : (isPrivate
+                  ? 'Private Study Room #$sanitizedName'
+                  : 'Public Lounge #$sanitizedName'),
+        'icon': icon?.trim().isNotEmpty == true
+            ? icon!.trim()
+            : (isPrivate ? '🔒' : '💬'),
         'category': 'general',
         'is_private': isPrivate,
         'passcode': isPrivate ? (passcode?.trim() ?? '') : '',
         'created_by': user.id,
       };
 
-      final newComm = await _db.from('communities').insert(insertData).select().single();
+      final newComm = await _db
+          .from('communities')
+          .insert(insertData)
+          .select()
+          .single();
       final communityId = newComm['id'] as String;
 
-      final newChannel = await _db.from('channels').insert({
-        'community_id': communityId,
-        'name': 'general',
-        'description': 'Main channel in $sanitizedName',
-        'is_private': isPrivate,
-        'passcode': isPrivate ? (passcode?.trim() ?? '') : '',
-        'created_by': user.id,
-      }).select().single();
+      final newChannel = await _db
+          .from('channels')
+          .insert({
+            'community_id': communityId,
+            'name': 'general',
+            'description': 'Main channel in $sanitizedName',
+            'is_private': isPrivate,
+            'passcode': isPrivate ? (passcode?.trim() ?? '') : '',
+            'created_by': user.id,
+          })
+          .select()
+          .single();
       final channelId = newChannel['id'] as String;
 
       // Add creator as Admin member
@@ -350,7 +395,10 @@ class CommunityProvider extends ChangeNotifier {
   /// Kick Member from Channel (Admin only)
   Future<bool> kickMember(String channelId, String userId) async {
     try {
-      await _db.from('channel_members').delete().match({'channel_id': channelId, 'user_id': userId});
+      await _db.from('channel_members').delete().match({
+        'channel_id': channelId,
+        'user_id': userId,
+      });
       await loadChannelMembers(channelId);
       return true;
     } catch (e) {
@@ -364,7 +412,10 @@ class CommunityProvider extends ChangeNotifier {
     final user = _db.auth.currentUser;
     if (user == null) return false;
     try {
-      await _db.from('channel_members').delete().match({'channel_id': channelId, 'user_id': user.id});
+      await _db.from('channel_members').delete().match({
+        'channel_id': channelId,
+        'user_id': user.id,
+      });
       return true;
     } catch (e) {
       _error = 'Failed to leave channel: $e';
@@ -378,4 +429,3 @@ class CommunityProvider extends ChangeNotifier {
     super.dispose();
   }
 }
-

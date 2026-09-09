@@ -78,7 +78,7 @@ class _AiPageState extends State<AiPage> {
       selectedIndex: 2,
       child: Scaffold(
         backgroundColor: const Color(
-          0xFF0B0F17,
+          0xFFFFF8F0,
         ), // Premium dark theme background
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
@@ -89,7 +89,7 @@ class _AiPageState extends State<AiPage> {
               child: AppBar(
                 elevation: 0,
                 backgroundColor: const Color(
-                  0xFF0F172A,
+                  0xFFFFFCF8,
                 ).withValues(alpha: 0.75),
                 title: Row(
                   children: [
@@ -99,8 +99,8 @@ class _AiPageState extends State<AiPage> {
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
                               colors: [
-                                Color(0xFF6366F1),
-                                Color(0xFFA855F7),
+                                Color(0xFFE07A5F),
+                                Color(0xFFF2CC8F),
                                 Color(0xFFEC4899),
                               ],
                               begin: Alignment.topLeft,
@@ -110,7 +110,7 @@ class _AiPageState extends State<AiPage> {
                             boxShadow: [
                               BoxShadow(
                                 color: const Color(
-                                  0xFFA855F7,
+                                  0xFFF2CC8F,
                                 ).withValues(alpha: 0.4),
                                 blurRadius: 10,
                                 spreadRadius: 1,
@@ -178,7 +178,7 @@ class _AiPageState extends State<AiPage> {
                         const Text(
                           'Zero-Downtime Academic Assistant',
                           style: TextStyle(
-                            color: Color(0xFF94A3B8),
+                            color: Color(0xFF806A63),
                             fontSize: 11,
                           ),
                         ),
@@ -190,7 +190,7 @@ class _AiPageState extends State<AiPage> {
                   IconButton(
                     icon: const Icon(
                       Icons.delete_sweep_rounded,
-                      color: Color(0xFF94A3B8),
+                      color: Color(0xFF806A63),
                     ),
                     onPressed: () {
                       context.read<AiProvider>().clearChat();
@@ -222,7 +222,7 @@ class _AiPageState extends State<AiPage> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: const Color(
-                            0xFF6366F1,
+                            0xFFE07A5F,
                           ).withValues(alpha: 0.12),
                         ),
                       )
@@ -243,7 +243,7 @@ class _AiPageState extends State<AiPage> {
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
                           color: const Color(
-                            0xFFA855F7,
+                            0xFFF2CC8F,
                           ).withValues(alpha: 0.10),
                         ),
                       )
@@ -336,7 +336,7 @@ class _AiPageState extends State<AiPage> {
                             vertical: 6,
                           ),
                           color: const Color(
-                            0xFF6366F1,
+                            0xFFE07A5F,
                           ).withValues(alpha: 0.15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
@@ -344,7 +344,7 @@ class _AiPageState extends State<AiPage> {
                               const Icon(
                                 Icons.stars_rounded,
                                 size: 15,
-                                color: Color(0xFF818CF8),
+                                color: Color(0xFFD66A50),
                               ),
                               const SizedBox(width: 6),
                               Text(
@@ -360,7 +360,7 @@ class _AiPageState extends State<AiPage> {
                                   'Sign In for Unlimited',
                                   style: TextStyle(
                                     fontSize: 12,
-                                    color: Color(0xFF818CF8),
+                                    color: Color(0xFFD66A50),
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -412,8 +412,8 @@ class _EmptyChatState extends StatelessWidget {
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
                   colors: [
-                    Color(0xFF6366F1),
-                    Color(0xFFA855F7),
+                    Color(0xFFE07A5F),
+                    Color(0xFFF2CC8F),
                     Color(0xFFEC4899),
                   ],
                   begin: Alignment.topLeft,
@@ -422,7 +422,7 @@ class _EmptyChatState extends StatelessWidget {
                 shape: BoxShape.circle,
                 boxShadow: [
                   BoxShadow(
-                    color: const Color(0xFFA855F7).withValues(alpha: 0.45),
+                    color: const Color(0xFFF2CC8F).withValues(alpha: 0.45),
                     blurRadius: 20,
                     spreadRadius: 2,
                   ),
@@ -436,9 +436,9 @@ class _EmptyChatState extends StatelessWidget {
             ShaderMask(
               shaderCallback: (bounds) => const LinearGradient(
                 colors: [
-                  Color(0xFF818CF8),
+                  Color(0xFFD66A50),
                   Color(0xFFC084FC),
-                  Color(0xFFF472B6),
+                  Color(0xFFE07A5F),
                 ],
               ).createShader(bounds),
               child: const Text(
@@ -460,7 +460,7 @@ class _EmptyChatState extends StatelessWidget {
               ),
               child: const Text(
                 '⚡ Powered by Gemini 3.6 • Zero-Downtime Cascade • Copy Prompt Ready',
-                style: TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+                style: TextStyle(color: Color(0xFF806A63), fontSize: 12),
                 textAlign: TextAlign.center,
               ),
             ).animate().fadeIn(delay: 200.ms),
@@ -490,9 +490,9 @@ class _EmptyChatState extends StatelessWidget {
                           vertical: 10,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFF1E293B).withValues(alpha: 0.8),
+                          color: const Color(0xFFF7EBDD).withValues(alpha: 0.8),
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFF334155)),
+                          border: Border.all(color: const Color(0xFFE8D4C4)),
                           boxShadow: [
                             BoxShadow(
                               color: Colors.black.withValues(alpha: 0.2),
@@ -507,7 +507,7 @@ class _EmptyChatState extends StatelessWidget {
                             const Icon(
                               Icons.auto_awesome_rounded,
                               size: 14,
-                              color: Color(0xFF818CF8),
+                              color: Color(0xFFD66A50),
                             ),
                             const SizedBox(width: 8),
                             Flexible(
@@ -563,7 +563,7 @@ class _MessageBubble extends StatelessWidget {
             Text('$label copied to clipboard! 📋'),
           ],
         ),
-        backgroundColor: const Color(0xFF1E293B),
+        backgroundColor: const Color(0xFFF7EBDD),
         behavior: SnackBarBehavior.floating,
         duration: const Duration(seconds: 2),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
@@ -583,7 +583,7 @@ class _MessageBubble extends StatelessWidget {
               height: 34,
               decoration: const BoxDecoration(
                 gradient: LinearGradient(
-                  colors: [Color(0xFF6366F1), Color(0xFFA855F7)],
+                  colors: [Color(0xFFE07A5F), Color(0xFFF2CC8F)],
                 ),
                 shape: BoxShape.circle,
               ),
@@ -595,15 +595,15 @@ class _MessageBubble extends StatelessWidget {
             Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
+                color: const Color(0xFFF7EBDD),
                 borderRadius: BorderRadius.circular(18),
-                border: Border.all(color: const Color(0xFF334155)),
+                border: Border.all(color: const Color(0xFFE8D4C4)),
               ),
               child: Row(
                 children: [
                   const Text(
                     'Thinking...',
-                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                    style: TextStyle(color: Color(0xFF806A63), fontSize: 13),
                   ),
                   const SizedBox(width: 10),
                   Row(
@@ -617,7 +617,7 @@ class _MessageBubble extends StatelessWidget {
                                 width: 6,
                                 height: 6,
                                 decoration: const BoxDecoration(
-                                  color: Color(0xFF818CF8),
+                                  color: Color(0xFFD66A50),
                                   shape: BoxShape.circle,
                                 ),
                               )
@@ -650,20 +650,20 @@ class _MessageBubble extends StatelessWidget {
                   end: Alignment.bottomRight,
                 )
               : null,
-          color: isUser ? null : const Color(0xFF1E293B),
+          color: isUser ? null : const Color(0xFFF7EBDD),
           borderRadius: BorderRadius.circular(20).copyWith(
             bottomRight: isUser ? const Radius.circular(4) : null,
             bottomLeft: isUser ? null : const Radius.circular(4),
           ),
           border: Border.all(
             color: isUser
-                ? const Color(0xFF818CF8).withValues(alpha: 0.5)
-                : const Color(0xFF334155),
+                ? const Color(0xFFD66A50).withValues(alpha: 0.5)
+                : const Color(0xFFE8D4C4),
           ),
           boxShadow: [
             BoxShadow(
               color: isUser
-                  ? const Color(0xFF6366F1).withValues(alpha: 0.25)
+                  ? const Color(0xFFE07A5F).withValues(alpha: 0.25)
                   : Colors.black.withValues(alpha: 0.3),
               blurRadius: 10,
               offset: const Offset(0, 3),
@@ -679,7 +679,7 @@ class _MessageBubble extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isUser
                     ? Colors.white.withValues(alpha: 0.1)
-                    : const Color(0xFF0F172A).withValues(alpha: 0.5),
+                    : const Color(0xFFFFFCF8).withValues(alpha: 0.5),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(19),
                   topRight: Radius.circular(19),
@@ -697,7 +697,7 @@ class _MessageBubble extends StatelessWidget {
                         size: 14,
                         color: isUser
                             ? Colors.white70
-                            : const Color(0xFF818CF8),
+                            : const Color(0xFFD66A50),
                       ),
                       const SizedBox(width: 6),
                       Text(
@@ -735,7 +735,7 @@ class _MessageBubble extends StatelessWidget {
                                 size: 12,
                                 color: isUser
                                     ? Colors.white70
-                                    : const Color(0xFF94A3B8),
+                                    : const Color(0xFF806A63),
                               ),
                               const SizedBox(width: 4),
                               Text(
@@ -743,7 +743,7 @@ class _MessageBubble extends StatelessWidget {
                                 style: TextStyle(
                                   color: isUser
                                       ? Colors.white70
-                                      : const Color(0xFF94A3B8),
+                                      : const Color(0xFF806A63),
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -829,7 +829,7 @@ class _MessageBubble extends StatelessWidget {
                           fontWeight: FontWeight.w700,
                         ),
                         h3: AppTextStyles.titleMedium.copyWith(
-                          color: const Color(0xFF818CF8),
+                          color: const Color(0xFFD66A50),
                           fontWeight: FontWeight.bold,
                         ),
                         h4: const TextStyle(
@@ -838,16 +838,16 @@ class _MessageBubble extends StatelessWidget {
                           fontWeight: FontWeight.w600,
                         ),
                         code: const TextStyle(
-                          backgroundColor: Color(0xFF0F172A),
+                          backgroundColor: Color(0xFFFFFCF8),
                           color: Color(0xFF38BDF8),
                           fontFamily: 'monospace',
                           fontSize: 13,
                           fontWeight: FontWeight.w500,
                         ),
                         codeblockDecoration: BoxDecoration(
-                          color: const Color(0xFF0F172A),
+                          color: const Color(0xFFFFFCF8),
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFF334155)),
+                          border: Border.all(color: const Color(0xFFE8D4C4)),
                         ),
                         blockquote: const TextStyle(
                           color: Color(0xFFCBD5E1),
@@ -856,12 +856,12 @@ class _MessageBubble extends StatelessWidget {
                         blockquoteDecoration: BoxDecoration(
                           border: const Border(
                             left: BorderSide(
-                              color: Color(0xFF818CF8),
+                              color: Color(0xFFD66A50),
                               width: 3,
                             ),
                           ),
                           color: const Color(
-                            0xFF6366F1,
+                            0xFFE07A5F,
                           ).withValues(alpha: 0.08),
                         ),
                         blockquotePadding: const EdgeInsets.symmetric(
@@ -869,7 +869,7 @@ class _MessageBubble extends StatelessWidget {
                           vertical: 8,
                         ),
                         listBullet: const TextStyle(
-                          color: Color(0xFF818CF8),
+                          color: Color(0xFFD66A50),
                           fontWeight: FontWeight.bold,
                         ),
                         strong: const TextStyle(
@@ -878,7 +878,7 @@ class _MessageBubble extends StatelessWidget {
                         ),
                         em: const TextStyle(
                           fontStyle: FontStyle.italic,
-                          color: Color(0xFF94A3B8),
+                          color: Color(0xFF806A63),
                         ),
                         a: const TextStyle(
                           color: Color(0xFF38BDF8),
@@ -894,7 +894,7 @@ class _MessageBubble extends StatelessWidget {
                           fontSize: 13,
                         ),
                         tableBorder: TableBorder.all(
-                          color: const Color(0xFF334155),
+                          color: const Color(0xFFE8D4C4),
                           width: 1,
                         ),
                         tablePadding: const EdgeInsets.all(8),
@@ -925,9 +925,9 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
       return Container(
         padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2),
         decoration: BoxDecoration(
-          color: const Color(0xFF0F172A),
+          color: const Color(0xFFFFFCF8),
           borderRadius: BorderRadius.circular(6),
-          border: Border.all(color: const Color(0xFF334155)),
+          border: Border.all(color: const Color(0xFFE8D4C4)),
         ),
         child: Text(
           rawText,
@@ -951,7 +951,7 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
       decoration: BoxDecoration(
         color: const Color(0xFF090D16),
         borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: const Color(0xFF334155)),
+        border: Border.all(color: const Color(0xFFE8D4C4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -959,12 +959,12 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
             decoration: const BoxDecoration(
-              color: Color(0xFF0F172A),
+              color: Color(0xFFFFFCF8),
               borderRadius: BorderRadius.only(
                 topLeft: Radius.circular(9),
                 topRight: Radius.circular(9),
               ),
-              border: Border(bottom: BorderSide(color: Color(0xFF334155))),
+              border: Border(bottom: BorderSide(color: Color(0xFFE8D4C4))),
             ),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -980,7 +980,7 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
                     Text(
                       displayLanguage,
                       style: const TextStyle(
-                        color: Color(0xFF94A3B8),
+                        color: Color(0xFF806A63),
                         fontSize: 11,
                         fontWeight: FontWeight.w700,
                         letterSpacing: 0.5,
@@ -998,13 +998,13 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
                         Icon(
                           Icons.copy_rounded,
                           size: 12,
-                          color: Color(0xFF94A3B8),
+                          color: Color(0xFF806A63),
                         ),
                         SizedBox(width: 4),
                         Text(
                           'Copy Code',
                           style: TextStyle(
-                            color: Color(0xFF94A3B8),
+                            color: Color(0xFF806A63),
                             fontSize: 11,
                             fontWeight: FontWeight.w500,
                           ),
@@ -1051,12 +1051,12 @@ class _InputBar extends StatelessWidget {
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFF1E293B),
+                color: const Color(0xFFF7EBDD),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                   color: focusNode.hasFocus
-                      ? const Color(0xFF818CF8)
-                      : const Color(0xFF334155),
+                      ? const Color(0xFFD66A50)
+                      : const Color(0xFFE8D4C4),
                   width: 1.2,
                 ),
               ),
@@ -1114,14 +1114,14 @@ class _InputBar extends StatelessWidget {
                     width: 46,
                     height: 46,
                     decoration: BoxDecoration(
-                      color: const Color(0xFF6366F1).withValues(alpha: 0.2),
+                      color: const Color(0xFFE07A5F).withValues(alpha: 0.2),
                       shape: BoxShape.circle,
                     ),
                     child: const Padding(
                       padding: EdgeInsets.all(13),
                       child: CircularProgressIndicator(
                         strokeWidth: 2.5,
-                        color: Color(0xFF818CF8),
+                        color: Color(0xFFD66A50),
                       ),
                     ),
                   )
@@ -1132,7 +1132,7 @@ class _InputBar extends StatelessWidget {
                       height: 46,
                       decoration: BoxDecoration(
                         gradient: const LinearGradient(
-                          colors: [Color(0xFF6366F1), Color(0xFFA855F7)],
+                          colors: [Color(0xFFE07A5F), Color(0xFFF2CC8F)],
                           begin: Alignment.topLeft,
                           end: Alignment.bottomRight,
                         ),
@@ -1140,7 +1140,7 @@ class _InputBar extends StatelessWidget {
                         boxShadow: [
                           BoxShadow(
                             color: const Color(
-                              0xFF6366F1,
+                              0xFFE07A5F,
                             ).withValues(alpha: 0.4),
                             blurRadius: 10,
                             offset: const Offset(0, 2),

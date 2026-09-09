@@ -9,11 +9,7 @@ Widget buildEmbeddedDocumentWidget({
   String? url,
   required Widget fallbackWidget,
 }) {
-  return _EmbeddedWebDocumentViewer(
-    bytes: bytes,
-    mimeType: mimeType,
-    url: url,
-  );
+  return _EmbeddedWebDocumentViewer(bytes: bytes, mimeType: mimeType, url: url);
 }
 
 class _EmbeddedWebDocumentViewer extends StatefulWidget {
@@ -28,10 +24,12 @@ class _EmbeddedWebDocumentViewer extends StatefulWidget {
   });
 
   @override
-  State<_EmbeddedWebDocumentViewer> createState() => _EmbeddedWebDocumentViewerState();
+  State<_EmbeddedWebDocumentViewer> createState() =>
+      _EmbeddedWebDocumentViewerState();
 }
 
-class _EmbeddedWebDocumentViewerState extends State<_EmbeddedWebDocumentViewer> {
+class _EmbeddedWebDocumentViewerState
+    extends State<_EmbeddedWebDocumentViewer> {
   late String _viewId;
   String? _objectUrl;
 
@@ -42,8 +40,10 @@ class _EmbeddedWebDocumentViewerState extends State<_EmbeddedWebDocumentViewer> 
 
     String iframeSrc;
     final parsedUri = widget.url != null ? Uri.tryParse(widget.url!) : null;
-    if (parsedUri != null && (parsedUri.isScheme('http') || parsedUri.isScheme('https'))) {
-      iframeSrc = 'https://docs.google.com/viewer?embedded=true&url=${Uri.encodeComponent(widget.url!)}';
+    if (parsedUri != null &&
+        (parsedUri.isScheme('http') || parsedUri.isScheme('https'))) {
+      iframeSrc =
+          'https://docs.google.com/viewer?embedded=true&url=${Uri.encodeComponent(widget.url!)}';
     } else {
       final blob = html.Blob([widget.bytes], widget.mimeType);
       _objectUrl = html.Url.createObjectUrlFromBlob(blob);
@@ -57,7 +57,10 @@ class _EmbeddedWebDocumentViewerState extends State<_EmbeddedWebDocumentViewer> 
         ..style.border = 'none'
         ..style.width = '100%'
         ..style.height = '100%'
-        ..setAttribute('sandbox', 'allow-scripts allow-same-origin allow-popups allow-forms')
+        ..setAttribute(
+          'sandbox',
+          'allow-scripts allow-same-origin allow-popups allow-forms',
+        )
         ..setAttribute('referrerpolicy', 'no-referrer');
       return iframe;
     });

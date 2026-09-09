@@ -160,7 +160,7 @@ class AppTheme {
         unselectedIconTheme: IconThemeData(color: AppColors.textMuted),
         selectedLabelTextStyle: TextStyle(color: AppColors.primary),
         unselectedLabelTextStyle: TextStyle(color: AppColors.textMuted),
-        indicatorColor: Color(0x336366F1), // primary with 20% opacity
+        indicatorColor: Color(0x33E07A5F), // primary with 20% opacity
       ),
 
       // ── Divider ───────────────────────────────────────────────────────────

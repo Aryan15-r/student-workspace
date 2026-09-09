@@ -9,10 +9,10 @@ import '../../../../app/theme/app_text_styles.dart';
 import '../../../../shared/widgets/app_logo.dart';
 
 enum _ResetStep {
-  enterEmail,     // Step 1: Enter email -> Send OTP
-  enterOtp,       // Step 2: Enter 6-digit OTP only -> Verify OTP
+  enterEmail, // Step 1: Enter email -> Send OTP
+  enterOtp, // Step 2: Enter 6-digit OTP only -> Verify OTP
   setNewPassword, // Step 3: Enter new password & confirm -> Set Password
-  success,        // Step 4: Password changed confirmation -> Back to Login
+  success, // Step 4: Password changed confirmation -> Back to Login
 }
 
 /// Route: /forgot-password or /reset-password
@@ -112,7 +112,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Failed to send OTP. Please check your email.'),
+          content: Text(
+            auth.error ?? 'Failed to send OTP. Please check your email.',
+          ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -164,7 +166,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Invalid verification code. Please check your 6-digit OTP.'),
+          content: Text(
+            auth.error ??
+                'Invalid verification code. Please check your 6-digit OTP.',
+          ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -188,7 +193,9 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(auth.error ?? 'Failed to update password. Please try again.'),
+          content: Text(
+            auth.error ?? 'Failed to update password. Please try again.',
+          ),
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
@@ -238,12 +245,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
       children: [
         IconButton(
           onPressed: () => context.go('/login'),
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: AppColors.textSecondary,
+          ),
           padding: EdgeInsets.zero,
         ),
         const SizedBox(height: 20),
-        const Center(child: AppLogo(size: 44, horizontal: true))
-            .animate().fadeIn(duration: 400.ms),
+        const Center(
+          child: AppLogo(size: 44, horizontal: true),
+        ).animate().fadeIn(duration: 400.ms),
         const SizedBox(height: 32),
         Container(
           padding: const EdgeInsets.all(12),
@@ -251,15 +262,24 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             color: AppColors.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.lock_reset_rounded, color: AppColors.primary, size: 36),
+          child: const Icon(
+            Icons.lock_reset_rounded,
+            color: AppColors.primary,
+            size: 36,
+          ),
         ).animate().fadeIn().scale(),
         const SizedBox(height: 20),
-        Text('Forgot password?', style: AppTextStyles.headlineLarge)
-            .animate().fadeIn(delay: 100.ms),
+        Text(
+          'Forgot password?',
+          style: AppTextStyles.headlineLarge,
+        ).animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 8),
         Text(
           "Enter your registered email and we'll send you a 6-digit verification OTP code.",
-          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+            height: 1.4,
+          ),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 32),
         Form(
@@ -273,11 +293,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 decoration: const InputDecoration(
                   labelText: 'Email Address',
                   hintText: 'student@example.com',
-                  prefixIcon: Icon(Icons.email_outlined, color: AppColors.textMuted),
+                  prefixIcon: Icon(
+                    Icons.email_outlined,
+                    color: AppColors.textMuted,
+                  ),
                 ),
                 validator: (v) {
-                  if (v == null || v.trim().isEmpty) return 'Please enter your email';
-                  if (!v.contains('@') || !v.contains('.')) return 'Please enter a valid email address';
+                  if (v == null || v.trim().isEmpty)
+                    return 'Please enter your email';
+                  if (!v.contains('@') || !v.contains('.'))
+                    return 'Please enter a valid email address';
                   return null;
                 },
               ),
@@ -285,23 +310,34 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               SizedBox(
                 width: double.infinity,
                 child: ElevatedButton(
-                  onPressed: auth.isLoading || isCooldownActive ? null : _sendResetCode,
+                  onPressed: auth.isLoading || isCooldownActive
+                      ? null
+                      : _sendResetCode,
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                   child: auth.isLoading
                       ? const SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
                       : Text(
                           isCooldownActive
                               ? 'Resend in ${_resendSeconds}s'
                               : 'Send Verification OTP',
-                          style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                          style: const TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                 ),
               ),
@@ -310,13 +346,21 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 SizedBox(
                   width: double.infinity,
                   child: OutlinedButton.icon(
-                    icon: const Icon(Icons.pin_outlined, size: 18, color: AppColors.primary),
-                    label: const Text('Already have OTP? Enter Code ➔', style: TextStyle(color: AppColors.primary)),
+                    icon: const Icon(
+                      Icons.pin_outlined,
+                      size: 18,
+                      color: AppColors.primary,
+                    ),
+                    label: const Text(
+                      'Already have OTP? Enter Code ➔',
+                      style: TextStyle(color: AppColors.primary),
+                    ),
                     style: OutlinedButton.styleFrom(
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       side: const BorderSide(color: AppColors.primary),
                     ),
-                    onPressed: () => setState(() => _currentStep = _ResetStep.enterOtp),
+                    onPressed: () =>
+                        setState(() => _currentStep = _ResetStep.enterOtp),
                   ),
                 ),
               ],
@@ -344,12 +388,17 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             IconButton(
-              onPressed: () => setState(() => _currentStep = _ResetStep.enterEmail),
-              icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+              onPressed: () =>
+                  setState(() => _currentStep = _ResetStep.enterEmail),
+              icon: const Icon(
+                Icons.arrow_back_rounded,
+                color: AppColors.textSecondary,
+              ),
               padding: EdgeInsets.zero,
             ),
             TextButton(
-              onPressed: () => setState(() => _currentStep = _ResetStep.enterEmail),
+              onPressed: () =>
+                  setState(() => _currentStep = _ResetStep.enterEmail),
               child: const Text('Change email', style: TextStyle(fontSize: 13)),
             ),
           ],
@@ -361,15 +410,24 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             color: AppColors.primary.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.mark_email_read_outlined, color: AppColors.primary, size: 36),
+          child: const Icon(
+            Icons.mark_email_read_outlined,
+            color: AppColors.primary,
+            size: 36,
+          ),
         ).animate().fadeIn().scale(),
         const SizedBox(height: 20),
-        Text('Enter Verification OTP', style: AppTextStyles.headlineLarge)
-            .animate().fadeIn(delay: 100.ms),
+        Text(
+          'Enter Verification OTP',
+          style: AppTextStyles.headlineLarge,
+        ).animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 8),
         Text(
           'Please enter the 6-digit verification code sent to ${_emailCtrl.text.trim()}.',
-          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+            height: 1.4,
+          ),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 28),
         Form(
@@ -396,11 +454,16 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                     letterSpacing: 6,
                     color: AppColors.textMuted.withValues(alpha: 0.4),
                   ),
-                  prefixIcon: const Icon(Icons.security_rounded, color: AppColors.primary),
+                  prefixIcon: const Icon(
+                    Icons.security_rounded,
+                    color: AppColors.primary,
+                  ),
                 ),
                 validator: (v) {
-                  if (v == null || v.trim().isEmpty) return 'Enter the 6-digit OTP code from your email';
-                  if (v.trim().length < 6) return 'Code must be at least 6 digits';
+                  if (v == null || v.trim().isEmpty)
+                    return 'Enter the 6-digit OTP code from your email';
+                  if (v.trim().length < 6)
+                    return 'Code must be at least 6 digits';
                   return null;
                 },
               ),
@@ -412,17 +475,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                   child: auth.isLoading
                       ? const SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
                       : const Text(
                           'Verify OTP Code',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                 ),
               ),
@@ -431,13 +503,20 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text("Didn't receive OTP? ", style: AppTextStyles.bodySmall),
+                    Text(
+                      "Didn't receive OTP? ",
+                      style: AppTextStyles.bodySmall,
+                    ),
                     TextButton(
                       onPressed: _resendSeconds > 0 ? null : _resendCode,
                       child: Text(
-                        _resendSeconds > 0 ? 'Resend in ${_resendSeconds}s' : 'Resend OTP',
+                        _resendSeconds > 0
+                            ? 'Resend in ${_resendSeconds}s'
+                            : 'Resend OTP',
                         style: TextStyle(
-                          color: _resendSeconds > 0 ? AppColors.textMuted : AppColors.primary,
+                          color: _resendSeconds > 0
+                              ? AppColors.textMuted
+                              : AppColors.primary,
                           fontWeight: FontWeight.w600,
                           fontSize: 13,
                         ),
@@ -463,7 +542,10 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             auth.clearPasswordRecovery();
             context.go('/login');
           },
-          icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+          icon: const Icon(
+            Icons.arrow_back_rounded,
+            color: AppColors.textSecondary,
+          ),
           padding: EdgeInsets.zero,
         ),
         const SizedBox(height: 16),
@@ -473,15 +555,24 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             color: AppColors.success.withValues(alpha: 0.1),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: const Icon(Icons.lock_outline_rounded, color: AppColors.success, size: 36),
+          child: const Icon(
+            Icons.lock_outline_rounded,
+            color: AppColors.success,
+            size: 36,
+          ),
         ).animate().fadeIn().scale(),
         const SizedBox(height: 20),
-        Text('Create New Password', style: AppTextStyles.headlineLarge)
-            .animate().fadeIn(delay: 100.ms),
+        Text(
+          'Create New Password',
+          style: AppTextStyles.headlineLarge,
+        ).animate().fadeIn(delay: 100.ms),
         const SizedBox(height: 8),
         Text(
           'Your verification is complete. Please choose a strong new password for your account.',
-          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+            height: 1.4,
+          ),
         ).animate().fadeIn(delay: 200.ms),
         const SizedBox(height: 28),
         Form(
@@ -495,18 +586,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 style: const TextStyle(color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   labelText: 'New Password',
-                  prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppColors.textMuted),
+                  prefixIcon: const Icon(
+                    Icons.lock_outline_rounded,
+                    color: AppColors.textMuted,
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscurePassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      _obscurePassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
                       color: AppColors.textMuted,
                     ),
-                    onPressed: () => setState(() => _obscurePassword = !_obscurePassword),
+                    onPressed: () =>
+                        setState(() => _obscurePassword = !_obscurePassword),
                   ),
                 ),
                 validator: (v) {
-                  if (v == null || v.isEmpty) return 'Please enter a new password';
-                  if (v.length < 6) return 'Password must be at least 6 characters';
+                  if (v == null || v.isEmpty)
+                    return 'Please enter a new password';
+                  if (v.length < 6)
+                    return 'Password must be at least 6 characters';
                   return null;
                 },
               ),
@@ -517,18 +616,27 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                 style: const TextStyle(color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   labelText: 'Confirm New Password',
-                  prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppColors.textMuted),
+                  prefixIcon: const Icon(
+                    Icons.lock_outline_rounded,
+                    color: AppColors.textMuted,
+                  ),
                   suffixIcon: IconButton(
                     icon: Icon(
-                      _obscureConfirmPassword ? Icons.visibility_off_outlined : Icons.visibility_outlined,
+                      _obscureConfirmPassword
+                          ? Icons.visibility_off_outlined
+                          : Icons.visibility_outlined,
                       color: AppColors.textMuted,
                     ),
-                    onPressed: () => setState(() => _obscureConfirmPassword = !_obscureConfirmPassword),
+                    onPressed: () => setState(
+                      () => _obscureConfirmPassword = !_obscureConfirmPassword,
+                    ),
                   ),
                 ),
                 validator: (v) {
-                  if (v == null || v.isEmpty) return 'Please confirm your password';
-                  if (v != _newPasswordCtrl.text) return 'Passwords do not match';
+                  if (v == null || v.isEmpty)
+                    return 'Please confirm your password';
+                  if (v != _newPasswordCtrl.text)
+                    return 'Passwords do not match';
                   return null;
                 },
               ),
@@ -540,17 +648,26 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   style: ElevatedButton.styleFrom(
                     padding: const EdgeInsets.symmetric(vertical: 18),
                     backgroundColor: AppColors.primary,
-                    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(14),
+                    ),
                   ),
                   child: auth.isLoading
                       ? const SizedBox(
                           width: 20,
                           height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
                         )
                       : const Text(
                           'Set New Password',
-                          style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 16,
+                            fontWeight: FontWeight.w600,
+                            color: Colors.white,
+                          ),
                         ),
                 ),
               ),
@@ -573,14 +690,25 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             color: AppColors.success.withValues(alpha: 0.15),
             shape: BoxShape.circle,
           ),
-          child: const Icon(Icons.check_circle_rounded, color: AppColors.success, size: 48),
+          child: const Icon(
+            Icons.check_circle_rounded,
+            color: AppColors.success,
+            size: 48,
+          ),
         ).animate().fadeIn().scale(),
         const SizedBox(height: 24),
-        Text('Password Reset Successfully!', style: AppTextStyles.headlineMedium, textAlign: TextAlign.center),
+        Text(
+          'Password Reset Successfully!',
+          style: AppTextStyles.headlineMedium,
+          textAlign: TextAlign.center,
+        ),
         const SizedBox(height: 12),
         Text(
           'Your password has been changed. You can now sign in to StudySpace with your new password.',
-          style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
+          style: AppTextStyles.bodyMedium.copyWith(
+            color: AppColors.textSecondary,
+            height: 1.4,
+          ),
           textAlign: TextAlign.center,
         ),
         const SizedBox(height: 36),
@@ -595,9 +723,18 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 18),
               backgroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
-            child: const Text('Back to Login', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white)),
+            child: const Text(
+              'Back to Login',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
+            ),
           ),
         ),
       ],

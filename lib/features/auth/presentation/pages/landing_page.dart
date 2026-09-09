@@ -46,16 +46,21 @@ class _NarrowLayout extends StatelessWidget {
 
           // Logo + name
           const AppLogo(size: 64)
-              .animate().fadeIn(duration: 600.ms).scale(begin: const Offset(0.8, 0.8)),
+              .animate()
+              .fadeIn(duration: 600.ms)
+              .scale(begin: const Offset(0.8, 0.8)),
 
           const SizedBox(height: 48),
 
           // Hero headline
           Text(
-            'One workspace.\nLess switching.\nMore learning.',
-            style: AppTextStyles.displayLarge.copyWith(fontSize: 36),
-            textAlign: TextAlign.center,
-          ).animate().fadeIn(delay: 200.ms, duration: 600.ms).slideY(begin: 0.2, end: 0),
+                'One workspace.\nLess switching.\nMore learning.',
+                style: AppTextStyles.displayLarge.copyWith(fontSize: 36),
+                textAlign: TextAlign.center,
+              )
+              .animate()
+              .fadeIn(delay: 200.ms, duration: 600.ms)
+              .slideY(begin: 0.2, end: 0),
 
           const SizedBox(height: 16),
 
@@ -68,14 +73,18 @@ class _NarrowLayout extends StatelessWidget {
           const SizedBox(height: 48),
 
           // Feature pills
-          const _FeatureHighlights()
-              .animate().fadeIn(delay: 600.ms, duration: 500.ms),
+          const _FeatureHighlights().animate().fadeIn(
+            delay: 600.ms,
+            duration: 500.ms,
+          ),
 
           const SizedBox(height: 56),
 
           // CTA Buttons
           _CTAButtons()
-              .animate().fadeIn(delay: 800.ms, duration: 500.ms).slideY(begin: 0.2, end: 0),
+              .animate()
+              .fadeIn(delay: 800.ms, duration: 500.ms)
+              .slideY(begin: 0.2, end: 0),
         ],
       ),
     );
@@ -97,13 +106,18 @@ class _WideLayout extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const AppLogo(size: 48, horizontal: true)
-                    .animate().fadeIn(duration: 600.ms),
+                const AppLogo(
+                  size: 48,
+                  horizontal: true,
+                ).animate().fadeIn(duration: 600.ms),
                 const SizedBox(height: 48),
                 Text(
-                  'One workspace.\nLess switching.\nMore learning.',
-                  style: AppTextStyles.displayLarge,
-                ).animate().fadeIn(delay: 200.ms, duration: 600.ms).slideX(begin: -0.1, end: 0),
+                      'One workspace.\nLess switching.\nMore learning.',
+                      style: AppTextStyles.displayLarge,
+                    )
+                    .animate()
+                    .fadeIn(delay: 200.ms, duration: 600.ms)
+                    .slideX(begin: -0.1, end: 0),
                 const SizedBox(height: 20),
                 Text(
                   'Everything a student needs, in one place.',
@@ -121,7 +135,9 @@ class _WideLayout extends StatelessWidget {
           child: Padding(
             padding: const EdgeInsets.all(48),
             child: const _FeatureHighlights(vertical: true)
-                .animate().fadeIn(delay: 400.ms, duration: 600.ms).slideX(begin: 0.1, end: 0),
+                .animate()
+                .fadeIn(delay: 400.ms, duration: 600.ms)
+                .slideX(begin: 0.1, end: 0),
           ),
         ),
       ],
@@ -135,22 +151,42 @@ class _FeatureHighlights extends StatelessWidget {
   const _FeatureHighlights({this.vertical = false});
 
   static const _features = [
-    _Feature(icon: '🤖', label: 'AI Assistant',   desc: 'Get instant explanations'),
-    _Feature(icon: '✅', label: 'To-Do List',      desc: 'Track assignments & deadlines'),
-    _Feature(icon: '🔍', label: 'Smart Search',   desc: 'Find free study resources'),
-    _Feature(icon: '💬', label: 'Community',       desc: 'Discuss with classmates'),
-    _Feature(icon: '🧮', label: 'Calculator',      desc: 'Scientific, works offline'),
-    _Feature(icon: '📄', label: 'PDF Tools',       desc: 'Convert and process PDFs'),
+    _Feature(
+      icon: '🤖',
+      label: 'AI Assistant',
+      desc: 'Get instant explanations',
+    ),
+    _Feature(
+      icon: '✅',
+      label: 'To-Do List',
+      desc: 'Track assignments & deadlines',
+    ),
+    _Feature(
+      icon: '🔍',
+      label: 'Smart Search',
+      desc: 'Find free study resources',
+    ),
+    _Feature(icon: '💬', label: 'Community', desc: 'Discuss with classmates'),
+    _Feature(
+      icon: '🧮',
+      label: 'Calculator',
+      desc: 'Scientific, works offline',
+    ),
+    _Feature(icon: '📄', label: 'PDF Tools', desc: 'Convert and process PDFs'),
   ];
 
   @override
   Widget build(BuildContext context) {
     if (vertical) {
       return Column(
-        children: _features.map((f) => Padding(
-          padding: const EdgeInsets.only(bottom: 12),
-          child: _FeatureTile(feature: f),
-        )).toList(),
+        children: _features
+            .map(
+              (f) => Padding(
+                padding: const EdgeInsets.only(bottom: 12),
+                child: _FeatureTile(feature: f),
+              ),
+            )
+            .toList(),
       );
     }
 
@@ -186,7 +222,12 @@ class _FeatureChip extends StatelessWidget {
         children: [
           Text(feature.icon, style: const TextStyle(fontSize: 16)),
           const SizedBox(width: 8),
-          Text(feature.label, style: AppTextStyles.labelLarge.copyWith(color: AppColors.textSecondary)),
+          Text(
+            feature.label,
+            style: AppTextStyles.labelLarge.copyWith(
+              color: AppColors.textSecondary,
+            ),
+          ),
         ],
       ),
     );
@@ -240,11 +281,17 @@ class _CTAButtons extends StatelessWidget {
             style: ElevatedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 18),
               backgroundColor: AppColors.primary,
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
             child: const Text(
               'Get Started — It\'s Free',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: Colors.white,
+              ),
             ),
           ),
         ),
@@ -256,11 +303,17 @@ class _CTAButtons extends StatelessWidget {
             style: OutlinedButton.styleFrom(
               padding: const EdgeInsets.symmetric(vertical: 18),
               side: const BorderSide(color: AppColors.border),
-              shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(14),
+              ),
             ),
             child: const Text(
               'Sign In',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: AppColors.textSecondary),
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w600,
+                color: AppColors.textSecondary,
+              ),
             ),
           ),
         ),
@@ -270,10 +323,18 @@ class _CTAButtons extends StatelessWidget {
             context.read<AuthProvider>().continueAsGuest();
             context.go('/dashboard');
           },
-          icon: const Icon(Icons.person_outline_rounded, size: 18, color: AppColors.primary),
+          icon: const Icon(
+            Icons.person_outline_rounded,
+            size: 18,
+            color: AppColors.primary,
+          ),
           label: const Text(
             'Continue as Guest (Limited Access)',
-            style: TextStyle(fontSize: 14, fontWeight: FontWeight.w600, color: AppColors.primary),
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.primary,
+            ),
           ),
         ),
       ],

@@ -29,14 +29,14 @@ class UserProfile {
   /// Converts a Supabase row (a Map) into a UserProfile object
   factory UserProfile.fromMap(Map<String, dynamic> map) {
     return UserProfile(
-      id:        map['id'] as String,
-      username:  map['username'] as String? ?? '',
-      fullName:  map['full_name'] as String? ?? '',
+      id: map['id'] as String,
+      username: map['username'] as String? ?? '',
+      fullName: map['full_name'] as String? ?? '',
       avatarUrl: map['avatar_url'] as String? ?? '',
-      bio:       map['bio'] as String? ?? '',
-      college:   map['college'] as String? ?? '',
-      branch:    map['branch'] as String? ?? '',
-      year:      map['year'] as int?,
+      bio: map['bio'] as String? ?? '',
+      college: map['college'] as String? ?? '',
+      branch: map['branch'] as String? ?? '',
+      year: map['year'] as int?,
       createdAt: DateTime.parse(map['created_at'] as String),
     );
   }
@@ -44,14 +44,14 @@ class UserProfile {
   /// Converts a UserProfile object back to a Map (for Supabase updates)
   Map<String, dynamic> toMap() {
     return {
-      'id':        id,
-      'username':  username,
+      'id': id,
+      'username': username,
       'full_name': fullName,
-      'avatar_url':avatarUrl,
-      'bio':       bio,
-      'college':   college,
-      'branch':    branch,
-      'year':      year,
+      'avatar_url': avatarUrl,
+      'bio': bio,
+      'college': college,
+      'branch': branch,
+      'year': year,
     };
   }
 
@@ -62,7 +62,8 @@ class UserProfile {
   String get initials {
     if (fullName.isNotEmpty) {
       final parts = fullName.trim().split(' ');
-      if (parts.length >= 2) return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+      if (parts.length >= 2)
+        return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
       return fullName[0].toUpperCase();
     }
     return username.isNotEmpty ? username[0].toUpperCase() : '?';
@@ -79,14 +80,14 @@ class UserProfile {
     int? year,
   }) {
     return UserProfile(
-      id:        id,
-      username:  username  ?? this.username,
-      fullName:  fullName  ?? this.fullName,
+      id: id,
+      username: username ?? this.username,
+      fullName: fullName ?? this.fullName,
       avatarUrl: avatarUrl ?? this.avatarUrl,
-      bio:       bio       ?? this.bio,
-      college:   college   ?? this.college,
-      branch:    branch    ?? this.branch,
-      year:      year      ?? this.year,
+      bio: bio ?? this.bio,
+      college: college ?? this.college,
+      branch: branch ?? this.branch,
+      year: year ?? this.year,
       createdAt: createdAt,
     );
   }

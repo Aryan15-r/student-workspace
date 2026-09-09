@@ -9,20 +9,29 @@ class DashboardProvider extends ChangeNotifier {
   bool _loading = false;
 
   List<Task> get todayTasks => _todayTasks;
-  bool       get isLoading  => _loading;
+  bool get isLoading => _loading;
 
   Future<void> load() async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
-    _loading = true; notifyListeners();
+    _loading = true;
+    notifyListeners();
     try {
       final all = await _todoRepo.fetchTasks(userId);
       final now = DateTime.now();
-      _todayTasks = all.where((t) {
-        if (t.completed || t.dueDate == null) return false;
-        return t.dueDate!.year == now.year && t.dueDate!.month == now.month && t.dueDate!.day == now.day;
-      }).take(3).toList();
-    } catch (_) {}
-    finally { _loading = false; notifyListeners(); }
+      _todayTasks = all
+          .where((t) {
+            if (t.completed || t.dueDate == null) return false;
+            return t.dueDate!.year == now.year &&
+                t.dueDate!.month == now.month &&
+                t.dueDate!.day == now.day;
+          })
+          .take(3)
+          .toList();
+    } catch (_) {
+    } finally {
+      _loading = false;
+      notifyListeners();
+    }
   }
 }

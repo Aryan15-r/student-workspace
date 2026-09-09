@@ -96,7 +96,9 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
         _startCountdown();
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
-            content: Text('A new verification code has been sent to your email!'),
+            content: Text(
+              'A new verification code has been sent to your email!',
+            ),
             backgroundColor: AppColors.success,
             behavior: SnackBarBehavior.floating,
           ),
@@ -130,21 +132,30 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                 children: [
                   IconButton(
                     onPressed: () => context.go('/login'),
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+                    icon: const Icon(
+                      Icons.arrow_back_rounded,
+                      color: AppColors.textSecondary,
+                    ),
                     padding: EdgeInsets.zero,
                   ),
                   const SizedBox(height: 24),
 
-                  const Center(child: AppLogo(size: 48, horizontal: true))
-                      .animate().fadeIn(duration: 500.ms),
+                  const Center(
+                    child: AppLogo(size: 48, horizontal: true),
+                  ).animate().fadeIn(duration: 500.ms),
                   const SizedBox(height: 36),
 
-                  Text('Enter Verification Code', style: AppTextStyles.headlineLarge)
-                      .animate().fadeIn(delay: 100.ms),
+                  Text(
+                    'Enter Verification Code',
+                    style: AppTextStyles.headlineLarge,
+                  ).animate().fadeIn(delay: 100.ms),
                   const SizedBox(height: 8),
                   Text(
                     'We sent a verification code to:\n${widget.email}',
-                    style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary, height: 1.4),
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.textSecondary,
+                      height: 1.4,
+                    ),
                   ).animate().fadeIn(delay: 200.ms),
                   const SizedBox(height: 36),
 
@@ -168,7 +179,10 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                         letterSpacing: 6,
                         color: AppColors.textMuted.withValues(alpha: 0.4),
                       ),
-                      prefixIcon: const Icon(Icons.security_rounded, color: AppColors.primary),
+                      prefixIcon: const Icon(
+                        Icons.security_rounded,
+                        color: AppColors.primary,
+                      ),
                     ),
                     onSubmitted: (_) => _verify(),
                   ).animate().fadeIn(delay: 300.ms),
@@ -182,17 +196,26 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                       style: ElevatedButton.styleFrom(
                         padding: const EdgeInsets.symmetric(vertical: 18),
                         backgroundColor: AppColors.primary,
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(14),
+                        ),
                       ),
                       child: auth.isLoading
                           ? const SizedBox(
                               width: 20,
                               height: 20,
-                              child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white),
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
                             )
                           : const Text(
                               'Verify & Continue',
-                              style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600, color: Colors.white),
+                              style: TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.white,
+                              ),
                             ),
                     ),
                   ).animate().fadeIn(delay: 400.ms),
@@ -203,13 +226,20 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Didn't receive code? ", style: AppTextStyles.bodySmall),
+                        Text(
+                          "Didn't receive code? ",
+                          style: AppTextStyles.bodySmall,
+                        ),
                         TextButton(
                           onPressed: _secondsRemaining > 0 ? null : _resend,
                           child: Text(
-                            _secondsRemaining > 0 ? 'Resend in ${_secondsRemaining}s' : 'Resend Code',
+                            _secondsRemaining > 0
+                                ? 'Resend in ${_secondsRemaining}s'
+                                : 'Resend Code',
                             style: TextStyle(
-                              color: _secondsRemaining > 0 ? AppColors.textMuted : AppColors.primary,
+                              color: _secondsRemaining > 0
+                                  ? AppColors.textMuted
+                                  : AppColors.primary,
                               fontWeight: FontWeight.w600,
                               fontSize: 13,
                             ),

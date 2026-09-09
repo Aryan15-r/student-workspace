@@ -15,12 +15,12 @@ class SignupPage extends StatefulWidget {
 }
 
 class _SignupPageState extends State<SignupPage> {
-  final _formKey      = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>();
   final _usernameCtrl = TextEditingController();
   final _fullNameCtrl = TextEditingController();
-  final _emailCtrl    = TextEditingController();
-  final _passCtrl     = TextEditingController();
-  bool _obscurePass   = true;
+  final _emailCtrl = TextEditingController();
+  final _passCtrl = TextEditingController();
+  bool _obscurePass = true;
 
   @override
   void dispose() {
@@ -35,7 +35,7 @@ class _SignupPageState extends State<SignupPage> {
     if (!_formKey.currentState!.validate()) return;
     final auth = context.read<AuthProvider>();
     final ok = await auth.signUp(
-      email:    _emailCtrl.text.trim(),
+      email: _emailCtrl.text.trim(),
       password: _passCtrl.text,
       username: _usernameCtrl.text.trim(),
       fullName: _fullNameCtrl.text.trim(),
@@ -44,7 +44,9 @@ class _SignupPageState extends State<SignupPage> {
     if (ok) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          content: Text('Account created successfully! Welcome to StudySpace 🎉'),
+          content: Text(
+            'Account created successfully! Welcome to StudySpace 🎉',
+          ),
           backgroundColor: AppColors.success,
           behavior: SnackBarBehavior.floating,
         ),
@@ -80,20 +82,30 @@ class _SignupPageState extends State<SignupPage> {
                 children: [
                   IconButton(
                     onPressed: () => context.go('/'),
-                    icon: const Icon(Icons.arrow_back_rounded, color: AppColors.textSecondary),
+                    icon: const Icon(
+                      Icons.arrow_back_rounded,
+                      color: AppColors.textSecondary,
+                    ),
                     padding: EdgeInsets.zero,
                   ),
                   const SizedBox(height: 24),
 
-                  const Center(child: AppLogo(size: 48, horizontal: true))
-                      .animate().fadeIn(duration: 500.ms),
+                  const Center(
+                    child: AppLogo(size: 48, horizontal: true),
+                  ).animate().fadeIn(duration: 500.ms),
                   const SizedBox(height: 40),
 
-                  Text('Create account', style: AppTextStyles.headlineLarge)
-                      .animate().fadeIn(delay: 100.ms),
+                  Text(
+                    'Create account',
+                    style: AppTextStyles.headlineLarge,
+                  ).animate().fadeIn(delay: 100.ms),
                   const SizedBox(height: 6),
-                  Text('Join thousands of students on StudySpace', style: AppTextStyles.bodyMedium.copyWith(color: AppColors.textSecondary))
-                      .animate().fadeIn(delay: 200.ms),
+                  Text(
+                    'Join thousands of students on StudySpace',
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColors.textSecondary,
+                    ),
+                  ).animate().fadeIn(delay: 200.ms),
                   const SizedBox(height: 36),
 
                   Form(
@@ -106,9 +118,14 @@ class _SignupPageState extends State<SignupPage> {
                           style: const TextStyle(color: AppColors.textPrimary),
                           decoration: const InputDecoration(
                             labelText: 'Full Name',
-                            prefixIcon: Icon(Icons.person_outline_rounded, color: AppColors.textMuted),
+                            prefixIcon: Icon(
+                              Icons.person_outline_rounded,
+                              color: AppColors.textMuted,
+                            ),
                           ),
-                          validator: (v) => (v == null || v.trim().isEmpty) ? 'Please enter your name' : null,
+                          validator: (v) => (v == null || v.trim().isEmpty)
+                              ? 'Please enter your name'
+                              : null,
                         ),
                         const SizedBox(height: 14),
 
@@ -118,12 +135,18 @@ class _SignupPageState extends State<SignupPage> {
                           style: const TextStyle(color: AppColors.textPrimary),
                           decoration: const InputDecoration(
                             labelText: 'Username',
-                            prefixIcon: Icon(Icons.alternate_email_rounded, color: AppColors.textMuted),
+                            prefixIcon: Icon(
+                              Icons.alternate_email_rounded,
+                              color: AppColors.textMuted,
+                            ),
                           ),
                           validator: (v) {
-                            if (v == null || v.trim().isEmpty) return 'Please choose a username';
-                            if (v.trim().length < 3) return 'Username must be at least 3 characters';
-                            if (v.contains(' ')) return 'Username cannot have spaces';
+                            if (v == null || v.trim().isEmpty)
+                              return 'Please choose a username';
+                            if (v.trim().length < 3)
+                              return 'Username must be at least 3 characters';
+                            if (v.contains(' '))
+                              return 'Username cannot have spaces';
                             return null;
                           },
                         ),
@@ -136,11 +159,16 @@ class _SignupPageState extends State<SignupPage> {
                           style: const TextStyle(color: AppColors.textPrimary),
                           decoration: const InputDecoration(
                             labelText: 'Email',
-                            prefixIcon: Icon(Icons.email_outlined, color: AppColors.textMuted),
+                            prefixIcon: Icon(
+                              Icons.email_outlined,
+                              color: AppColors.textMuted,
+                            ),
                           ),
                           validator: (v) {
-                            if (v == null || v.isEmpty) return 'Please enter your email';
-                            if (!v.contains('@')) return 'Please enter a valid email';
+                            if (v == null || v.isEmpty)
+                              return 'Please enter your email';
+                            if (!v.contains('@'))
+                              return 'Please enter a valid email';
                             return null;
                           },
                         ),
@@ -153,15 +181,26 @@ class _SignupPageState extends State<SignupPage> {
                           style: const TextStyle(color: AppColors.textPrimary),
                           decoration: InputDecoration(
                             labelText: 'Password',
-                            prefixIcon: const Icon(Icons.lock_outline_rounded, color: AppColors.textMuted),
+                            prefixIcon: const Icon(
+                              Icons.lock_outline_rounded,
+                              color: AppColors.textMuted,
+                            ),
                             suffixIcon: IconButton(
-                              icon: Icon(_obscurePass ? Icons.visibility_outlined : Icons.visibility_off_outlined, color: AppColors.textMuted),
-                              onPressed: () => setState(() => _obscurePass = !_obscurePass),
+                              icon: Icon(
+                                _obscurePass
+                                    ? Icons.visibility_outlined
+                                    : Icons.visibility_off_outlined,
+                                color: AppColors.textMuted,
+                              ),
+                              onPressed: () =>
+                                  setState(() => _obscurePass = !_obscurePass),
                             ),
                           ),
                           validator: (v) {
-                            if (v == null || v.isEmpty) return 'Please create a password';
-                            if (v.length < 6) return 'Password must be at least 6 characters';
+                            if (v == null || v.isEmpty)
+                              return 'Please create a password';
+                            if (v.length < 6)
+                              return 'Password must be at least 6 characters';
                             return null;
                           },
                         ),
@@ -171,10 +210,25 @@ class _SignupPageState extends State<SignupPage> {
                           width: double.infinity,
                           child: ElevatedButton(
                             onPressed: auth.isLoading ? null : _signup,
-                            style: ElevatedButton.styleFrom(padding: const EdgeInsets.symmetric(vertical: 18)),
+                            style: ElevatedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 18),
+                            ),
                             child: auth.isLoading
-                                ? const SizedBox(width: 20, height: 20, child: CircularProgressIndicator(strokeWidth: 2, color: Colors.white))
-                                : const Text('Create Account', style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600)),
+                                ? const SizedBox(
+                                    width: 20,
+                                    height: 20,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Text(
+                                    'Create Account',
+                                    style: TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
                           ),
                         ),
                       ],
@@ -186,11 +240,25 @@ class _SignupPageState extends State<SignupPage> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text('Already have an account? ', style: AppTextStyles.bodySmall),
+                        Text(
+                          'Already have an account? ',
+                          style: AppTextStyles.bodySmall,
+                        ),
                         TextButton(
                           onPressed: () => context.go('/login'),
-                          style: TextButton.styleFrom(padding: EdgeInsets.zero, minimumSize: Size.zero, tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                          child: const Text('Sign in', style: TextStyle(color: AppColors.primary, fontWeight: FontWeight.w600, fontSize: 13)),
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            minimumSize: Size.zero,
+                            tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                          ),
+                          child: const Text(
+                            'Sign in',
+                            style: TextStyle(
+                              color: AppColors.primary,
+                              fontWeight: FontWeight.w600,
+                              fontSize: 13,
+                            ),
+                          ),
                         ),
                       ],
                     ),

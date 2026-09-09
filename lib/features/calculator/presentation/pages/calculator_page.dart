@@ -14,7 +14,7 @@ class CalculatorPage extends StatelessWidget {
   void _showHistorySheet(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFF0F172A),
+      backgroundColor: const Color(0xFFFFFCF8),
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
       ),
@@ -32,18 +32,36 @@ class CalculatorPage extends StatelessWidget {
                   children: [
                     const Row(
                       children: [
-                        Icon(Icons.history_rounded, color: Color(0xFF818CF8), size: 20),
+                        Icon(
+                          Icons.history_rounded,
+                          color: Color(0xFFD66A50),
+                          size: 20,
+                        ),
                         SizedBox(width: 8),
                         Text(
                           'Calculation History',
-                          style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ],
                     ),
                     if (history.isNotEmpty)
                       TextButton.icon(
-                        icon: const Icon(Icons.delete_outline_rounded, size: 16, color: Color(0xFFF87171)),
-                        label: const Text('Clear', style: TextStyle(color: Color(0xFFF87171), fontSize: 12)),
+                        icon: const Icon(
+                          Icons.delete_outline_rounded,
+                          size: 16,
+                          color: Color(0xFFF87171),
+                        ),
+                        label: const Text(
+                          'Clear',
+                          style: TextStyle(
+                            color: Color(0xFFF87171),
+                            fontSize: 12,
+                          ),
+                        ),
                         onPressed: () {
                           ctx.read<CalculatorProvider>().clearHistory();
                           Navigator.pop(ctx);
@@ -57,21 +75,31 @@ class CalculatorPage extends StatelessWidget {
                     width: double.infinity,
                     padding: const EdgeInsets.all(24),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF1E293B).withValues(alpha: 0.5),
+                      color: const Color(0xFFF7EBDD).withValues(alpha: 0.5),
                       borderRadius: BorderRadius.circular(16),
                     ),
                     child: const Column(
                       children: [
-                        Icon(Icons.calculate_outlined, color: Color(0xFF64748B), size: 36),
+                        Icon(
+                          Icons.calculate_outlined,
+                          color: Color(0xFF64748B),
+                          size: 36,
+                        ),
                         SizedBox(height: 8),
                         Text(
                           'No history yet',
-                          style: TextStyle(color: Color(0xFF94A3B8), fontSize: 14),
+                          style: TextStyle(
+                            color: Color(0xFF806A63),
+                            fontSize: 14,
+                          ),
                         ),
                         SizedBox(height: 2),
                         Text(
                           'Evaluated calculations will automatically appear here.',
-                          style: TextStyle(color: Color(0xFF64748B), fontSize: 12),
+                          style: TextStyle(
+                            color: Color(0xFF64748B),
+                            fontSize: 12,
+                          ),
                           textAlign: TextAlign.center,
                         ),
                       ],
@@ -82,24 +110,41 @@ class CalculatorPage extends StatelessWidget {
                     child: ListView.separated(
                       shrinkWrap: true,
                       itemCount: history.length,
-                      separatorBuilder: (_, _) => const Divider(color: Color(0xFF1E293B), height: 1),
+                      separatorBuilder: (_, _) =>
+                          const Divider(color: Color(0xFFF7EBDD), height: 1),
                       itemBuilder: (_, i) {
                         final item = history[i];
                         return ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                          contentPadding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
                           title: Text(
                             item.expression,
-                            style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                            style: const TextStyle(
+                              color: Color(0xFF806A63),
+                              fontSize: 13,
+                            ),
                           ),
                           subtitle: Text(
                             '= ${item.result}',
-                            style: const TextStyle(color: Color(0xFF4ADE80), fontSize: 16, fontWeight: FontWeight.bold),
+                            style: const TextStyle(
+                              color: Color(0xFF4ADE80),
+                              fontSize: 16,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                           trailing: IconButton(
-                            icon: const Icon(Icons.copy_rounded, size: 16, color: Color(0xFF818CF8)),
+                            icon: const Icon(
+                              Icons.copy_rounded,
+                              size: 16,
+                              color: Color(0xFFD66A50),
+                            ),
                             tooltip: 'Reuse Result',
                             onPressed: () {
-                              ctx.read<CalculatorProvider>().loadFromHistory(item.result);
+                              ctx.read<CalculatorProvider>().loadFromHistory(
+                                item.result,
+                              );
                               Navigator.pop(ctx);
                             },
                           ),
@@ -120,9 +165,9 @@ class CalculatorPage extends StatelessWidget {
     return AdaptiveScaffold(
       selectedIndex: 5,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0B0F17),
+        backgroundColor: const Color(0xFFFFF8F0),
         appBar: AppBar(
-          backgroundColor: const Color(0xFF0F172A).withValues(alpha: 0.8),
+          backgroundColor: const Color(0xFFFFFCF8).withValues(alpha: 0.8),
           elevation: 0,
           title: Row(
             children: [
@@ -130,18 +175,27 @@ class CalculatorPage extends StatelessWidget {
                 width: 32,
                 height: 32,
                 decoration: BoxDecoration(
-                  gradient: const LinearGradient(colors: [Color(0xFF6366F1), Color(0xFFA855F7)]),
+                  gradient: const LinearGradient(
+                    colors: [Color(0xFFE07A5F), Color(0xFFF2CC8F)],
+                  ),
                   shape: BoxShape.circle,
                 ),
-                child: const Center(child: Text('🧮', style: TextStyle(fontSize: 16))),
+                child: const Center(
+                  child: Text('🧮', style: TextStyle(fontSize: 16)),
+                ),
               ),
               const SizedBox(width: 10),
-              Text('Scientific Calculator', style: AppTextStyles.headlineSmall.copyWith(color: Colors.white)),
+              Text(
+                'Scientific Calculator',
+                style: AppTextStyles.headlineSmall.copyWith(
+                  color: Colors.white,
+                ),
+              ),
             ],
           ),
           actions: [
             IconButton(
-              icon: const Icon(Icons.history_rounded, color: Color(0xFF818CF8)),
+              icon: const Icon(Icons.history_rounded, color: Color(0xFFD66A50)),
               tooltip: 'Calculation History',
               onPressed: () => _showHistorySheet(context),
             ),
@@ -160,12 +214,12 @@ class CalculatorPage extends StatelessWidget {
                     padding: const EdgeInsets.all(20),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF0F172A), Color(0xFF1E293B)],
+                        colors: [Color(0xFFFFFCF8), Color(0xFFF7EBDD)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
                       borderRadius: BorderRadius.circular(24),
-                      border: Border.all(color: const Color(0xFF334155)),
+                      border: Border.all(color: const Color(0xFFE8D4C4)),
                       boxShadow: [
                         BoxShadow(
                           color: Colors.black.withValues(alpha: 0.4),
@@ -184,7 +238,7 @@ class CalculatorPage extends StatelessWidget {
                           child: Text(
                             calc.expression.isEmpty ? ' ' : calc.expression,
                             style: const TextStyle(
-                              color: Color(0xFF94A3B8),
+                              color: Color(0xFF806A63),
                               fontSize: 18,
                               fontFamily: 'monospace',
                               fontWeight: FontWeight.w500,
@@ -200,7 +254,9 @@ class CalculatorPage extends StatelessWidget {
                             style: TextStyle(
                               fontSize: 44,
                               fontWeight: FontWeight.bold,
-                              color: calc.result == 'Error' ? const Color(0xFFF87171) : const Color(0xFFF8FAFC),
+                              color: calc.result == 'Error'
+                                  ? const Color(0xFFF87171)
+                                  : const Color(0xFFF8FAFC),
                               letterSpacing: 0.5,
                             ),
                           ),
@@ -211,10 +267,7 @@ class CalculatorPage extends StatelessWidget {
                 ),
 
                 // ── Button Grid ─────────────────────────────────────────────
-                const Expanded(
-                  flex: 7,
-                  child: _ButtonGrid(),
-                ),
+                const Expanded(flex: 7, child: _ButtonGrid()),
               ],
             ),
           ),
@@ -249,16 +302,24 @@ class _ButtonGrid extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.fromLTRB(12, 0, 12, 12),
       child: Column(
-        children: _buttons.map((row) => Expanded(
-          child: Row(
-            children: row.map((label) => Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(4),
-                child: _CalcButton(label: label),
+        children: _buttons
+            .map(
+              (row) => Expanded(
+                child: Row(
+                  children: row
+                      .map(
+                        (label) => Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.all(4),
+                            child: _CalcButton(label: label),
+                          ),
+                        ),
+                      )
+                      .toList(),
+                ),
               ),
-            )).toList(),
-          ),
-        )).toList(),
+            )
+            .toList(),
       ),
     );
   }
@@ -272,20 +333,21 @@ class _CalcButton extends StatelessWidget {
   bool _isClear(String l) => l == 'AC';
   bool _isBack(String l) => l == '⌫';
   bool _isOp(String l) => ['÷', '×', '-', '+', '^', '%', '(', ')'].contains(l);
-  bool _isSci(String l) => ['sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'π', 'e'].contains(l);
+  bool _isSci(String l) =>
+      ['sin(', 'cos(', 'tan(', 'log(', 'ln(', 'sqrt(', 'π', 'e'].contains(l);
 
   BoxDecoration _buttonDecoration(bool isLocked) {
     if (_isEquals(label)) {
       return BoxDecoration(
         gradient: const LinearGradient(
-          colors: [Color(0xFF6366F1), Color(0xFFA855F7)],
+          colors: [Color(0xFFE07A5F), Color(0xFFF2CC8F)],
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
         ),
         borderRadius: BorderRadius.circular(16),
         boxShadow: [
           BoxShadow(
-            color: const Color(0xFF6366F1).withValues(alpha: 0.45),
+            color: const Color(0xFFE07A5F).withValues(alpha: 0.45),
             blurRadius: 10,
             offset: const Offset(0, 3),
           ),
@@ -297,7 +359,9 @@ class _CalcButton extends StatelessWidget {
       return BoxDecoration(
         color: const Color(0xFFEF4444).withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFEF4444).withValues(alpha: 0.4)),
+        border: Border.all(
+          color: const Color(0xFFEF4444).withValues(alpha: 0.4),
+        ),
       );
     }
 
@@ -305,15 +369,19 @@ class _CalcButton extends StatelessWidget {
       return BoxDecoration(
         color: const Color(0xFFF59E0B).withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFFF59E0B).withValues(alpha: 0.4)),
+        border: Border.all(
+          color: const Color(0xFFF59E0B).withValues(alpha: 0.4),
+        ),
       );
     }
 
     if (_isOp(label)) {
       return BoxDecoration(
-        color: const Color(0xFF6366F1).withValues(alpha: 0.18),
+        color: const Color(0xFFE07A5F).withValues(alpha: 0.18),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF6366F1).withValues(alpha: 0.35)),
+        border: Border.all(
+          color: const Color(0xFFE07A5F).withValues(alpha: 0.35),
+        ),
       );
     }
 
@@ -321,15 +389,17 @@ class _CalcButton extends StatelessWidget {
       return BoxDecoration(
         color: const Color(0xFF38BDF8).withValues(alpha: 0.10),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF38BDF8).withValues(alpha: 0.25)),
+        border: Border.all(
+          color: const Color(0xFF38BDF8).withValues(alpha: 0.25),
+        ),
       );
     }
 
     // Standard Numbers (0-9, ., 00)
     return BoxDecoration(
-      color: const Color(0xFF1E293B).withValues(alpha: 0.9),
+      color: const Color(0xFFF7EBDD).withValues(alpha: 0.9),
       borderRadius: BorderRadius.circular(16),
-      border: Border.all(color: const Color(0xFF334155)),
+      border: Border.all(color: const Color(0xFFE8D4C4)),
       boxShadow: [
         BoxShadow(
           color: Colors.black.withValues(alpha: 0.2),
@@ -345,7 +415,7 @@ class _CalcButton extends StatelessWidget {
     if (_isEquals(label)) return Colors.white;
     if (_isClear(label)) return const Color(0xFFF87171);
     if (_isBack(label)) return const Color(0xFFFBBF24);
-    if (_isOp(label)) return const Color(0xFF818CF8);
+    if (_isOp(label)) return const Color(0xFFD66A50);
     if (_isSci(label)) return const Color(0xFF38BDF8);
     return Colors.white;
   }
@@ -356,7 +426,8 @@ class _CalcButton extends StatelessWidget {
       LoginPromptDialog.show(
         context,
         title: 'Scientific Features Locked',
-        message: 'Trigonometry, logarithms, and advanced constants require logging in. Sign in to unlock full scientific calculations!',
+        message:
+            'Trigonometry, logarithms, and advanced constants require logging in. Sign in to unlock full scientific calculations!',
         icon: Icons.calculate_outlined,
       );
       return;
@@ -365,10 +436,17 @@ class _CalcButton extends StatelessWidget {
     HapticFeedback.lightImpact();
     final calc = context.read<CalculatorProvider>();
     switch (label) {
-      case '=':  calc.evaluate(); break;
-      case 'AC': calc.clear();   break;
-      case '⌫':  calc.backspace(); break;
-      default:   calc.input(label);
+      case '=':
+        calc.evaluate();
+        break;
+      case 'AC':
+        calc.clear();
+        break;
+      case '⌫':
+        calc.backspace();
+        break;
+      default:
+        calc.input(label);
     }
   }
 
@@ -401,7 +479,11 @@ class _CalcButton extends StatelessWidget {
                   ),
                   if (isLocked) ...[
                     const SizedBox(width: 2),
-                    const Icon(Icons.lock_rounded, size: 11, color: Color(0xFF64748B)),
+                    const Icon(
+                      Icons.lock_rounded,
+                      size: 11,
+                      color: Color(0xFF64748B),
+                    ),
                   ],
                 ],
               ),

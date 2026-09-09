@@ -16,12 +16,14 @@ class ErrorLandingPage extends StatelessWidget {
     final location = state.uri.toString().toLowerCase();
     final errorMsg = state.error?.message.toLowerCase() ?? '';
 
-    final isExpiredOtp = location.contains('otp_expired') ||
+    final isExpiredOtp =
+        location.contains('otp_expired') ||
         location.contains('expired') ||
         errorMsg.contains('otp_expired') ||
         errorMsg.contains('expired');
 
-    final isAccessDenied = location.contains('access_denied') ||
+    final isAccessDenied =
+        location.contains('access_denied') ||
         errorMsg.contains('access_denied');
 
     String title;
@@ -78,8 +80,10 @@ class ErrorLandingPage extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const AppLogo(size: 40, horizontal: true)
-                        .animate().fadeIn(duration: 400.ms),
+                    const AppLogo(
+                      size: 40,
+                      horizontal: true,
+                    ).animate().fadeIn(duration: 400.ms),
                     const SizedBox(height: 28),
 
                     Container(
@@ -93,7 +97,10 @@ class ErrorLandingPage extends StatelessWidget {
                         ),
                       ),
                       child: Center(
-                        child: Text(emoji, style: const TextStyle(fontSize: 34)),
+                        child: Text(
+                          emoji,
+                          style: const TextStyle(fontSize: 34),
+                        ),
                       ),
                     ).animate().scale(delay: 100.ms, duration: 400.ms),
                     const SizedBox(height: 20),

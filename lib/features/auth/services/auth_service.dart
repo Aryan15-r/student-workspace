@@ -20,10 +20,7 @@ class AuthService {
       await _supabase.auth.signUp(
         email: email,
         password: password,
-        data: {
-          'username': username,
-          'full_name': fullName ?? '',
-        },
+        data: {'username': username, 'full_name': fullName ?? ''},
       );
     } catch (e) {
       throw AppException.from(e);
@@ -31,15 +28,9 @@ class AuthService {
   }
 
   // ── Sign In with Password ──────────────────────────────────────────────────
-  Future<void> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<void> signIn({required String email, required String password}) async {
     try {
-      await _supabase.auth.signInWithPassword(
-        email: email,
-        password: password,
-      );
+      await _supabase.auth.signInWithPassword(email: email, password: password);
     } catch (e) {
       throw AppException.from(e);
     }
@@ -83,7 +74,9 @@ class AuthService {
         }
       }
     } catch (e) {
-      throw AppException(message: 'Invalid or expired OTP code. Please try again.');
+      throw AppException(
+        message: 'Invalid or expired OTP code. Please try again.',
+      );
     }
   }
 
@@ -146,9 +139,7 @@ class AuthService {
       }
 
       // 2. Update password once authenticated
-      await _supabase.auth.updateUser(
-        UserAttributes(password: cleanPassword),
-      );
+      await _supabase.auth.updateUser(UserAttributes(password: cleanPassword));
     } catch (e) {
       throw AppException.from(e);
     }
@@ -166,7 +157,8 @@ class AuthService {
 
   // ── Current User & Session ────────────────────────────────────────────────
   Session? get currentSession => _supabase.auth.currentSession;
-  User? get currentUser => _supabase.auth.currentUser ?? _supabase.auth.currentSession?.user;
+  User? get currentUser =>
+      _supabase.auth.currentUser ?? _supabase.auth.currentSession?.user;
   bool get isAuthenticated => currentUser != null || currentSession != null;
 
   Stream<AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;

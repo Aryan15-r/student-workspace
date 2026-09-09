@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 /// ─────────────────────────────────────────────────────────────────────────────
 /// AppColors — StudySpace Design System
 ///
-/// USAGE: Use AppColors.primary instead of hardcoding Color(0xFF6366F1).
+/// USAGE: Use AppColors.primary instead of hardcoding Color(0xFFE07A5F).
 /// This makes it easy to change the theme in one place.
 /// ─────────────────────────────────────────────────────────────────────────────
 class AppColors {
@@ -57,9 +57,9 @@ class AppColors {
   static const Color priorityLow = Color(0xFF10B981);
 
   // ── Category Colors (used in To-Do) ───────────────────────────────────────
-  static const Color categoryAssignment = Color(0xFF6366F1);
+  static const Color categoryAssignment = Color(0xFFE07A5F);
   static const Color categoryExam = Color(0xFFEF4444);
-  static const Color categoryProject = Color(0xFF8B5CF6);
+  static const Color categoryProject = Color(0xFFF2CC8F);
   static const Color categoryPersonal = Color(0xFF06B6D4);
   static const Color categoryCollege = Color(0xFF10B981);
 

@@ -29,7 +29,9 @@ class AppLogo extends StatelessWidget {
     if (!showText) return icon;
 
     final text = Column(
-      crossAxisAlignment: horizontal ? CrossAxisAlignment.start : CrossAxisAlignment.center,
+      crossAxisAlignment: horizontal
+          ? CrossAxisAlignment.start
+          : CrossAxisAlignment.center,
       mainAxisSize: MainAxisSize.min,
       children: [
         Text(
@@ -83,10 +85,7 @@ class _LogoIcon extends StatelessWidget {
       child: Center(
         child: Text(
           '✦',
-          style: TextStyle(
-            fontSize: size * 0.5,
-            color: Colors.white,
-          ),
+          style: TextStyle(fontSize: size * 0.5, color: Colors.white),
         ),
       ),
     );

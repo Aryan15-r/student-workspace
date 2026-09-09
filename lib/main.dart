@@ -35,7 +35,7 @@ Future<void> main() async {
   // Step 2: Initialize the Supabase client
   // The URL and key come from .env — never hardcoded!
   await Supabase.initialize(
-    url:     dotenv.env['SUPABASE_URL']     ?? '',
+    url: dotenv.env['SUPABASE_URL'] ?? '',
     anonKey: dotenv.env['SUPABASE_ANON_KEY'] ?? '',
   );
 

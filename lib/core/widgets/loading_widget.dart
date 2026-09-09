@@ -48,6 +48,8 @@ class LoadingWidget extends StatelessWidget {
         body: Center(child: content),
       );
     }
-    return Center(child: Padding(padding: const EdgeInsets.all(32), child: content));
+    return Center(
+      child: Padding(padding: const EdgeInsets.all(32), child: content),
+    );
   }
 }

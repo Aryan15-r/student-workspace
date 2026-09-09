@@ -15,7 +15,8 @@ class PresentationSlide {
     return PresentationSlide(
       title: json['title'] as String? ?? 'Slide',
       subtitle: json['subtitle'] as String?,
-      bulletPoints: (json['bulletPoints'] as List<dynamic>?)
+      bulletPoints:
+          (json['bulletPoints'] as List<dynamic>?)
               ?.map((e) => e.toString())
               .toList() ??
           [],

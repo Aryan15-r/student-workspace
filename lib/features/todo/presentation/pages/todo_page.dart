@@ -74,18 +74,18 @@ class _TodoPageState extends State<TodoPage>
     return AdaptiveScaffold(
       selectedIndex: 1,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0B0F17),
+        backgroundColor: const Color(0xFFFFF8F0),
         appBar: AppBar(
-          backgroundColor: const Color(0xFF0F172A).withValues(alpha: 0.8),
+          backgroundColor: const Color(0xFFFFFCF8).withValues(alpha: 0.8),
           title: Text(
             'Task & Study Tracker',
             style: AppTextStyles.headlineSmall.copyWith(color: Colors.white),
           ),
           bottom: TabBar(
             controller: _tabs,
-            indicatorColor: const Color(0xFF818CF8),
-            labelColor: const Color(0xFF818CF8),
-            unselectedLabelColor: const Color(0xFF94A3B8),
+            indicatorColor: const Color(0xFFD66A50),
+            labelColor: const Color(0xFFD66A50),
+            unselectedLabelColor: const Color(0xFF806A63),
             isScrollable: true,
             tabs: const [
               Tab(text: 'Today'),
@@ -97,7 +97,7 @@ class _TodoPageState extends State<TodoPage>
         ),
         floatingActionButton: FloatingActionButton.extended(
           onPressed: _openAddTask,
-          backgroundColor: const Color(0xFF6366F1),
+          backgroundColor: const Color(0xFFE07A5F),
           icon: const Icon(Icons.add_rounded, color: Colors.white),
           label: const Text(
             'Add Task',
@@ -124,10 +124,10 @@ class _TodoPageState extends State<TodoPage>
                       vertical: 10,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFF6366F1).withValues(alpha: 0.08),
+                      color: const Color(0xFFE07A5F).withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: const Color(0xFF6366F1).withValues(alpha: 0.2),
+                        color: const Color(0xFFE07A5F).withValues(alpha: 0.2),
                       ),
                     ),
                     child: Row(
@@ -135,14 +135,14 @@ class _TodoPageState extends State<TodoPage>
                         const Icon(
                           Icons.info_outline_rounded,
                           size: 18,
-                          color: Color(0xFF818CF8),
+                          color: Color(0xFFD66A50),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             'Guest Mode: ${todo.tasks.length} of 3 tasks used.',
                             style: AppTextStyles.bodySmall.copyWith(
-                              color: const Color(0xFF818CF8),
+                              color: const Color(0xFFD66A50),
                             ),
                           ),
                         ),
@@ -156,7 +156,7 @@ class _TodoPageState extends State<TodoPage>
                           child: const Text(
                             'Sign In',
                             style: TextStyle(
-                              color: Color(0xFF818CF8),
+                              color: Color(0xFFD66A50),
                               fontWeight: FontWeight.bold,
                               decoration: TextDecoration.underline,
                             ),
@@ -170,7 +170,7 @@ class _TodoPageState extends State<TodoPage>
                 Container(
                   height: 84,
                   padding: const EdgeInsets.symmetric(vertical: 8),
-                  color: const Color(0xFF0F172A).withValues(alpha: 0.4),
+                  color: const Color(0xFFFFFCF8).withValues(alpha: 0.4),
                   child: ListView.builder(
                     scrollDirection: Axis.horizontal,
                     padding: const EdgeInsets.symmetric(horizontal: 12),
@@ -199,21 +199,21 @@ class _TodoPageState extends State<TodoPage>
                             gradient: isSelected
                                 ? const LinearGradient(
                                     colors: [
-                                      Color(0xFF6366F1),
-                                      Color(0xFFA855F7),
+                                      Color(0xFFE07A5F),
+                                      Color(0xFFF2CC8F),
                                     ],
                                   )
                                 : null,
-                            color: isSelected ? null : const Color(0xFF1E293B),
+                            color: isSelected ? null : const Color(0xFFF7EBDD),
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
                               color: isSelected
-                                  ? const Color(0xFF818CF8)
+                                  ? const Color(0xFFD66A50)
                                   : (isToday
                                         ? const Color(
-                                            0xFF818CF8,
+                                            0xFFD66A50,
                                           ).withValues(alpha: 0.5)
-                                        : const Color(0xFF334155)),
+                                        : const Color(0xFFE8D4C4)),
                             ),
                           ),
                           child: Column(
@@ -224,7 +224,7 @@ class _TodoPageState extends State<TodoPage>
                                 style: TextStyle(
                                   color: isSelected
                                       ? Colors.white
-                                      : const Color(0xFF94A3B8),
+                                      : const Color(0xFF806A63),
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -236,7 +236,7 @@ class _TodoPageState extends State<TodoPage>
                                   color: isSelected
                                       ? Colors.white
                                       : (isToday
-                                            ? const Color(0xFF818CF8)
+                                            ? const Color(0xFFD66A50)
                                             : Colors.white),
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
@@ -356,7 +356,7 @@ class _ActivityStatsView extends StatelessWidget {
                   title: 'Total Tasks',
                   value: '$total',
                   icon: Icons.format_list_bulleted_rounded,
-                  color: const Color(0xFF818CF8),
+                  color: const Color(0xFFD66A50),
                 ),
               ),
               const SizedBox(width: 12),
@@ -399,13 +399,13 @@ class _ActivityStatsView extends StatelessWidget {
             padding: const EdgeInsets.all(20),
             decoration: BoxDecoration(
               gradient: const LinearGradient(
-                colors: [Color(0xFF312E81), Color(0xFF4C1D95)],
+                colors: [Color(0xFF8F4F3A), Color(0xFFB85C38)],
                 begin: Alignment.topLeft,
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(20),
               border: Border.all(
-                color: const Color(0xFF818CF8).withValues(alpha: 0.3),
+                color: const Color(0xFFD66A50).withValues(alpha: 0.3),
               ),
             ),
             child: Row(
@@ -460,9 +460,9 @@ class _StatCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: const Color(0xFF1E293B).withValues(alpha: 0.8),
+        color: const Color(0xFFF7EBDD).withValues(alpha: 0.8),
         borderRadius: BorderRadius.circular(16),
-        border: Border.all(color: const Color(0xFF334155)),
+        border: Border.all(color: const Color(0xFFE8D4C4)),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -480,7 +480,7 @@ class _StatCard extends StatelessWidget {
           const SizedBox(height: 2),
           Text(
             title,
-            style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+            style: const TextStyle(color: Color(0xFF806A63), fontSize: 12),
           ),
         ],
       ),

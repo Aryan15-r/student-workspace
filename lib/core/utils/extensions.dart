@@ -56,7 +56,9 @@ extension DateTimeExtensions on DateTime {
   /// True if this date is tomorrow
   bool get isTomorrow {
     final tomorrow = DateTime.now().add(const Duration(days: 1));
-    return year == tomorrow.year && month == tomorrow.month && day == tomorrow.day;
+    return year == tomorrow.year &&
+        month == tomorrow.month &&
+        day == tomorrow.day;
   }
 
   /// True if this date is in the past
@@ -67,9 +69,9 @@ extension DateTimeExtensions on DateTime {
 
   /// Human-friendly due date label
   String get dueDateLabel {
-    if (isToday)     return 'Due Today';
-    if (isTomorrow)  return 'Due Tomorrow';
-    if (isPast)      return 'Overdue · $toShortDisplay';
+    if (isToday) return 'Due Today';
+    if (isTomorrow) return 'Due Tomorrow';
+    if (isPast) return 'Overdue · $toShortDisplay';
     return 'Due $toShortDisplay';
   }
 }

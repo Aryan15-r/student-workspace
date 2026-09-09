@@ -9,25 +9,26 @@ import '../services/auth_service.dart';
 class AuthProvider extends ChangeNotifier {
   final _authService = AuthService();
 
-  UserProfile? _profile;     // The logged-in user's profile
-  bool _isLoading = false;   // True while performing an async operation
-  String? _error;            // Error message to show in the UI
+  UserProfile? _profile; // The logged-in user's profile
+  bool _isLoading = false; // True while performing an async operation
+  String? _error; // Error message to show in the UI
   bool _initialized = false; // True after the initial auth check
-  bool _isGuest = false;     // True when user browses without signing in
-  bool _isPasswordRecovery = false; // True when user is in recovery mode to reset password
+  bool _isGuest = false; // True when user browses without signing in
+  bool _isPasswordRecovery =
+      false; // True when user is in recovery mode to reset password
 
   // Guest usage limits
   int _guestAiQueries = 0;
   static const int maxGuestAiQueries = 3;
   static const int maxGuestTodos = 3;
 
-  UserProfile? get profile             => _profile;
-  bool         get isLoading           => _isLoading;
-  String?      get error               => _error;
-  bool         get initialized         => _initialized;
-  bool         get isGuest             => _isGuest;
-  bool         get isPasswordRecovery  => _isPasswordRecovery;
-  int          get guestAiQueries      => _guestAiQueries;
+  UserProfile? get profile => _profile;
+  bool get isLoading => _isLoading;
+  String? get error => _error;
+  bool get initialized => _initialized;
+  bool get isGuest => _isGuest;
+  bool get isPasswordRecovery => _isPasswordRecovery;
+  int get guestAiQueries => _guestAiQueries;
 
   bool get canAskGuestAi => !_isGuest || _guestAiQueries < maxGuestAiQueries;
 
@@ -118,7 +119,9 @@ class AuthProvider extends ChangeNotifier {
         if (user != null) {
           _profile = UserProfile(
             id: user.id,
-            username: user.userMetadata?['username'] as String? ?? (user.email?.split('@').first ?? 'student'),
+            username:
+                user.userMetadata?['username'] as String? ??
+                (user.email?.split('@').first ?? 'student'),
             fullName: user.userMetadata?['full_name'] as String? ?? 'Student',
             avatarUrl: '',
             bio: '',
@@ -137,7 +140,9 @@ class AuthProvider extends ChangeNotifier {
       if (user != null) {
         _profile = UserProfile(
           id: user.id,
-          username: user.userMetadata?['username'] as String? ?? (user.email?.split('@').first ?? 'student'),
+          username:
+              user.userMetadata?['username'] as String? ??
+              (user.email?.split('@').first ?? 'student'),
           fullName: user.userMetadata?['full_name'] as String? ?? 'Student',
           avatarUrl: '',
           bio: '',
@@ -191,10 +196,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // ── Verify Email OTP ───────────────────────────────────────────────────────
-  Future<bool> verifyOtp({
-    required String email,
-    required String token,
-  }) async {
+  Future<bool> verifyOtp({required String email, required String token}) async {
     _setLoading(true);
     try {
       final response = await _authService.verifyOtp(email: email, token: token);
@@ -214,10 +216,7 @@ class AuthProvider extends ChangeNotifier {
   }
 
   // ── Sign In with Password ──────────────────────────────────────────────────
-  Future<bool> signIn({
-    required String email,
-    required String password,
-  }) async {
+  Future<bool> signIn({required String email, required String password}) async {
     _setLoading(true);
     try {
       await _authService.signIn(email: email, password: password);

@@ -5,8 +5,9 @@ class AppConstants {
   AppConstants._();
 
   // ── App Info ───────────────────────────────────────────────────────────────
-  static const String appName    = 'StudySpace';
-  static const String appTagline = 'One workspace. Less switching. More learning.';
+  static const String appName = 'StudySpace';
+  static const String appTagline =
+      'One workspace. Less switching. More learning.';
   static const String appVersion = '1.0.25';
 
   /// Google Gemini REST API endpoint
@@ -57,6 +58,6 @@ Return ONLY a valid JSON array.
   static const List<String> taskPriorities = ['low', 'medium', 'high'];
 
   // ── Breakpoints ───────────────────────────────────────────────────────────
-  static const double mobileBreakpoint  = 600;
-  static const double tabletBreakpoint  = 1024;
+  static const double mobileBreakpoint = 600;
+  static const double tabletBreakpoint = 1024;
 }

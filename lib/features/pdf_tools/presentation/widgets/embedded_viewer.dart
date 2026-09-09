@@ -1,5 +1,5 @@
 import 'embedded_viewer_stub.dart'
-  if (dart.library.html) 'embedded_viewer_web.dart';
+    if (dart.library.html) 'embedded_viewer_web.dart';
 import 'package:flutter/material.dart';
 
 class EmbeddedDocumentViewer extends StatelessWidget {

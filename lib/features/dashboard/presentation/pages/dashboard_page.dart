@@ -19,7 +19,9 @@ class _DashboardPageState extends State<DashboardPage> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => context.read<DashboardProvider>().load());
+    WidgetsBinding.instance.addPostFrameCallback(
+      (_) => context.read<DashboardProvider>().load(),
+    );
   }
 
   String _greeting() {
@@ -31,16 +33,16 @@ class _DashboardPageState extends State<DashboardPage> {
 
   @override
   Widget build(BuildContext context) {
-    final auth      = context.watch<AuthProvider>();
+    final auth = context.watch<AuthProvider>();
     final dashboard = context.watch<DashboardProvider>();
-    final name      = auth.profile?.displayName.split(' ').first ?? 'Student';
-    final width     = MediaQuery.of(context).size.width;
+    final name = auth.profile?.displayName.split(' ').first ?? 'Student';
+    final width = MediaQuery.of(context).size.width;
     final isDesktop = width > 900;
 
     return AdaptiveScaffold(
       selectedIndex: 0,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0B0F17),
+        backgroundColor: const Color(0xFFFFF8F0),
         body: SafeArea(
           child: Stack(
             children: [
@@ -48,26 +50,44 @@ class _DashboardPageState extends State<DashboardPage> {
               Positioned(
                 top: -60,
                 right: -60,
-                child: Container(
-                  width: 300,
-                  height: 300,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFF6366F1).withValues(alpha: 0.12),
-                  ),
-                ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2), duration: 4000.ms),
+                child:
+                    Container(
+                          width: 300,
+                          height: 300,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color(
+                              0xFFE07A5F,
+                            ).withValues(alpha: 0.12),
+                          ),
+                        )
+                        .animate(onPlay: (c) => c.repeat(reverse: true))
+                        .scale(
+                          begin: const Offset(0.8, 0.8),
+                          end: const Offset(1.2, 1.2),
+                          duration: 4000.ms,
+                        ),
               ),
               Positioned(
                 top: 250,
                 left: -80,
-                child: Container(
-                  width: 280,
-                  height: 280,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    color: const Color(0xFFA855F7).withValues(alpha: 0.08),
-                  ),
-                ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(begin: const Offset(1.1, 1.1), end: const Offset(0.9, 0.9), duration: 5000.ms),
+                child:
+                    Container(
+                          width: 280,
+                          height: 280,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: const Color(
+                              0xFFF2CC8F,
+                            ).withValues(alpha: 0.08),
+                          ),
+                        )
+                        .animate(onPlay: (c) => c.repeat(reverse: true))
+                        .scale(
+                          begin: const Offset(1.1, 1.1),
+                          end: const Offset(0.9, 0.9),
+                          duration: 5000.ms,
+                        ),
               ),
 
               Center(
@@ -86,41 +106,83 @@ class _DashboardPageState extends State<DashboardPage> {
                                 children: [
                                   Expanded(
                                     child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Row(
                                           children: [
-                                            Text('${_greeting()}, $name', style: AppTextStyles.headlineLarge.copyWith(color: Colors.white, fontWeight: FontWeight.bold))
-                                                .animate().fadeIn(duration: 500.ms).slideX(begin: -0.04, end: 0),
+                                            Text(
+                                                  '${_greeting()}, $name',
+                                                  style: AppTextStyles
+                                                      .headlineLarge
+                                                      .copyWith(
+                                                        color: Colors.white,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                )
+                                                .animate()
+                                                .fadeIn(duration: 500.ms)
+                                                .slideX(begin: -0.04, end: 0),
                                             const SizedBox(width: 8),
-                                            const Text('👋', style: TextStyle(fontSize: 26))
-                                                .animate(onPlay: (c) => c.repeat(reverse: true))
-                                                .rotate(begin: -0.05, end: 0.05, duration: 1200.ms),
+                                            const Text(
+                                                  '👋',
+                                                  style: TextStyle(
+                                                    fontSize: 26,
+                                                  ),
+                                                )
+                                                .animate(
+                                                  onPlay: (c) =>
+                                                      c.repeat(reverse: true),
+                                                )
+                                                .rotate(
+                                                  begin: -0.05,
+                                                  end: 0.05,
+                                                  duration: 1200.ms,
+                                                ),
                                           ],
                                         ),
                                         const SizedBox(height: 6),
                                         Text(
                                           "One workspace. Less switching. More learning.",
-                                          style: TextStyle(color: const Color(0xFF94A3B8), fontSize: 14),
+                                          style: TextStyle(
+                                            color: const Color(0xFF806A63),
+                                            fontSize: 14,
+                                          ),
                                         ).animate().fadeIn(delay: 100.ms),
                                       ],
                                     ),
                                   ),
                                   if (isDesktop)
                                     Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 16,
+                                        vertical: 10,
+                                      ),
                                       decoration: BoxDecoration(
-                                        color: const Color(0xFF1E293B).withValues(alpha: 0.8),
+                                        color: const Color(
+                                          0xFFF7EBDD,
+                                        ).withValues(alpha: 0.8),
                                         borderRadius: BorderRadius.circular(14),
-                                        border: Border.all(color: const Color(0xFF334155)),
+                                        border: Border.all(
+                                          color: const Color(0xFFE8D4C4),
+                                        ),
                                       ),
                                       child: Row(
                                         children: [
-                                          const Icon(Icons.calendar_today_rounded, size: 16, color: Color(0xFF818CF8)),
+                                          const Icon(
+                                            Icons.calendar_today_rounded,
+                                            size: 16,
+                                            color: Color(0xFFD66A50),
+                                          ),
                                           const SizedBox(width: 8),
                                           Text(
                                             '${DateTime.now().day}/${DateTime.now().month}/${DateTime.now().year}',
-                                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Colors.white),
+                                            style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold,
+                                              color: Colors.white,
+                                            ),
                                           ),
                                         ],
                                       ),
@@ -131,79 +193,123 @@ class _DashboardPageState extends State<DashboardPage> {
 
                               // ── AI Tutor Hero Banner ──────────────────────────────
                               GestureDetector(
-                                onTap: () => context.go('/ai'),
-                                child: Container(
-                                  padding: const EdgeInsets.all(22),
-                                  decoration: BoxDecoration(
-                                    gradient: const LinearGradient(
-                                      colors: [Color(0xFF312E81), Color(0xFF4C1D95), Color(0xFF831843)],
-                                      begin: Alignment.topLeft,
-                                      end: Alignment.bottomRight,
-                                    ),
-                                    borderRadius: BorderRadius.circular(22),
-                                    border: Border.all(color: const Color(0xFF818CF8).withValues(alpha: 0.4)),
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: const Color(0xFF6366F1).withValues(alpha: 0.25),
-                                        blurRadius: 20,
-                                        offset: const Offset(0, 8),
-                                      ),
-                                    ],
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Container(
-                                        width: 56,
-                                        height: 56,
-                                        decoration: BoxDecoration(
-                                          color: Colors.white.withValues(alpha: 0.15),
-                                          borderRadius: BorderRadius.circular(16),
+                                    onTap: () => context.go('/ai'),
+                                    child: Container(
+                                      padding: const EdgeInsets.all(22),
+                                      decoration: BoxDecoration(
+                                        gradient: const LinearGradient(
+                                          colors: [
+                                            Color(0xFF8F4F3A),
+                                            Color(0xFFB85C38),
+                                            Color(0xFFC96B52),
+                                          ],
+                                          begin: Alignment.topLeft,
+                                          end: Alignment.bottomRight,
                                         ),
-                                        child: const Center(
-                                          child: Text('🤖', style: TextStyle(fontSize: 28)),
+                                        borderRadius: BorderRadius.circular(22),
+                                        border: Border.all(
+                                          color: const Color(
+                                            0xFFD66A50,
+                                          ).withValues(alpha: 0.4),
                                         ),
+                                        boxShadow: [
+                                          BoxShadow(
+                                            color: const Color(
+                                              0xFFE07A5F,
+                                            ).withValues(alpha: 0.25),
+                                            blurRadius: 20,
+                                            offset: const Offset(0, 8),
+                                          ),
+                                        ],
                                       ),
-                                      const SizedBox(width: 16),
-                                      Expanded(
-                                        child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
-                                          children: [
-                                            const Row(
+                                      child: Row(
+                                        children: [
+                                          Container(
+                                            width: 56,
+                                            height: 56,
+                                            decoration: BoxDecoration(
+                                              color: Colors.white.withValues(
+                                                alpha: 0.15,
+                                              ),
+                                              borderRadius:
+                                                  BorderRadius.circular(16),
+                                            ),
+                                            child: const Center(
+                                              child: Text(
+                                                '🤖',
+                                                style: TextStyle(fontSize: 28),
+                                              ),
+                                            ),
+                                          ),
+                                          const SizedBox(width: 16),
+                                          Expanded(
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
                                               children: [
-                                                Text(
-                                                  'StudySpace AI Tutor',
-                                                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                                                const Row(
+                                                  children: [
+                                                    Text(
+                                                      'StudySpace AI Tutor',
+                                                      style: TextStyle(
+                                                        fontSize: 18,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        color: Colors.white,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 8),
+                                                    Icon(
+                                                      Icons
+                                                          .auto_awesome_rounded,
+                                                      color: Color(0xFFE07A5F),
+                                                      size: 16,
+                                                    ),
+                                                  ],
                                                 ),
-                                                SizedBox(width: 8),
-                                                Icon(Icons.auto_awesome_rounded, color: Color(0xFFF472B6), size: 16),
+                                                const SizedBox(height: 4),
+                                                Text(
+                                                  'Instant problem solver, zero-downtime model cascade, copy prompt ready',
+                                                  style: TextStyle(
+                                                    fontSize: 13,
+                                                    color: Colors.white
+                                                        .withValues(
+                                                          alpha: 0.85,
+                                                        ),
+                                                  ),
+                                                ),
                                               ],
                                             ),
-                                            const SizedBox(height: 4),
-                                            Text(
-                                              'Instant problem solver, zero-downtime model cascade, copy prompt ready',
-                                              style: TextStyle(fontSize: 13, color: Colors.white.withValues(alpha: 0.85)),
+                                          ),
+                                          Container(
+                                            padding: const EdgeInsets.all(10),
+                                            decoration: const BoxDecoration(
+                                              color: Colors.white24,
+                                              shape: BoxShape.circle,
                                             ),
-                                          ],
-                                        ),
+                                            child: const Icon(
+                                              Icons.arrow_forward_rounded,
+                                              color: Colors.white,
+                                              size: 20,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        decoration: const BoxDecoration(
-                                          color: Colors.white24,
-                                          shape: BoxShape.circle,
-                                        ),
-                                        child: const Icon(Icons.arrow_forward_rounded, color: Colors.white, size: 20),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ).animate().fadeIn(delay: 200.ms).slideY(begin: 0.08, end: 0),
+                                    ),
+                                  )
+                                  .animate()
+                                  .fadeIn(delay: 200.ms)
+                                  .slideY(begin: 0.08, end: 0),
                               const SizedBox(height: 28),
 
                               // ── Quick Tools Header ───────────────────────────
                               const Text(
                                 'Quick Tools & Utilities',
-                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const SizedBox(height: 14),
                             ],
@@ -215,20 +321,56 @@ class _DashboardPageState extends State<DashboardPage> {
                       SliverPadding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         sliver: SliverGrid(
-                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 135,
-                            mainAxisExtent: 105,
-                            crossAxisSpacing: 14,
-                            mainAxisSpacing: 14,
-                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 135,
+                                mainAxisExtent: 105,
+                                crossAxisSpacing: 14,
+                                mainAxisSpacing: 14,
+                              ),
                           delegate: SliverChildListDelegate([
-                            _QuickTool(emoji: '🤖', label: 'AI Tutor',   route: '/ai',          delay: 0),
-                            _QuickTool(emoji: '📄', label: 'PDF Tools',  route: '/pdf-tools',   delay: 40),
-                            _QuickTool(emoji: '✅', label: 'To-Do',      route: '/todo',        delay: 80),
-                            _QuickTool(emoji: '💬', label: 'Community', route: '/community',   delay: 120),
-                            _QuickTool(emoji: '🧮', label: 'Calculator', route: '/calculator',  delay: 160),
-                            _QuickTool(emoji: '🔍', label: 'Search',     route: '/search',      delay: 200),
-                            _QuickTool(emoji: '👤', label: 'Profile',    route: '/profile',     delay: 240),
+                            _QuickTool(
+                              emoji: '🤖',
+                              label: 'AI Tutor',
+                              route: '/ai',
+                              delay: 0,
+                            ),
+                            _QuickTool(
+                              emoji: '📄',
+                              label: 'PDF Tools',
+                              route: '/pdf-tools',
+                              delay: 40,
+                            ),
+                            _QuickTool(
+                              emoji: '✅',
+                              label: 'To-Do',
+                              route: '/todo',
+                              delay: 80,
+                            ),
+                            _QuickTool(
+                              emoji: '💬',
+                              label: 'Community',
+                              route: '/community',
+                              delay: 120,
+                            ),
+                            _QuickTool(
+                              emoji: '🧮',
+                              label: 'Calculator',
+                              route: '/calculator',
+                              delay: 160,
+                            ),
+                            _QuickTool(
+                              emoji: '🔍',
+                              label: 'Search',
+                              route: '/search',
+                              delay: 200,
+                            ),
+                            _QuickTool(
+                              emoji: '👤',
+                              label: 'Profile',
+                              route: '/profile',
+                              delay: 240,
+                            ),
                           ]),
                         ),
                       ),
@@ -241,14 +383,21 @@ class _DashboardPageState extends State<DashboardPage> {
                             children: [
                               const Text(
                                 "Today's Tasks",
-                                style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.bold,
+                                ),
                               ),
                               const Spacer(),
                               TextButton(
                                 onPressed: () => context.go('/todo'),
                                 child: const Text(
                                   'See All Tasks →',
-                                  style: TextStyle(color: Color(0xFF818CF8), fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    color: Color(0xFFD66A50),
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
@@ -264,26 +413,41 @@ class _DashboardPageState extends State<DashboardPage> {
                               ? Container(
                                   padding: const EdgeInsets.all(24),
                                   decoration: BoxDecoration(
-                                    color: const Color(0xFF1E293B).withValues(alpha: 0.7),
+                                    color: const Color(
+                                      0xFFF7EBDD,
+                                    ).withValues(alpha: 0.7),
                                     borderRadius: BorderRadius.circular(20),
-                                    border: Border.all(color: const Color(0xFF334155)),
+                                    border: Border.all(
+                                      color: const Color(0xFFE8D4C4),
+                                    ),
                                   ),
                                   child: Row(
                                     children: [
-                                      const Text('🎉', style: TextStyle(fontSize: 34)),
+                                      const Text(
+                                        '🎉',
+                                        style: TextStyle(fontSize: 34),
+                                      ),
                                       const SizedBox(width: 16),
                                       Expanded(
                                         child: Column(
-                                          crossAxisAlignment: CrossAxisAlignment.start,
+                                          crossAxisAlignment:
+                                              CrossAxisAlignment.start,
                                           children: [
                                             const Text(
                                               'No tasks due today!',
-                                              style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold),
+                                              style: TextStyle(
+                                                color: Colors.white,
+                                                fontSize: 16,
+                                                fontWeight: FontWeight.bold,
+                                              ),
                                             ),
                                             const SizedBox(height: 4),
                                             const Text(
                                               'All clear! Enjoy your study break or prepare for exams ahead.',
-                                              style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                                              style: TextStyle(
+                                                color: Color(0xFF806A63),
+                                                fontSize: 13,
+                                              ),
                                             ),
                                           ],
                                         ),
@@ -295,7 +459,15 @@ class _DashboardPageState extends State<DashboardPage> {
                                   children: dashboard.todayTasks
                                       .asMap()
                                       .entries
-                                      .map((e) => TaskCard(task: e.value).animate().fadeIn(delay: Duration(milliseconds: e.key * 60)))
+                                      .map(
+                                        (e) => TaskCard(task: e.value)
+                                            .animate()
+                                            .fadeIn(
+                                              delay: Duration(
+                                                milliseconds: e.key * 60,
+                                              ),
+                                            ),
+                                      )
                                       .toList(),
                                 ),
                         ),
@@ -307,7 +479,11 @@ class _DashboardPageState extends State<DashboardPage> {
                           padding: const EdgeInsets.fromLTRB(24, 32, 24, 14),
                           child: const Text(
                             'Explore Modules',
-                            style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ),
@@ -315,17 +491,42 @@ class _DashboardPageState extends State<DashboardPage> {
                       SliverPadding(
                         padding: const EdgeInsets.fromLTRB(24, 0, 24, 48),
                         sliver: SliverGrid(
-                          gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-                            maxCrossAxisExtent: 280,
-                            mainAxisSpacing: 14,
-                            crossAxisSpacing: 14,
-                            childAspectRatio: 1.45,
-                          ),
+                          gridDelegate:
+                              const SliverGridDelegateWithMaxCrossAxisExtent(
+                                maxCrossAxisExtent: 280,
+                                mainAxisSpacing: 14,
+                                crossAxisSpacing: 14,
+                                childAspectRatio: 1.45,
+                              ),
                           delegate: SliverChildListDelegate([
-                            _FeatureCard(emoji: '🤖', title: 'AI Assistant', subtitle: 'Academic tutor & coding mentor', color: const Color(0xFF818CF8), route: '/ai'),
-                            _FeatureCard(emoji: '📄', title: 'Document Studio', subtitle: 'View & convert Word, PDF, PPT', color: const Color(0xFFF59E0B), route: '/pdf-tools'),
-                            _FeatureCard(emoji: '💬', title: 'Student Lounge', subtitle: 'Real-time subject chat rooms', color: const Color(0xFF38BDF8), route: '/community'),
-                            _FeatureCard(emoji: '🔍', title: 'Smart Search', subtitle: 'Find academic papers & textbooks', color: const Color(0xFF4ADE80), route: '/search'),
+                            _FeatureCard(
+                              emoji: '🤖',
+                              title: 'AI Assistant',
+                              subtitle: 'Academic tutor & coding mentor',
+                              color: const Color(0xFFD66A50),
+                              route: '/ai',
+                            ),
+                            _FeatureCard(
+                              emoji: '📄',
+                              title: 'Document Studio',
+                              subtitle: 'View & convert Word, PDF, PPT',
+                              color: const Color(0xFFF59E0B),
+                              route: '/pdf-tools',
+                            ),
+                            _FeatureCard(
+                              emoji: '💬',
+                              title: 'Student Lounge',
+                              subtitle: 'Real-time subject chat rooms',
+                              color: const Color(0xFF38BDF8),
+                              route: '/community',
+                            ),
+                            _FeatureCard(
+                              emoji: '🔍',
+                              title: 'Smart Search',
+                              subtitle: 'Find academic papers & textbooks',
+                              color: const Color(0xFF4ADE80),
+                              route: '/search',
+                            ),
                           ]),
                         ),
                       ),
@@ -344,55 +545,69 @@ class _DashboardPageState extends State<DashboardPage> {
 class _QuickTool extends StatelessWidget {
   final String emoji, label, route;
   final int delay;
-  const _QuickTool({required this.emoji, required this.label, required this.route, required this.delay});
+  const _QuickTool({
+    required this.emoji,
+    required this.label,
+    required this.route,
+    required this.delay,
+  });
 
   @override
   Widget build(BuildContext context) {
     return InkWell(
-      onTap: () => context.go(route),
-      borderRadius: BorderRadius.circular(18),
-      child: Container(
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
-        decoration: BoxDecoration(
-          color: const Color(0xFF1E293B).withValues(alpha: 0.8),
+          onTap: () => context.go(route),
           borderRadius: BorderRadius.circular(18),
-          border: Border.all(color: const Color(0xFF334155)),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withValues(alpha: 0.2),
-              blurRadius: 8,
-              offset: const Offset(0, 3),
-            ),
-          ],
-        ),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(emoji, style: const TextStyle(fontSize: 26)),
-            const SizedBox(height: 6),
-            FittedBox(
-              fit: BoxFit.scaleDown,
-              child: Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 12,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
+          child: Container(
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
+            decoration: BoxDecoration(
+              color: const Color(0xFFF7EBDD).withValues(alpha: 0.8),
+              borderRadius: BorderRadius.circular(18),
+              border: Border.all(color: const Color(0xFFE8D4C4)),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withValues(alpha: 0.2),
+                  blurRadius: 8,
+                  offset: const Offset(0, 3),
                 ),
-                textAlign: TextAlign.center,
-              ),
+              ],
             ),
-          ],
-        ),
-      ),
-    ).animate().fadeIn(delay: Duration(milliseconds: delay + 100)).scale(begin: const Offset(0.92, 0.92));
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(emoji, style: const TextStyle(fontSize: 26)),
+                const SizedBox(height: 6),
+                FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: Text(
+                    label,
+                    style: const TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.white,
+                    ),
+                    textAlign: TextAlign.center,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        )
+        .animate()
+        .fadeIn(delay: Duration(milliseconds: delay + 100))
+        .scale(begin: const Offset(0.92, 0.92));
   }
 }
 
 class _FeatureCard extends StatelessWidget {
   final String emoji, title, subtitle, route;
   final Color color;
-  const _FeatureCard({required this.emoji, required this.title, required this.subtitle, required this.color, required this.route});
+  const _FeatureCard({
+    required this.emoji,
+    required this.title,
+    required this.subtitle,
+    required this.color,
+    required this.route,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -426,9 +641,21 @@ class _FeatureCard extends StatelessWidget {
               child: Text(emoji, style: const TextStyle(fontSize: 22)),
             ),
             const SizedBox(height: 10),
-            Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 15)),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontWeight: FontWeight.bold,
+                fontSize: 15,
+              ),
+            ),
             const SizedBox(height: 2),
-            Text(subtitle, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12), maxLines: 1, overflow: TextOverflow.ellipsis),
+            Text(
+              subtitle,
+              style: const TextStyle(color: Color(0xFF806A63), fontSize: 12),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+            ),
           ],
         ),
       ),
