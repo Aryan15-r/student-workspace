@@ -4,7 +4,7 @@
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0A0A1A",
-    "theme_color": "#6366F1",
+    "theme_color": "#E07A5F",
     "description": "One workspace. Less switching. More learning. All-in-one student productivity app.",
     "orientation": "portrait-primary",
     "prefer_related_applications": false,
