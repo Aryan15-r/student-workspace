@@ -74,10 +74,16 @@ class AuthProvider extends ChangeNotifier {
     // 1. Immediately evaluate local/cached Supabase session
     final initialUser = _authService.currentUser;
     if (initialUser != null) {
-      _loadProfile(initialUser.id).then((_) {
-        _initialized = true;
-        notifyListeners();
-      });
+      // Routing must not wait for a profile request when the device is offline.
+      _initialized = true;
+      notifyListeners();
+      _loadProfile(initialUser.id);
+    } else {
+      // Do not make the first screen depend on Supabase's network handshake.
+      // Guest mode keeps offline tools usable while auth settles in the background.
+      _isGuest = true;
+      _initialized = true;
+      notifyListeners();
     }
 
     // 2. Listen for auth changes (token refresh, sign in, sign out, password recovery)
@@ -113,7 +119,9 @@ class AuthProvider extends ChangeNotifier {
 
   Future<void> _loadProfile(String userId) async {
     try {
-      _profile = await _authService.fetchProfile(userId);
+      _profile = await _authService
+          .fetchProfile(userId)
+          .timeout(const Duration(seconds: 4));
       if (_profile == null) {
         final user = _authService.currentUser;
         if (user != null) {

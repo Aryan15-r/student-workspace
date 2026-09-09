@@ -7,6 +7,7 @@ import '../../providers/todo_provider.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 import '../../../../core/constants/app_constants.dart';
+import '../../../auth/providers/auth_provider.dart';
 
 class AddTaskSheet extends StatefulWidget {
   const AddTaskSheet({super.key});
@@ -59,7 +60,9 @@ class _AddTaskSheetState extends State<AddTaskSheet> {
 
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
-    final userId = Supabase.instance.client.auth.currentUser?.id;
+    final userId =
+        Supabase.instance.client.auth.currentUser?.id ??
+        (context.read<AuthProvider>().isGuest ? 'offline-user' : null);
     if (userId == null) return;
     final task = Task(
       id: const Uuid().v4(),

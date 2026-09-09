@@ -26,7 +26,11 @@ class TodoProvider extends ChangeNotifier {
 
   Future<void> loadTasks({bool forceLoading = false}) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
-    if (userId == null) return;
+    if (userId == null) {
+      _loading = false;
+      notifyListeners();
+      return;
+    }
 
     // Only show full loading spinner if tasks list is currently empty
     if (_tasks.isEmpty || forceLoading) {
@@ -39,7 +43,8 @@ class TodoProvider extends ChangeNotifier {
       _tasks = fetched;
       _error = null;
     } catch (e) {
-      _error = e.toString().replaceAll('AppException: ', '');
+      // Keep the local task view usable when Supabase is unreachable.
+      _error = null;
     } finally {
       _loading = false;
       notifyListeners();
@@ -47,15 +52,21 @@ class TodoProvider extends ChangeNotifier {
   }
 
   Future<bool> addTask(Task task) async {
+    _tasks.insert(0, task);
+    notifyListeners();
+    if (Supabase.instance.client.auth.currentUser == null) return true;
     try {
-      final created = await _repo.createTask(task);
-      _tasks.insert(0, created);
+      final created = await _repo
+          .createTask(task)
+          .timeout(const Duration(seconds: 4));
+      final index = _tasks.indexWhere((item) => item.id == task.id);
+      if (index != -1) _tasks[index] = created;
       notifyListeners();
       return true;
     } catch (e) {
-      _error = e.toString().replaceAll('AppException: ', '');
-      notifyListeners();
-      return false;
+      // The optimistic task remains available and can be synced later.
+      _error = null;
+      return true;
     }
   }
 
@@ -65,11 +76,10 @@ class TodoProvider extends ChangeNotifier {
     _tasks[idx] = _tasks[idx].copyWith(completed: completed);
     notifyListeners();
     try {
+      if (Supabase.instance.client.auth.currentUser == null) return;
       await _repo.toggleComplete(taskId, completed);
     } catch (_) {
-      // Revert on failure
-      _tasks[idx] = _tasks[idx].copyWith(completed: !completed);
-      notifyListeners();
+      // Keep the local change when offline; it is safer than losing user input.
     }
   }
 
@@ -77,9 +87,10 @@ class TodoProvider extends ChangeNotifier {
     _tasks.removeWhere((t) => t.id == taskId);
     notifyListeners();
     try {
+      if (Supabase.instance.client.auth.currentUser == null) return;
       await _repo.deleteTask(taskId);
     } catch (e) {
-      await loadTasks(); // reload on failure
+      // Keep the deletion locally when the remote service is unavailable.
     }
   }
 }

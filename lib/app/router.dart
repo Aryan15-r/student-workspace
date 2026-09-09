@@ -60,11 +60,14 @@ class AppRouter {
         location == '/' ||
         location == '/login' ||
         location == '/signup' ||
+        location == '/todo' ||
+        location == '/study-tools' ||
         location == '/forgot-password' ||
         location == '/reset-password' ||
         location.startsWith('/verify-otp');
 
-    // Not logged in and not in guest mode, trying to access a protected page → go to landing
+    // Focus tools are intentionally available without a network or account.
+    // Not logged in and not in guest mode, trying to access another protected page → go to landing
     if (!isAuth && !isGuest && !isPublicPage) return '/';
 
     // Already logged in (authenticated) and trying to visit landing/login/signup → go to dashboard
