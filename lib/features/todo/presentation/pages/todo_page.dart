@@ -22,7 +22,8 @@ class TodoPage extends StatefulWidget {
   State<TodoPage> createState() => _TodoPageState();
 }
 
-class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin {
+class _TodoPageState extends State<TodoPage>
+    with SingleTickerProviderStateMixin {
   late TabController _tabs;
   DateTime _selectedDate = DateTime.now();
 
@@ -49,7 +50,8 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
       LoginPromptDialog.show(
         context,
         featureName: 'To-Do Lists',
-        customMessage: 'Guest mode is limited to 3 tasks. Please sign in to create unlimited tasks, set reminders, and sync across devices!',
+        customMessage:
+            'Guest mode is limited to 3 tasks. Please sign in to create unlimited tasks, set reminders, and sync across devices!',
       );
       return;
     }
@@ -58,7 +60,9 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
       context: context,
       isScrollControlled: true,
       backgroundColor: AppColors.surface,
-      shape: const RoundedRectangleBorder(borderRadius: BorderRadius.vertical(top: Radius.circular(24))),
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+      ),
       builder: (_) => const AddTaskSheet(),
     );
   }
@@ -73,7 +77,10 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
         backgroundColor: const Color(0xFF0B0F17),
         appBar: AppBar(
           backgroundColor: const Color(0xFF0F172A).withValues(alpha: 0.8),
-          title: Text('Task & Study Tracker', style: AppTextStyles.headlineSmall.copyWith(color: Colors.white)),
+          title: Text(
+            'Task & Study Tracker',
+            style: AppTextStyles.headlineSmall.copyWith(color: Colors.white),
+          ),
           bottom: TabBar(
             controller: _tabs,
             indicatorColor: const Color(0xFF818CF8),
@@ -92,39 +99,59 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
           onPressed: _openAddTask,
           backgroundColor: const Color(0xFF6366F1),
           icon: const Icon(Icons.add_rounded, color: Colors.white),
-          label: const Text('Add Task', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
+          label: const Text(
+            'Add Task',
+            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+          ),
         ),
         body: Consumer<TodoProvider>(
           builder: (context, todo, _) {
-            if (todo.isLoading && todo.tasks.isEmpty) return const LoadingWidget(message: 'Loading tasks...');
-            if (todo.error != null && todo.tasks.isEmpty) return AppErrorWidget(message: todo.error!, onRetry: todo.loadTasks);
+            if (todo.isLoading && todo.tasks.isEmpty)
+              return const LoadingWidget(message: 'Loading tasks...');
+            if (todo.error != null && todo.tasks.isEmpty)
+              return AppErrorWidget(
+                message: todo.error!,
+                onRetry: todo.loadTasks,
+              );
 
             return Column(
               children: [
                 if (auth.isGuest)
                   Container(
                     margin: const EdgeInsets.fromLTRB(16, 12, 16, 4),
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 10,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFF6366F1).withValues(alpha: 0.08),
                       borderRadius: BorderRadius.circular(12),
-                      border: Border.all(color: const Color(0xFF6366F1).withValues(alpha: 0.2)),
+                      border: Border.all(
+                        color: const Color(0xFF6366F1).withValues(alpha: 0.2),
+                      ),
                     ),
                     child: Row(
                       children: [
-                        const Icon(Icons.info_outline_rounded, size: 18, color: Color(0xFF818CF8)),
+                        const Icon(
+                          Icons.info_outline_rounded,
+                          size: 18,
+                          color: Color(0xFF818CF8),
+                        ),
                         const SizedBox(width: 8),
                         Expanded(
                           child: Text(
                             'Guest Mode: ${todo.tasks.length} of 3 tasks used.',
-                            style: AppTextStyles.bodySmall.copyWith(color: const Color(0xFF818CF8)),
+                            style: AppTextStyles.bodySmall.copyWith(
+                              color: const Color(0xFF818CF8),
+                            ),
                           ),
                         ),
                         GestureDetector(
                           onTap: () => LoginPromptDialog.show(
                             context,
                             featureName: 'To-Do Lists',
-                            customMessage: 'Sign in to unlock unlimited task management and cloud sync!',
+                            customMessage:
+                                'Sign in to unlock unlimited task management and cloud sync!',
                           ),
                           child: const Text(
                             'Sign In',
@@ -150,10 +177,12 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
                     itemCount: 14,
                     itemBuilder: (context, index) {
                       final day = DateTime.now().add(Duration(days: index - 2));
-                      final isSelected = day.year == _selectedDate.year &&
+                      final isSelected =
+                          day.year == _selectedDate.year &&
                           day.month == _selectedDate.month &&
                           day.day == _selectedDate.day;
-                      final isToday = day.year == DateTime.now().year &&
+                      final isToday =
+                          day.year == DateTime.now().year &&
                           day.month == DateTime.now().month &&
                           day.day == DateTime.now().day;
 
@@ -162,17 +191,29 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
                         child: AnimatedContainer(
                           duration: const Duration(milliseconds: 200),
                           margin: const EdgeInsets.symmetric(horizontal: 4),
-                          padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 8),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 14,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
                             gradient: isSelected
-                                ? const LinearGradient(colors: [Color(0xFF6366F1), Color(0xFFA855F7)])
+                                ? const LinearGradient(
+                                    colors: [
+                                      Color(0xFF6366F1),
+                                      Color(0xFFA855F7),
+                                    ],
+                                  )
                                 : null,
                             color: isSelected ? null : const Color(0xFF1E293B),
                             borderRadius: BorderRadius.circular(14),
                             border: Border.all(
                               color: isSelected
                                   ? const Color(0xFF818CF8)
-                                  : (isToday ? const Color(0xFF818CF8).withValues(alpha: 0.5) : const Color(0xFF334155)),
+                                  : (isToday
+                                        ? const Color(
+                                            0xFF818CF8,
+                                          ).withValues(alpha: 0.5)
+                                        : const Color(0xFF334155)),
                             ),
                           ),
                           child: Column(
@@ -181,7 +222,9 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
                               Text(
                                 _weekdayName(day.weekday),
                                 style: TextStyle(
-                                  color: isSelected ? Colors.white : const Color(0xFF94A3B8),
+                                  color: isSelected
+                                      ? Colors.white
+                                      : const Color(0xFF94A3B8),
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
                                 ),
@@ -190,7 +233,11 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
                               Text(
                                 '${day.day}',
                                 style: TextStyle(
-                                  color: isSelected ? Colors.white : (isToday ? const Color(0xFF818CF8) : Colors.white),
+                                  color: isSelected
+                                      ? Colors.white
+                                      : (isToday
+                                            ? const Color(0xFF818CF8)
+                                            : Colors.white),
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -217,13 +264,15 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
                       _TaskList(
                         tasks: todo.pendingTasks,
                         emptyTitle: 'No upcoming tasks',
-                        emptySubtitle: 'Tap + to schedule upcoming study sessions',
+                        emptySubtitle:
+                            'Tap + to schedule upcoming study sessions',
                       ),
                       // Completed Tasks
                       _TaskList(
                         tasks: todo.completedTasks,
                         emptyTitle: 'Nothing completed yet',
-                        emptySubtitle: 'Complete tasks to build your activity streak!',
+                        emptySubtitle:
+                            'Complete tasks to build your activity streak!',
                       ),
                       // Activity Stats
                       _ActivityStatsView(todo: todo),
@@ -247,7 +296,11 @@ class _TodoPageState extends State<TodoPage> with SingleTickerProviderStateMixin
 class _TaskList extends StatelessWidget {
   final List<Task> tasks;
   final String emptyTitle, emptySubtitle;
-  const _TaskList({required this.tasks, required this.emptyTitle, required this.emptySubtitle});
+  const _TaskList({
+    required this.tasks,
+    required this.emptyTitle,
+    required this.emptySubtitle,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -262,7 +315,9 @@ class _TaskList extends StatelessWidget {
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 100),
       itemCount: tasks.length,
       itemBuilder: (context, i) => TaskCard(task: tasks[i])
-          .animate().fadeIn(delay: Duration(milliseconds: i * 50)).slideY(begin: 0.1, end: 0),
+          .animate()
+          .fadeIn(delay: Duration(milliseconds: i * 50))
+          .slideY(begin: 0.1, end: 0),
     );
   }
 }
@@ -283,23 +338,58 @@ class _ActivityStatsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text('Study Activity & Progress', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+          const Text(
+            'Study Activity & Progress',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 18,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 16),
 
           // Overview Cards
           Row(
             children: [
-              Expanded(child: _StatCard(title: 'Total Tasks', value: '$total', icon: Icons.format_list_bulleted_rounded, color: const Color(0xFF818CF8))),
+              Expanded(
+                child: _StatCard(
+                  title: 'Total Tasks',
+                  value: '$total',
+                  icon: Icons.format_list_bulleted_rounded,
+                  color: const Color(0xFF818CF8),
+                ),
+              ),
               const SizedBox(width: 12),
-              Expanded(child: _StatCard(title: 'Completed', value: '$done', icon: Icons.check_circle_rounded, color: const Color(0xFF4ADE80))),
+              Expanded(
+                child: _StatCard(
+                  title: 'Completed',
+                  value: '$done',
+                  icon: Icons.check_circle_rounded,
+                  color: const Color(0xFF4ADE80),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 12),
           Row(
             children: [
-              Expanded(child: _StatCard(title: 'Pending', value: '$pending', icon: Icons.pending_actions_rounded, color: const Color(0xFFF59E0B))),
+              Expanded(
+                child: _StatCard(
+                  title: 'Pending',
+                  value: '$pending',
+                  icon: Icons.pending_actions_rounded,
+                  color: const Color(0xFFF59E0B),
+                ),
+              ),
               const SizedBox(width: 12),
-              Expanded(child: _StatCard(title: 'Completion Rate', value: '$percent%', icon: Icons.pie_chart_rounded, color: const Color(0xFFC084FC))),
+              Expanded(
+                child: _StatCard(
+                  title: 'Completion Rate',
+                  value: '$percent%',
+                  icon: Icons.pie_chart_rounded,
+                  color: const Color(0xFFC084FC),
+                ),
+              ),
             ],
           ),
           const SizedBox(height: 24),
@@ -314,7 +404,9 @@ class _ActivityStatsView extends StatelessWidget {
                 end: Alignment.bottomRight,
               ),
               borderRadius: BorderRadius.circular(20),
-              border: Border.all(color: const Color(0xFF818CF8).withValues(alpha: 0.3)),
+              border: Border.all(
+                color: const Color(0xFF818CF8).withValues(alpha: 0.3),
+              ),
             ),
             child: Row(
               children: [
@@ -324,9 +416,22 @@ class _ActivityStatsView extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Text('Study Streak Active', style: TextStyle(color: Colors.white, fontSize: 16, fontWeight: FontWeight.bold)),
+                      const Text(
+                        'Study Streak Active',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 16,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
                       const SizedBox(height: 4),
-                      Text('Keep completing daily tasks to maintain your study focus!', style: TextStyle(color: Colors.white.withValues(alpha: 0.8), fontSize: 13)),
+                      Text(
+                        'Keep completing daily tasks to maintain your study focus!',
+                        style: TextStyle(
+                          color: Colors.white.withValues(alpha: 0.8),
+                          fontSize: 13,
+                        ),
+                      ),
                     ],
                   ),
                 ),
@@ -343,7 +448,12 @@ class _StatCard extends StatelessWidget {
   final String title, value;
   final IconData icon;
   final Color color;
-  const _StatCard({required this.title, required this.value, required this.icon, required this.color});
+  const _StatCard({
+    required this.title,
+    required this.value,
+    required this.icon,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -359,9 +469,19 @@ class _StatCard extends StatelessWidget {
         children: [
           Icon(icon, color: color, size: 22),
           const SizedBox(height: 10),
-          Text(value, style: const TextStyle(color: Colors.white, fontSize: 22, fontWeight: FontWeight.bold)),
+          Text(
+            value,
+            style: const TextStyle(
+              color: Colors.white,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 2),
-          Text(title, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12)),
+          Text(
+            title,
+            style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+          ),
         ],
       ),
     );

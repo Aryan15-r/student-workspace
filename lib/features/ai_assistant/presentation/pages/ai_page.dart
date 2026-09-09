@@ -37,7 +37,8 @@ class _AiPageState extends State<AiPage> {
         LoginPromptDialog.show(
           context,
           title: 'Guest AI Limit Reached',
-          message: 'You have used all 3 free guest questions. Sign in or create a free account to get unlimited AI tutor access!',
+          message:
+              'You have used all 3 free guest questions. Sign in or create a free account to get unlimited AI tutor access!',
           icon: Icons.auto_awesome_rounded,
         );
         return;
@@ -76,7 +77,9 @@ class _AiPageState extends State<AiPage> {
     return AdaptiveScaffold(
       selectedIndex: 2,
       child: Scaffold(
-        backgroundColor: const Color(0xFF0B0F17), // Premium dark theme background
+        backgroundColor: const Color(
+          0xFF0B0F17,
+        ), // Premium dark theme background
         extendBodyBehindAppBar: true,
         appBar: PreferredSize(
           preferredSize: const Size.fromHeight(64),
@@ -85,31 +88,41 @@ class _AiPageState extends State<AiPage> {
               filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
               child: AppBar(
                 elevation: 0,
-                backgroundColor: const Color(0xFF0F172A).withValues(alpha: 0.75),
+                backgroundColor: const Color(
+                  0xFF0F172A,
+                ).withValues(alpha: 0.75),
                 title: Row(
                   children: [
                     Container(
-                      width: 38,
-                      height: 38,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF6366F1), Color(0xFFA855F7), Color(0xFFEC4899)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                        ),
-                        shape: BoxShape.circle,
-                        boxShadow: [
-                          BoxShadow(
-                            color: const Color(0xFFA855F7).withValues(alpha: 0.4),
-                            blurRadius: 10,
-                            spreadRadius: 1,
+                          width: 38,
+                          height: 38,
+                          decoration: BoxDecoration(
+                            gradient: const LinearGradient(
+                              colors: [
+                                Color(0xFF6366F1),
+                                Color(0xFFA855F7),
+                                Color(0xFFEC4899),
+                              ],
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                            ),
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: const Color(
+                                  0xFFA855F7,
+                                ).withValues(alpha: 0.4),
+                                blurRadius: 10,
+                                spreadRadius: 1,
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
-                      child: const Center(
-                        child: Text('🤖', style: TextStyle(fontSize: 20)),
-                      ),
-                    ).animate(onPlay: (c) => c.repeat(reverse: true)).scaleXY(begin: 0.96, end: 1.04, duration: 1800.ms),
+                          child: const Center(
+                            child: Text('🤖', style: TextStyle(fontSize: 20)),
+                          ),
+                        )
+                        .animate(onPlay: (c) => c.repeat(reverse: true))
+                        .scaleXY(begin: 0.96, end: 1.04, duration: 1800.ms),
                     const SizedBox(width: 12),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -126,19 +139,35 @@ class _AiPageState extends State<AiPage> {
                             ),
                             const SizedBox(width: 8),
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 7, vertical: 2),
+                              padding: const EdgeInsets.symmetric(
+                                horizontal: 7,
+                                vertical: 2,
+                              ),
                               decoration: BoxDecoration(
-                                color: const Color(0xFF22C55E).withValues(alpha: 0.15),
+                                color: const Color(
+                                  0xFF22C55E,
+                                ).withValues(alpha: 0.15),
                                 borderRadius: BorderRadius.circular(10),
-                                border: Border.all(color: const Color(0xFF22C55E).withValues(alpha: 0.4)),
+                                border: Border.all(
+                                  color: const Color(
+                                    0xFF22C55E,
+                                  ).withValues(alpha: 0.4),
+                                ),
                               ),
                               child: const Row(
                                 children: [
-                                  CircleAvatar(radius: 3, backgroundColor: Color(0xFF22C55E)),
+                                  CircleAvatar(
+                                    radius: 3,
+                                    backgroundColor: Color(0xFF22C55E),
+                                  ),
                                   SizedBox(width: 4),
                                   Text(
                                     'Gemini 3.6',
-                                    style: TextStyle(color: Color(0xFF4ADE80), fontSize: 10, fontWeight: FontWeight.bold),
+                                    style: TextStyle(
+                                      color: Color(0xFF4ADE80),
+                                      fontSize: 10,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
                                 ],
                               ),
@@ -148,7 +177,10 @@ class _AiPageState extends State<AiPage> {
                         const SizedBox(height: 2),
                         const Text(
                           'Zero-Downtime Academic Assistant',
-                          style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11),
+                          style: TextStyle(
+                            color: Color(0xFF94A3B8),
+                            fontSize: 11,
+                          ),
                         ),
                       ],
                     ),
@@ -156,7 +188,10 @@ class _AiPageState extends State<AiPage> {
                 ),
                 actions: [
                   IconButton(
-                    icon: const Icon(Icons.delete_sweep_rounded, color: Color(0xFF94A3B8)),
+                    icon: const Icon(
+                      Icons.delete_sweep_rounded,
+                      color: Color(0xFF94A3B8),
+                    ),
                     onPressed: () {
                       context.read<AiProvider>().clearChat();
                       ScaffoldMessenger.of(context).showSnackBar(
@@ -180,26 +215,44 @@ class _AiPageState extends State<AiPage> {
             Positioned(
               top: -80,
               right: -60,
-              child: Container(
-                width: 260,
-                height: 260,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFF6366F1).withValues(alpha: 0.12),
-                ),
-              ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(begin: const Offset(0.8, 0.8), end: const Offset(1.2, 1.2), duration: 4000.ms),
+              child:
+                  Container(
+                        width: 260,
+                        height: 260,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color(
+                            0xFF6366F1,
+                          ).withValues(alpha: 0.12),
+                        ),
+                      )
+                      .animate(onPlay: (c) => c.repeat(reverse: true))
+                      .scale(
+                        begin: const Offset(0.8, 0.8),
+                        end: const Offset(1.2, 1.2),
+                        duration: 4000.ms,
+                      ),
             ),
             Positioned(
               bottom: 120,
               left: -80,
-              child: Container(
-                width: 300,
-                height: 300,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  color: const Color(0xFFA855F7).withValues(alpha: 0.10),
-                ),
-              ).animate(onPlay: (c) => c.repeat(reverse: true)).scale(begin: const Offset(1.1, 1.1), end: const Offset(0.9, 0.9), duration: 5000.ms),
+              child:
+                  Container(
+                        width: 300,
+                        height: 300,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: const Color(
+                            0xFFA855F7,
+                          ).withValues(alpha: 0.10),
+                        ),
+                      )
+                      .animate(onPlay: (c) => c.repeat(reverse: true))
+                      .scale(
+                        begin: const Offset(1.1, 1.1),
+                        end: const Offset(0.9, 0.9),
+                        duration: 5000.ms,
+                      ),
             ),
 
             // Main chat content
@@ -218,7 +271,10 @@ class _AiPageState extends State<AiPage> {
                               )
                             : ListView.builder(
                                 controller: _scrollCtrl,
-                                padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 16,
+                                  vertical: 12,
+                                ),
                                 itemCount: ai.messages.length,
                                 itemBuilder: (_, i) => _MessageBubble(
                                   message: ai.messages[i],
@@ -232,21 +288,40 @@ class _AiPageState extends State<AiPage> {
 
                       if (ai.error != null)
                         Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          margin: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 6,
+                          ),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 8,
+                          ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFFEF4444).withValues(alpha: 0.15),
+                            color: const Color(
+                              0xFFEF4444,
+                            ).withValues(alpha: 0.15),
                             borderRadius: BorderRadius.circular(8),
-                            border: Border.all(color: const Color(0xFFEF4444).withValues(alpha: 0.4)),
+                            border: Border.all(
+                              color: const Color(
+                                0xFFEF4444,
+                              ).withValues(alpha: 0.4),
+                            ),
                           ),
                           child: Row(
                             children: [
-                              const Icon(Icons.error_outline_rounded, size: 16, color: Color(0xFFF87171)),
+                              const Icon(
+                                Icons.error_outline_rounded,
+                                size: 16,
+                                color: Color(0xFFF87171),
+                              ),
                               const SizedBox(width: 8),
                               Expanded(
                                 child: Text(
                                   ai.error!,
-                                  style: const TextStyle(color: Color(0xFFF87171), fontSize: 12),
+                                  style: const TextStyle(
+                                    color: Color(0xFFF87171),
+                                    fontSize: 12,
+                                  ),
                                 ),
                               ),
                             ],
@@ -256,22 +331,38 @@ class _AiPageState extends State<AiPage> {
                       if (context.watch<AuthProvider>().isGuest)
                         Container(
                           width: double.infinity,
-                          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-                          color: const Color(0xFF6366F1).withValues(alpha: 0.15),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 16,
+                            vertical: 6,
+                          ),
+                          color: const Color(
+                            0xFF6366F1,
+                          ).withValues(alpha: 0.15),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Icon(Icons.stars_rounded, size: 15, color: Color(0xFF818CF8)),
+                              const Icon(
+                                Icons.stars_rounded,
+                                size: 15,
+                                color: Color(0xFF818CF8),
+                              ),
                               const SizedBox(width: 6),
                               Text(
                                 'Guest Mode: ${context.watch<AuthProvider>().guestAiQueries} of 3 questions used • ',
-                                style: const TextStyle(fontSize: 12, color: Colors.white70),
+                                style: const TextStyle(
+                                  fontSize: 12,
+                                  color: Colors.white70,
+                                ),
                               ),
                               InkWell(
                                 onTap: () => context.go('/login'),
                                 child: const Text(
                                   'Sign In for Unlimited',
-                                  style: TextStyle(fontSize: 12, color: Color(0xFF818CF8), fontWeight: FontWeight.bold),
+                                  style: TextStyle(
+                                    fontSize: 12,
+                                    color: Color(0xFF818CF8),
+                                    fontWeight: FontWeight.bold,
+                                  ),
                                 ),
                               ),
                             ],
@@ -320,7 +411,11 @@ class _EmptyChatState extends StatelessWidget {
               height: 80,
               decoration: BoxDecoration(
                 gradient: const LinearGradient(
-                  colors: [Color(0xFF6366F1), Color(0xFFA855F7), Color(0xFFEC4899)],
+                  colors: [
+                    Color(0xFF6366F1),
+                    Color(0xFFA855F7),
+                    Color(0xFFEC4899),
+                  ],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 ),
@@ -333,16 +428,26 @@ class _EmptyChatState extends StatelessWidget {
                   ),
                 ],
               ),
-              child: const Center(child: Text('🤖', style: TextStyle(fontSize: 38))),
+              child: const Center(
+                child: Text('🤖', style: TextStyle(fontSize: 38)),
+              ),
             ).animate().fadeIn().scale(duration: 400.ms),
             const SizedBox(height: 20),
             ShaderMask(
               shaderCallback: (bounds) => const LinearGradient(
-                colors: [Color(0xFF818CF8), Color(0xFFC084FC), Color(0xFFF472B6)],
+                colors: [
+                  Color(0xFF818CF8),
+                  Color(0xFFC084FC),
+                  Color(0xFFF472B6),
+                ],
               ).createShader(bounds),
               child: const Text(
                 'StudySpace AI Tutor',
-                style: TextStyle(fontSize: 26, fontWeight: FontWeight.bold, color: Colors.white),
+                style: TextStyle(
+                  fontSize: 26,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
             ).animate().fadeIn(delay: 100.ms),
             const SizedBox(height: 8),
@@ -364,44 +469,63 @@ class _EmptyChatState extends StatelessWidget {
               alignment: Alignment.centerLeft,
               child: Text(
                 'Suggested Topics:',
-                style: TextStyle(color: Color(0xFFCBD5E1), fontSize: 14, fontWeight: FontWeight.w600),
+                style: TextStyle(
+                  color: Color(0xFFCBD5E1),
+                  fontSize: 14,
+                  fontWeight: FontWeight.w600,
+                ),
               ),
             ),
             const SizedBox(height: 12),
             Wrap(
               spacing: 10,
               runSpacing: 10,
-              children: _suggestions.map((s) => GestureDetector(
-                onTap: () => onSuggest(s),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                  decoration: BoxDecoration(
-                    color: const Color(0xFF1E293B).withValues(alpha: 0.8),
-                    borderRadius: BorderRadius.circular(16),
-                    border: Border.all(color: const Color(0xFF334155)),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.2),
-                        blurRadius: 6,
-                        offset: const Offset(0, 2),
-                      ),
-                    ],
-                  ),
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      const Icon(Icons.auto_awesome_rounded, size: 14, color: Color(0xFF818CF8)),
-                      const SizedBox(width: 8),
-                      Flexible(
-                        child: Text(
-                          s,
-                          style: const TextStyle(color: Color(0xFFE2E8F0), fontSize: 13, height: 1.3),
+              children: _suggestions
+                  .map(
+                    (s) => GestureDetector(
+                      onTap: () => onSuggest(s),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                          horizontal: 14,
+                          vertical: 10,
+                        ),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFF1E293B).withValues(alpha: 0.8),
+                          borderRadius: BorderRadius.circular(16),
+                          border: Border.all(color: const Color(0xFF334155)),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withValues(alpha: 0.2),
+                              blurRadius: 6,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(
+                              Icons.auto_awesome_rounded,
+                              size: 14,
+                              color: Color(0xFF818CF8),
+                            ),
+                            const SizedBox(width: 8),
+                            Flexible(
+                              child: Text(
+                                s,
+                                style: const TextStyle(
+                                  color: Color(0xFFE2E8F0),
+                                  fontSize: 13,
+                                  height: 1.3,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                       ),
-                    ],
-                  ),
-                ),
-              )).toList(),
+                    ),
+                  )
+                  .toList(),
             ).animate().fadeIn(delay: 300.ms),
           ],
         ),
@@ -414,10 +538,7 @@ class _MessageBubble extends StatelessWidget {
   final ChatMessage message;
   final void Function(String) onReusePrompt;
 
-  const _MessageBubble({
-    required this.message,
-    required this.onReusePrompt,
-  });
+  const _MessageBubble({required this.message, required this.onReusePrompt});
 
   Future<void> _launchLink(String? href) async {
     if (href == null || href.isEmpty) return;
@@ -433,7 +554,11 @@ class _MessageBubble extends StatelessWidget {
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle_rounded, color: Color(0xFF4ADE80), size: 18),
+            const Icon(
+              Icons.check_circle_rounded,
+              color: Color(0xFF4ADE80),
+              size: 18,
+            ),
             const SizedBox(width: 8),
             Text('$label copied to clipboard! 📋'),
           ],
@@ -457,10 +582,14 @@ class _MessageBubble extends StatelessWidget {
               width: 34,
               height: 34,
               decoration: const BoxDecoration(
-                gradient: LinearGradient(colors: [Color(0xFF6366F1), Color(0xFFA855F7)]),
+                gradient: LinearGradient(
+                  colors: [Color(0xFF6366F1), Color(0xFFA855F7)],
+                ),
                 shape: BoxShape.circle,
               ),
-              child: const Center(child: Text('🤖', style: TextStyle(fontSize: 15))),
+              child: const Center(
+                child: Text('🤖', style: TextStyle(fontSize: 15)),
+              ),
             ),
             const SizedBox(width: 10),
             Container(
@@ -472,20 +601,28 @@ class _MessageBubble extends StatelessWidget {
               ),
               child: Row(
                 children: [
-                  const Text('Thinking...', style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13)),
+                  const Text(
+                    'Thinking...',
+                    style: TextStyle(color: Color(0xFF94A3B8), fontSize: 13),
+                  ),
                   const SizedBox(width: 10),
                   Row(
                     children: List.generate(
                       3,
-                      (i) => Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 2.5),
-                        width: 6,
-                        height: 6,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF818CF8),
-                          shape: BoxShape.circle,
-                        ),
-                      ).animate(onPlay: (c) => c.repeat()).fadeIn(delay: Duration(milliseconds: i * 180)),
+                      (i) =>
+                          Container(
+                                margin: const EdgeInsets.symmetric(
+                                  horizontal: 2.5,
+                                ),
+                                width: 6,
+                                height: 6,
+                                decoration: const BoxDecoration(
+                                  color: Color(0xFF818CF8),
+                                  shape: BoxShape.circle,
+                                ),
+                              )
+                              .animate(onPlay: (c) => c.repeat())
+                              .fadeIn(delay: Duration(milliseconds: i * 180)),
                     ),
                   ),
                 ],
@@ -502,7 +639,9 @@ class _MessageBubble extends StatelessWidget {
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
         margin: const EdgeInsets.only(bottom: 16),
-        constraints: BoxConstraints(maxWidth: MediaQuery.of(context).size.width * 0.88),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.88,
+        ),
         decoration: BoxDecoration(
           gradient: isUser
               ? const LinearGradient(
@@ -517,7 +656,9 @@ class _MessageBubble extends StatelessWidget {
             bottomLeft: isUser ? null : const Radius.circular(4),
           ),
           border: Border.all(
-            color: isUser ? const Color(0xFF818CF8).withValues(alpha: 0.5) : const Color(0xFF334155),
+            color: isUser
+                ? const Color(0xFF818CF8).withValues(alpha: 0.5)
+                : const Color(0xFF334155),
           ),
           boxShadow: [
             BoxShadow(
@@ -550,15 +691,21 @@ class _MessageBubble extends StatelessWidget {
                   Row(
                     children: [
                       Icon(
-                        isUser ? Icons.person_rounded : Icons.auto_awesome_rounded,
+                        isUser
+                            ? Icons.person_rounded
+                            : Icons.auto_awesome_rounded,
                         size: 14,
-                        color: isUser ? Colors.white70 : const Color(0xFF818CF8),
+                        color: isUser
+                            ? Colors.white70
+                            : const Color(0xFF818CF8),
                       ),
                       const SizedBox(width: 6),
                       Text(
                         isUser ? 'You' : 'StudySpace AI',
                         style: TextStyle(
-                          color: isUser ? Colors.white : const Color(0xFFCBD5E1),
+                          color: isUser
+                              ? Colors.white
+                              : const Color(0xFFCBD5E1),
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -570,22 +717,33 @@ class _MessageBubble extends StatelessWidget {
                   Row(
                     children: [
                       InkWell(
-                        onTap: () => _copyToClipboard(context, message.content, isUser ? 'Prompt' : 'Response'),
+                        onTap: () => _copyToClipboard(
+                          context,
+                          message.content,
+                          isUser ? 'Prompt' : 'Response',
+                        ),
                         borderRadius: BorderRadius.circular(6),
                         child: Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 6,
+                            vertical: 3,
+                          ),
                           child: Row(
                             children: [
                               Icon(
                                 Icons.copy_rounded,
                                 size: 12,
-                                color: isUser ? Colors.white70 : const Color(0xFF94A3B8),
+                                color: isUser
+                                    ? Colors.white70
+                                    : const Color(0xFF94A3B8),
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 isUser ? 'Copy Prompt' : 'Copy Response',
                                 style: TextStyle(
-                                  color: isUser ? Colors.white70 : const Color(0xFF94A3B8),
+                                  color: isUser
+                                      ? Colors.white70
+                                      : const Color(0xFF94A3B8),
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -600,14 +758,25 @@ class _MessageBubble extends StatelessWidget {
                           onTap: () => onReusePrompt(message.content),
                           borderRadius: BorderRadius.circular(6),
                           child: const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 6, vertical: 3),
+                            padding: EdgeInsets.symmetric(
+                              horizontal: 6,
+                              vertical: 3,
+                            ),
                             child: Row(
                               children: [
-                                Icon(Icons.edit_note_rounded, size: 13, color: Colors.white70),
+                                Icon(
+                                  Icons.edit_note_rounded,
+                                  size: 13,
+                                  color: Colors.white70,
+                                ),
                                 SizedBox(width: 2),
                                 Text(
                                   'Edit',
-                                  style: TextStyle(color: Colors.white70, fontSize: 11, fontWeight: FontWeight.w500),
+                                  style: TextStyle(
+                                    color: Colors.white70,
+                                    fontSize: 11,
+                                    fontWeight: FontWeight.w500,
+                                  ),
                                 ),
                               ],
                             ),
@@ -626,21 +795,48 @@ class _MessageBubble extends StatelessWidget {
               child: isUser
                   ? SelectableText(
                       message.content,
-                      style: const TextStyle(color: Colors.white, fontSize: 14.5, height: 1.5),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.5,
+                        height: 1.5,
+                      ),
                     )
                   : MarkdownBody(
                       data: message.content,
                       onTapLink: (text, href, title) => _launchLink(href),
                       builders: {
-                        'code': _CodeBlockCustomBuilder(onCopy: (code) => _copyToClipboard(context, code, 'Code')),
-                        'pre': _CodeBlockCustomBuilder(onCopy: (code) => _copyToClipboard(context, code, 'Code')),
+                        'code': _CodeBlockCustomBuilder(
+                          onCopy: (code) =>
+                              _copyToClipboard(context, code, 'Code'),
+                        ),
+                        'pre': _CodeBlockCustomBuilder(
+                          onCopy: (code) =>
+                              _copyToClipboard(context, code, 'Code'),
+                        ),
                       },
                       styleSheet: MarkdownStyleSheet(
-                        p: const TextStyle(color: Color(0xFFF1F5F9), fontSize: 14.5, height: 1.6),
-                        h1: AppTextStyles.headlineSmall.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
-                        h2: AppTextStyles.titleLarge.copyWith(color: Colors.white, fontWeight: FontWeight.w700),
-                        h3: AppTextStyles.titleMedium.copyWith(color: const Color(0xFF818CF8), fontWeight: FontWeight.bold),
-                        h4: const TextStyle(color: Color(0xFFF1F5F9), fontSize: 14, fontWeight: FontWeight.w600),
+                        p: const TextStyle(
+                          color: Color(0xFFF1F5F9),
+                          fontSize: 14.5,
+                          height: 1.6,
+                        ),
+                        h1: AppTextStyles.headlineSmall.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        h2: AppTextStyles.titleLarge.copyWith(
+                          color: Colors.white,
+                          fontWeight: FontWeight.w700,
+                        ),
+                        h3: AppTextStyles.titleMedium.copyWith(
+                          color: const Color(0xFF818CF8),
+                          fontWeight: FontWeight.bold,
+                        ),
+                        h4: const TextStyle(
+                          color: Color(0xFFF1F5F9),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w600,
+                        ),
                         code: const TextStyle(
                           backgroundColor: Color(0xFF0F172A),
                           color: Color(0xFF38BDF8),
@@ -653,19 +849,54 @@ class _MessageBubble extends StatelessWidget {
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(color: const Color(0xFF334155)),
                         ),
-                        blockquote: const TextStyle(color: Color(0xFFCBD5E1), fontStyle: FontStyle.italic),
-                        blockquoteDecoration: BoxDecoration(
-                          border: const Border(left: BorderSide(color: Color(0xFF818CF8), width: 3)),
-                          color: const Color(0xFF6366F1).withValues(alpha: 0.08),
+                        blockquote: const TextStyle(
+                          color: Color(0xFFCBD5E1),
+                          fontStyle: FontStyle.italic,
                         ),
-                        blockquotePadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-                        listBullet: const TextStyle(color: Color(0xFF818CF8), fontWeight: FontWeight.bold),
-                        strong: const TextStyle(fontWeight: FontWeight.bold, color: Colors.white),
-                        em: const TextStyle(fontStyle: FontStyle.italic, color: Color(0xFF94A3B8)),
-                        a: const TextStyle(color: Color(0xFF38BDF8), decoration: TextDecoration.underline),
-                        tableBody: const TextStyle(color: Color(0xFFF1F5F9), fontSize: 13),
-                        tableHead: const TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 13),
-                        tableBorder: TableBorder.all(color: const Color(0xFF334155), width: 1),
+                        blockquoteDecoration: BoxDecoration(
+                          border: const Border(
+                            left: BorderSide(
+                              color: Color(0xFF818CF8),
+                              width: 3,
+                            ),
+                          ),
+                          color: const Color(
+                            0xFF6366F1,
+                          ).withValues(alpha: 0.08),
+                        ),
+                        blockquotePadding: const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 8,
+                        ),
+                        listBullet: const TextStyle(
+                          color: Color(0xFF818CF8),
+                          fontWeight: FontWeight.bold,
+                        ),
+                        strong: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          color: Colors.white,
+                        ),
+                        em: const TextStyle(
+                          fontStyle: FontStyle.italic,
+                          color: Color(0xFF94A3B8),
+                        ),
+                        a: const TextStyle(
+                          color: Color(0xFF38BDF8),
+                          decoration: TextDecoration.underline,
+                        ),
+                        tableBody: const TextStyle(
+                          color: Color(0xFFF1F5F9),
+                          fontSize: 13,
+                        ),
+                        tableHead: const TextStyle(
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold,
+                          fontSize: 13,
+                        ),
+                        tableBorder: TableBorder.all(
+                          color: const Color(0xFF334155),
+                          width: 1,
+                        ),
                         tablePadding: const EdgeInsets.all(8),
                         blockSpacing: 10,
                       ),
@@ -687,7 +918,8 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
   Widget? visitElementAfter(md.Element element, TextStyle? preferredStyle) {
     final rawText = element.textContent;
 
-    final isBlock = rawText.contains('\n') || (element.attributes['class'] != null);
+    final isBlock =
+        rawText.contains('\n') || (element.attributes['class'] != null);
 
     if (!isBlock) {
       return Container(
@@ -710,7 +942,9 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
 
     final classAttr = element.attributes['class'] ?? '';
     final language = classAttr.replaceFirst('language-', '').trim();
-    final displayLanguage = language.isNotEmpty ? language.toUpperCase() : 'CODE';
+    final displayLanguage = language.isNotEmpty
+        ? language.toUpperCase()
+        : 'CODE';
 
     return Container(
       margin: const EdgeInsets.symmetric(vertical: 8),
@@ -737,7 +971,11 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
               children: [
                 Row(
                   children: [
-                    const Icon(Icons.code_rounded, size: 14, color: Color(0xFF38BDF8)),
+                    const Icon(
+                      Icons.code_rounded,
+                      size: 14,
+                      color: Color(0xFF38BDF8),
+                    ),
                     const SizedBox(width: 6),
                     Text(
                       displayLanguage,
@@ -757,11 +995,19 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
                     padding: EdgeInsets.symmetric(horizontal: 6, vertical: 2),
                     child: Row(
                       children: [
-                        Icon(Icons.copy_rounded, size: 12, color: Color(0xFF94A3B8)),
+                        Icon(
+                          Icons.copy_rounded,
+                          size: 12,
+                          color: Color(0xFF94A3B8),
+                        ),
                         SizedBox(width: 4),
                         Text(
                           'Copy Code',
-                          style: TextStyle(color: Color(0xFF94A3B8), fontSize: 11, fontWeight: FontWeight.w500),
+                          style: TextStyle(
+                            color: Color(0xFF94A3B8),
+                            fontSize: 11,
+                            fontWeight: FontWeight.w500,
+                          ),
                         ),
                       ],
                     ),
@@ -773,9 +1019,7 @@ class _CodeBlockCustomBuilder extends MarkdownElementBuilder {
           SingleChildScrollView(
             scrollDirection: Axis.horizontal,
             padding: const EdgeInsets.all(12),
-            child: SelectableText.rich(
-              CodeSyntaxHighlighter.format(rawText),
-            ),
+            child: SelectableText.rich(CodeSyntaxHighlighter.format(rawText)),
           ),
         ],
       ),
@@ -810,7 +1054,9 @@ class _InputBar extends StatelessWidget {
                 color: const Color(0xFF1E293B),
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
-                  color: focusNode.hasFocus ? const Color(0xFF818CF8) : const Color(0xFF334155),
+                  color: focusNode.hasFocus
+                      ? const Color(0xFF818CF8)
+                      : const Color(0xFF334155),
                   width: 1.2,
                 ),
               ),
@@ -820,7 +1066,10 @@ class _InputBar extends StatelessWidget {
                     child: TextField(
                       controller: ctrl,
                       focusNode: focusNode,
-                      style: const TextStyle(color: Colors.white, fontSize: 14.5),
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 14.5,
+                      ),
                       maxLines: 4,
                       minLines: 1,
                       textInputAction: TextInputAction.send,
@@ -831,17 +1080,27 @@ class _InputBar extends StatelessWidget {
                         enabledBorder: InputBorder.none,
                         focusedBorder: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(vertical: 10),
-                        hintStyle: TextStyle(color: Color(0xFF64748B), fontSize: 14),
+                        hintStyle: TextStyle(
+                          color: Color(0xFF64748B),
+                          fontSize: 14,
+                        ),
                         filled: false,
                       ),
                     ),
                   ),
                   if (ctrl.text.isNotEmpty)
                     IconButton(
-                      icon: const Icon(Icons.clear_rounded, size: 16, color: Color(0xFF64748B)),
+                      icon: const Icon(
+                        Icons.clear_rounded,
+                        size: 16,
+                        color: Color(0xFF64748B),
+                      ),
                       onPressed: () => ctrl.clear(),
                       padding: EdgeInsets.zero,
-                      constraints: const BoxConstraints(minWidth: 24, minHeight: 24),
+                      constraints: const BoxConstraints(
+                        minWidth: 24,
+                        minHeight: 24,
+                      ),
                     ),
                 ],
               ),
@@ -860,7 +1119,10 @@ class _InputBar extends StatelessWidget {
                     ),
                     child: const Padding(
                       padding: EdgeInsets.all(13),
-                      child: CircularProgressIndicator(strokeWidth: 2.5, color: Color(0xFF818CF8)),
+                      child: CircularProgressIndicator(
+                        strokeWidth: 2.5,
+                        color: Color(0xFF818CF8),
+                      ),
                     ),
                   )
                 : GestureDetector(
@@ -877,13 +1139,19 @@ class _InputBar extends StatelessWidget {
                         shape: BoxShape.circle,
                         boxShadow: [
                           BoxShadow(
-                            color: const Color(0xFF6366F1).withValues(alpha: 0.4),
+                            color: const Color(
+                              0xFF6366F1,
+                            ).withValues(alpha: 0.4),
                             blurRadius: 10,
                             offset: const Offset(0, 2),
                           ),
                         ],
                       ),
-                      child: const Icon(Icons.send_rounded, color: Colors.white, size: 19),
+                      child: const Icon(
+                        Icons.send_rounded,
+                        color: Colors.white,
+                        size: 19,
+                      ),
                     ),
                   ),
           ),

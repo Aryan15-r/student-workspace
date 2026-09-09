@@ -6,26 +6,28 @@ import '../data/todo_repository.dart';
 class TodoProvider extends ChangeNotifier {
   final _repo = TodoRepository();
 
-  List<Task> _tasks    = [];
-  bool       _loading  = false;
-  String?    _error;
+  List<Task> _tasks = [];
+  bool _loading = false;
+  String? _error;
 
-  List<Task> get tasks          => _tasks;
-  bool       get isLoading      => _loading;
-  String?    get error          => _error;
+  List<Task> get tasks => _tasks;
+  bool get isLoading => _loading;
+  String? get error => _error;
 
-  List<Task> get pendingTasks   => _tasks.where((t) => !t.completed).toList();
-  List<Task> get completedTasks => _tasks.where((t) =>  t.completed).toList();
-  List<Task> get todayTasks     => pendingTasks.where((t) {
+  List<Task> get pendingTasks => _tasks.where((t) => !t.completed).toList();
+  List<Task> get completedTasks => _tasks.where((t) => t.completed).toList();
+  List<Task> get todayTasks => pendingTasks.where((t) {
     if (t.dueDate == null) return false;
     final now = DateTime.now();
-    return t.dueDate!.year == now.year && t.dueDate!.month == now.month && t.dueDate!.day == now.day;
+    return t.dueDate!.year == now.year &&
+        t.dueDate!.month == now.month &&
+        t.dueDate!.day == now.day;
   }).toList();
 
   Future<void> loadTasks({bool forceLoading = false}) async {
     final userId = Supabase.instance.client.auth.currentUser?.id;
     if (userId == null) return;
-    
+
     // Only show full loading spinner if tasks list is currently empty
     if (_tasks.isEmpty || forceLoading) {
       _loading = true;

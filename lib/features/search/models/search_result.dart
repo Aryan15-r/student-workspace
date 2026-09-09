@@ -5,7 +5,8 @@ class SearchResult {
   final String title;
   final String description;
   final String url;
-  final String type; // video | article | course | documentation | tool | textbook | website
+  final String
+  type; // video | article | course | documentation | tool | textbook | website
   final bool isFree;
   final String source;
 

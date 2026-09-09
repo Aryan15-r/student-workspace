@@ -11,7 +11,10 @@ class AiService {
   String get _apiKey => dotenv.env['GEMINI_API_KEY'] ?? '';
 
   /// Sends the full conversation history to Gemini and returns the AI reply.
-  Future<String> sendMessage(List<ChatMessage> history, String userMessage) async {
+  Future<String> sendMessage(
+    List<ChatMessage> history,
+    String userMessage,
+  ) async {
     final apiKey = _apiKey.trim();
 
     // If no valid key is provided, use the intelligent dynamic academic response generator
@@ -27,14 +30,18 @@ class AiService {
       if (msg.isLoading) continue;
       contents.add({
         'role': msg.isUser ? 'user' : 'model',
-        'parts': [{'text': msg.content}],
+        'parts': [
+          {'text': msg.content},
+        ],
       });
     }
 
     // Add the current user query
     contents.add({
       'role': 'user',
-      'parts': [{'text': userMessage}],
+      'parts': [
+        {'text': userMessage},
+      ],
     });
 
     final modelsToTry = [
@@ -47,26 +54,36 @@ class AiService {
 
     for (final model in modelsToTry) {
       try {
-        final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey');
+        final url = Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey',
+        );
         final headers = {
           'Content-Type': 'application/json',
           'x-goog-api-key': apiKey,
         };
         final body = jsonEncode({
           'system_instruction': {
-            'parts': [{'text': AppConstants.aiSystemPrompt}],
+            'parts': [
+              {'text': AppConstants.aiSystemPrompt},
+            ],
           },
           'contents': contents,
           'safetySettings': [
             {'category': 'HARM_CATEGORY_HARASSMENT', 'threshold': 'BLOCK_NONE'},
-            {'category': 'HARM_CATEGORY_HATE_SPEECH', 'threshold': 'BLOCK_NONE'},
-            {'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT', 'threshold': 'BLOCK_NONE'},
-            {'category': 'HARM_CATEGORY_DANGEROUS_CONTENT', 'threshold': 'BLOCK_NONE'},
+            {
+              'category': 'HARM_CATEGORY_HATE_SPEECH',
+              'threshold': 'BLOCK_NONE',
+            },
+            {
+              'category': 'HARM_CATEGORY_SEXUALLY_EXPLICIT',
+              'threshold': 'BLOCK_NONE',
+            },
+            {
+              'category': 'HARM_CATEGORY_DANGEROUS_CONTENT',
+              'threshold': 'BLOCK_NONE',
+            },
           ],
-          'generationConfig': {
-            'temperature': 0.7,
-            'maxOutputTokens': 16384,
-          },
+          'generationConfig': {'temperature': 0.7, 'maxOutputTokens': 16384},
         });
 
         final response = await http
@@ -76,7 +93,7 @@ class AiService {
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
           final candidates = json['candidates'] as List?;
-          
+
           if (candidates != null && candidates.isNotEmpty) {
             final candidate = candidates[0];
             final finishReason = candidate['finishReason'];
@@ -87,14 +104,18 @@ class AiService {
 
             final parts = candidate['content']?['parts'] as List?;
             if (parts != null && parts.isNotEmpty) {
-              final fullText = parts.map((p) => p['text']?.toString() ?? '').join('');
+              final fullText = parts
+                  .map((p) => p['text']?.toString() ?? '')
+                  .join('');
               if (fullText.trim().isNotEmpty) {
                 return cleanMathFormulas(fullText);
               }
             }
           }
         } else {
-          debugPrint('Gemini API ($model) error: ${response.statusCode}, body: ${response.body}');
+          debugPrint(
+            'Gemini API ($model) error: ${response.statusCode}, body: ${response.body}',
+          );
         }
       } catch (e) {
         debugPrint('Gemini exception ($model): $e');
@@ -114,7 +135,8 @@ class AiService {
       return _getFallbackSearchData(cleanQuery);
     }
 
-    final prompt = '''
+    final prompt =
+        '''
 You are an expert academic search engine and educational resource indexer.
 For the search query: "$cleanQuery", analyze the core topic and return a JSON object with:
 1. "overview": A concise, high-value 2-3 sentence academic overview explaining the fundamental definition, scientific/coding principle, formulas, or applications.
@@ -140,34 +162,54 @@ Return ONLY valid raw JSON.
 
     for (final model in modelsToTry) {
       try {
-        final url = Uri.parse('https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey');
-        final response = await http.post(
-          url,
-          headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey},
-          body: jsonEncode({
-            'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
-            'generationConfig': {
-              'temperature': 0.2,
-              'responseMimeType': 'application/json',
-            },
-          }),
-        ).timeout(const Duration(seconds: 15));
+        final url = Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey',
+        );
+        final response = await http
+            .post(
+              url,
+              headers: {
+                'Content-Type': 'application/json',
+                'x-goog-api-key': apiKey,
+              },
+              body: jsonEncode({
+                'contents': [
+                  {
+                    'role': 'user',
+                    'parts': [
+                      {'text': prompt},
+                    ],
+                  },
+                ],
+                'generationConfig': {
+                  'temperature': 0.2,
+                  'responseMimeType': 'application/json',
+                },
+              }),
+            )
+            .timeout(const Duration(seconds: 15));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
-          final text = json['candidates']?[0]?['content']?[0]?['parts']?[0]?['text'] ??
+          final text =
+              json['candidates']?[0]?['content']?[0]?['parts']?[0]?['text'] ??
               json['candidates']?[0]?['content']?['parts']?[0]?['text'];
           if (text != null && text.toString().trim().isNotEmpty) {
             final parsed = jsonDecode(text.toString());
             if (parsed is Map<String, dynamic>) {
               if (parsed['overview'] is String) {
-                parsed['overview'] = cleanMathFormulas(parsed['overview'] as String);
+                parsed['overview'] = cleanMathFormulas(
+                  parsed['overview'] as String,
+                );
               }
               final list = parsed['results'] as List?;
               if (list != null) {
                 for (final item in list) {
-                  if (item is Map<String, dynamic> && item['description'] is String) {
-                    item['description'] = cleanMathFormulas(item['description'] as String);
+                  if (item is Map<String, dynamic> &&
+                      item['description'] is String) {
+                    item['description'] = cleanMathFormulas(
+                      item['description'] as String,
+                    );
                   }
                 }
               }
@@ -194,7 +236,9 @@ Return ONLY valid raw JSON.
   String _generateSmartResponse(String prompt) {
     final lower = prompt.toLowerCase().trim();
 
-    if (lower.contains('sex') || lower.contains('naughty') || lower.contains('adult')) {
+    if (lower.contains('sex') ||
+        lower.contains('naughty') ||
+        lower.contains('adult')) {
       return '### 🔬 Biological & Health Education Overview\n\n'
           'Sexuality and reproductive health are fundamental topics in human biology, anatomy, and health education.\n\n'
           'Key Academic Concepts:\n'
@@ -215,11 +259,13 @@ Return ONLY valid raw JSON.
   Map<String, dynamic> _getFallbackSearchData(String query) {
     final clean = Uri.encodeComponent(query);
     return {
-      'overview': 'Educational overview and curated learning materials for "$query". Explore foundational tutorials, interactive guides, video lectures, textbooks, and technical references.',
+      'overview':
+          'Educational overview and curated learning materials for "$query". Explore foundational tutorials, interactive guides, video lectures, textbooks, and technical references.',
       'results': [
         {
           'title': '$query - Comprehensive Video Tutorials & Lessons',
-          'description': 'Visual walkthroughs, animated concepts, and problem-solving video lectures.',
+          'description':
+              'Visual walkthroughs, animated concepts, and problem-solving video lectures.',
           'url': 'https://www.youtube.com/results?search_query=$clean+lecture',
           'type': 'video',
           'isFree': true,
@@ -227,7 +273,8 @@ Return ONLY valid raw JSON.
         },
         {
           'title': '$query - OpenStax Peer-Reviewed Textbooks',
-          'description': 'Free open-source textbooks, chapter breakdowns, practice problems, and study guides.',
+          'description':
+              'Free open-source textbooks, chapter breakdowns, practice problems, and study guides.',
           'url': 'https://openstax.org/subjects',
           'type': 'textbook',
           'isFree': true,
@@ -235,7 +282,8 @@ Return ONLY valid raw JSON.
         },
         {
           'title': '$query - Google Books & Reference Manuals',
-          'description': 'Standard reference textbooks, academic publications, and university subject guides.',
+          'description':
+              'Standard reference textbooks, academic publications, and university subject guides.',
           'url': 'https://www.google.com/search?tbm=bks&q=$clean',
           'type': 'textbook',
           'isFree': true,
@@ -243,7 +291,8 @@ Return ONLY valid raw JSON.
         },
         {
           'title': '$query - arXiv Academic Research Papers',
-          'description': 'Open-access scientific papers, preprints, and research literature.',
+          'description':
+              'Open-access scientific papers, preprints, and research literature.',
           'url': 'https://arxiv.org/search/?query=$clean&searchtype=all',
           'type': 'article',
           'isFree': true,
@@ -251,7 +300,8 @@ Return ONLY valid raw JSON.
         },
         {
           'title': '$query - Academic Overview & Definitions',
-          'description': 'Historical context, mathematical formulation, and key definitions.',
+          'description':
+              'Historical context, mathematical formulation, and key definitions.',
           'url': 'https://en.wikipedia.org/wiki/Special:Search?search=$clean',
           'type': 'article',
           'isFree': true,
@@ -259,7 +309,8 @@ Return ONLY valid raw JSON.
         },
         {
           'title': '$query - Interactive Guide & Practice Problems',
-          'description': 'Structured fundamental explanations with quizzes, code snippets, and active recall exercises.',
+          'description':
+              'Structured fundamental explanations with quizzes, code snippets, and active recall exercises.',
           'url': 'https://www.khanacademy.org/search?page_search_query=$clean',
           'type': 'course',
           'isFree': true,
@@ -267,7 +318,8 @@ Return ONLY valid raw JSON.
         },
         {
           'title': '$query - Technical Reference & Documentation',
-          'description': 'Standard syntax documentation, API parameters, and authoritative references.',
+          'description':
+              'Standard syntax documentation, API parameters, and authoritative references.',
           'url': 'https://developer.mozilla.org/en-US/search?q=$clean',
           'type': 'documentation',
           'isFree': true,

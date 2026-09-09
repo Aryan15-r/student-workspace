@@ -29,10 +29,10 @@ class _StudySpaceAppState extends State<StudySpaceApp> {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
-      title:              'StudySpace',
+      title: 'StudySpace',
       debugShowCheckedModeBanner: false,
-      theme:              AppTheme.dark,
-      routerConfig:       _appRouter.router,
+      theme: AppTheme.dark,
+      routerConfig: _appRouter.router,
     );
   }
 }

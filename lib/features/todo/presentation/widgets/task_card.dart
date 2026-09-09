@@ -13,8 +13,8 @@ class TaskCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final todo = context.read<TodoProvider>();
-    final catColor  = AppColors.forCategory(task.category);
-    final priColor  = AppColors.forPriority(task.priority);
+    final catColor = AppColors.forCategory(task.category);
+    final priColor = AppColors.forPriority(task.priority);
 
     return Dismissible(
       key: Key(task.id),
@@ -37,22 +37,32 @@ class TaskCard extends StatelessWidget {
           border: Border.all(color: AppColors.border),
         ),
         child: ListTile(
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          contentPadding: const EdgeInsets.symmetric(
+            horizontal: 16,
+            vertical: 8,
+          ),
           leading: GestureDetector(
             onTap: () => todo.toggleTask(task.id, !task.completed),
             child: AnimatedContainer(
               duration: const Duration(milliseconds: 200),
-              width: 24, height: 24,
+              width: 24,
+              height: 24,
               decoration: BoxDecoration(
                 shape: BoxShape.circle,
-                color: task.completed ? AppColors.success.withValues(alpha: 0.2) : Colors.transparent,
+                color: task.completed
+                    ? AppColors.success.withValues(alpha: 0.2)
+                    : Colors.transparent,
                 border: Border.all(
                   color: task.completed ? AppColors.success : AppColors.border,
                   width: 2,
                 ),
               ),
               child: task.completed
-                  ? const Icon(Icons.check_rounded, color: AppColors.success, size: 14)
+                  ? const Icon(
+                      Icons.check_rounded,
+                      color: AppColors.success,
+                      size: 14,
+                    )
                   : null,
             ),
           ),
@@ -60,7 +70,9 @@ class TaskCard extends StatelessWidget {
             task.title,
             style: AppTextStyles.titleMedium.copyWith(
               decoration: task.completed ? TextDecoration.lineThrough : null,
-              color: task.completed ? AppColors.textMuted : AppColors.textPrimary,
+              color: task.completed
+                  ? AppColors.textMuted
+                  : AppColors.textPrimary,
             ),
           ),
           subtitle: Column(
@@ -68,7 +80,12 @@ class TaskCard extends StatelessWidget {
             children: [
               if (task.description.isNotEmpty) ...[
                 const SizedBox(height: 2),
-                Text(task.description, style: AppTextStyles.bodySmall, maxLines: 1, overflow: TextOverflow.ellipsis),
+                Text(
+                  task.description,
+                  style: AppTextStyles.bodySmall,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                ),
               ],
               const SizedBox(height: 6),
               Wrap(
@@ -80,8 +97,16 @@ class TaskCard extends StatelessWidget {
                   if (task.dueDate != null)
                     _Chip(
                       label: task.dueDate!.dueDateLabel,
-                      color: task.dueDate!.isOverdue ? AppColors.error : AppColors.textMuted,
+                      color: task.dueDate!.isOverdue
+                          ? AppColors.error
+                          : AppColors.textMuted,
                       icon: Icons.calendar_today_outlined,
+                    ),
+                  if (task.dueTime != null)
+                    _Chip(
+                      label: task.dueTime!,
+                      color: AppColors.primary,
+                      icon: Icons.access_time_rounded,
                     ),
                 ],
               ),
@@ -110,8 +135,18 @@ class _Chip extends StatelessWidget {
       child: Row(
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (icon != null) ...[Icon(icon, size: 10, color: color), const SizedBox(width: 3)],
-          Text(label, style: TextStyle(fontSize: 10, color: color, fontWeight: FontWeight.w600)),
+          if (icon != null) ...[
+            Icon(icon, size: 10, color: color),
+            const SizedBox(width: 3),
+          ],
+          Text(
+            label,
+            style: TextStyle(
+              fontSize: 10,
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
         ],
       ),
     );

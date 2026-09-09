@@ -8,8 +8,8 @@ import '../../core/constants/app_constants.dart';
 /// AdaptiveScaffold — Responsive ultra-modern navigation shell
 /// ─────────────────────────────────────────────────────────────────────────────
 class AdaptiveScaffold extends StatelessWidget {
-  final Widget child;       // The current page content
-  final int selectedIndex;  // Which nav item is active (0 to 7)
+  final Widget child; // The current page content
+  final int selectedIndex; // Which nav item is active (0 to 7)
 
   const AdaptiveScaffold({
     super.key,
@@ -18,14 +18,60 @@ class AdaptiveScaffold extends StatelessWidget {
   });
 
   static const List<NavItem> allItems = [
-    NavItem(icon: Icons.grid_view_outlined,       activeIcon: Icons.grid_view_rounded,       label: 'Dashboard', route: '/dashboard'),
-    NavItem(icon: Icons.check_circle_outline,     activeIcon: Icons.check_circle_rounded,    label: 'To-Do',     route: '/todo'),
-    NavItem(icon: Icons.auto_awesome_outlined,    activeIcon: Icons.auto_awesome_rounded,    label: 'AI Tutor',  route: '/ai'),
-    NavItem(icon: Icons.search_rounded,           activeIcon: Icons.search_rounded,           label: 'Search',    route: '/search'),
-    NavItem(icon: Icons.forum_outlined,           activeIcon: Icons.forum_rounded,           label: 'Community', route: '/community'),
-    NavItem(icon: Icons.calculate_outlined,       activeIcon: Icons.calculate_rounded,        label: 'Calculator',route: '/calculator'),
-    NavItem(icon: Icons.description_outlined,     activeIcon: Icons.description_rounded,     label: 'PDF Tools', route: '/pdf-tools'),
-    NavItem(icon: Icons.person_outline_rounded,   activeIcon: Icons.person_rounded,          label: 'Profile',   route: '/profile'),
+    NavItem(
+      icon: Icons.grid_view_outlined,
+      activeIcon: Icons.grid_view_rounded,
+      label: 'Dashboard',
+      route: '/dashboard',
+    ),
+    NavItem(
+      icon: Icons.check_circle_outline,
+      activeIcon: Icons.check_circle_rounded,
+      label: 'To-Do',
+      route: '/todo',
+    ),
+    NavItem(
+      icon: Icons.auto_awesome_outlined,
+      activeIcon: Icons.auto_awesome_rounded,
+      label: 'AI Tutor',
+      route: '/ai',
+    ),
+    NavItem(
+      icon: Icons.search_rounded,
+      activeIcon: Icons.search_rounded,
+      label: 'Search',
+      route: '/search',
+    ),
+    NavItem(
+      icon: Icons.forum_outlined,
+      activeIcon: Icons.forum_rounded,
+      label: 'Community',
+      route: '/community',
+    ),
+    NavItem(
+      icon: Icons.calculate_outlined,
+      activeIcon: Icons.calculate_rounded,
+      label: 'Calculator',
+      route: '/calculator',
+    ),
+    NavItem(
+      icon: Icons.description_outlined,
+      activeIcon: Icons.description_rounded,
+      label: 'PDF Tools',
+      route: '/pdf-tools',
+    ),
+    NavItem(
+      icon: Icons.person_outline_rounded,
+      activeIcon: Icons.person_rounded,
+      label: 'Profile',
+      route: '/profile',
+    ),
+    NavItem(
+      icon: Icons.timer_outlined,
+      activeIcon: Icons.timer_rounded,
+      label: 'Focus',
+      route: '/study-tools',
+    ),
   ];
 
   void _onTap(BuildContext context, int index) {
@@ -113,17 +159,28 @@ class _MobileShell extends StatelessWidget {
                             gradient: AppColors.primaryGradient,
                             shape: BoxShape.circle,
                           ),
-                          child: const Icon(Icons.apps_rounded, size: 18, color: Colors.white),
+                          child: const Icon(
+                            Icons.apps_rounded,
+                            size: 18,
+                            color: Colors.white,
+                          ),
                         ),
                         const SizedBox(width: 10),
                         const Text(
                           'StudySpace Suite',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white),
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.white,
+                          ),
                         ),
                       ],
                     ),
                     IconButton(
-                      icon: const Icon(Icons.close_rounded, color: Color(0xFF94A3B8)),
+                      icon: const Icon(
+                        Icons.close_rounded,
+                        color: Color(0xFF94A3B8),
+                      ),
                       onPressed: () => Navigator.pop(ctx),
                     ),
                   ],
@@ -133,42 +190,67 @@ class _MobileShell extends StatelessWidget {
                   icon: Icons.forum_rounded,
                   color: const Color(0xFF38BDF8),
                   title: 'Community Lounge',
-                  subtitle: 'Real-time discussion & notes sharing with classmates',
-                  onTap: () { Navigator.pop(ctx); onTap(4); },
+                  subtitle:
+                      'Real-time discussion & notes sharing with classmates',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    onTap(4);
+                  },
                 ),
                 _MenuTile(
                   icon: Icons.calculate_rounded,
                   color: const Color(0xFFA855F7),
                   title: 'Scientific Calculator',
-                  subtitle: '100% offline scientific calculations & expression history',
-                  onTap: () { Navigator.pop(ctx); onTap(5); },
+                  subtitle:
+                      '100% offline scientific calculations & expression history',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    onTap(5);
+                  },
                 ),
                 _MenuTile(
                   icon: Icons.description_rounded,
                   color: const Color(0xFFF59E0B),
                   title: 'PDF & Document Studio',
-                  subtitle: 'Convert, merge, extract text & view Word/PDF docs in-app',
-                  onTap: () { Navigator.pop(ctx); onTap(6); },
+                  subtitle:
+                      'Convert, merge, extract text & view Word/PDF docs in-app',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    onTap(6);
+                  },
                 ),
                 _MenuTile(
                   icon: Icons.person_rounded,
                   color: const Color(0xFF6366F1),
                   title: 'My Profile & Preferences',
-                  subtitle: 'Manage account, guest status, and academic settings',
-                  onTap: () { Navigator.pop(ctx); onTap(7); },
+                  subtitle:
+                      'Manage account, guest status, and academic settings',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    onTap(7);
+                  },
                 ),
                 const SizedBox(height: 16),
                 Center(
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 5),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 14,
+                      vertical: 5,
+                    ),
                     decoration: BoxDecoration(
                       color: const Color(0xFF6366F1).withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(20),
-                      border: Border.all(color: const Color(0xFF6366F1).withValues(alpha: 0.25)),
+                      border: Border.all(
+                        color: const Color(0xFF6366F1).withValues(alpha: 0.25),
+                      ),
                     ),
                     child: const Text(
                       'StudySpace v${AppConstants.appVersion}',
-                      style: TextStyle(color: Color(0xFF818CF8), fontSize: 11, fontWeight: FontWeight.bold),
+                      style: TextStyle(
+                        color: Color(0xFF818CF8),
+                        fontSize: 11,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
                   ),
                 ),
@@ -213,11 +295,31 @@ class _MobileShell extends StatelessWidget {
                 selectedFontSize: 11,
                 unselectedFontSize: 11,
                 items: const [
-                  BottomNavigationBarItem(icon: Icon(Icons.grid_view_outlined), activeIcon: Icon(Icons.grid_view_rounded), label: 'Home'),
-                  BottomNavigationBarItem(icon: Icon(Icons.check_circle_outline), activeIcon: Icon(Icons.check_circle_rounded), label: 'To-Do'),
-                  BottomNavigationBarItem(icon: Icon(Icons.auto_awesome_outlined), activeIcon: Icon(Icons.auto_awesome_rounded), label: 'AI Tutor'),
-                  BottomNavigationBarItem(icon: Icon(Icons.search_rounded), activeIcon: Icon(Icons.search_rounded), label: 'Search'),
-                  BottomNavigationBarItem(icon: Icon(Icons.widgets_outlined), activeIcon: Icon(Icons.widgets_rounded), label: 'More'),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.grid_view_outlined),
+                    activeIcon: Icon(Icons.grid_view_rounded),
+                    label: 'Home',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.check_circle_outline),
+                    activeIcon: Icon(Icons.check_circle_rounded),
+                    label: 'To-Do',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.auto_awesome_outlined),
+                    activeIcon: Icon(Icons.auto_awesome_rounded),
+                    label: 'AI Tutor',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.search_rounded),
+                    activeIcon: Icon(Icons.search_rounded),
+                    label: 'Search',
+                  ),
+                  BottomNavigationBarItem(
+                    icon: Icon(Icons.widgets_outlined),
+                    activeIcon: Icon(Icons.widgets_rounded),
+                    label: 'More',
+                  ),
                 ],
               ),
             ),
@@ -261,8 +363,18 @@ class _MenuTile extends StatelessWidget {
           ),
           child: Icon(icon, color: color, size: 20),
         ),
-        title: Text(title, style: const TextStyle(color: Colors.white, fontWeight: FontWeight.w600, fontSize: 14)),
-        subtitle: Text(subtitle, style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12)),
+        title: Text(
+          title,
+          style: const TextStyle(
+            color: Colors.white,
+            fontWeight: FontWeight.w600,
+            fontSize: 14,
+          ),
+        ),
+        subtitle: Text(
+          subtitle,
+          style: const TextStyle(color: Color(0xFF94A3B8), fontSize: 12),
+        ),
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
       ),
@@ -297,13 +409,27 @@ class _TabletShell extends StatelessWidget {
             useIndicator: true,
             indicatorColor: const Color(0xFF6366F1).withValues(alpha: 0.2),
             labelType: NavigationRailLabelType.selected,
-            selectedLabelTextStyle: const TextStyle(color: Color(0xFF818CF8), fontSize: 11, fontWeight: FontWeight.bold),
-            unselectedLabelTextStyle: const TextStyle(color: Color(0xFF64748B), fontSize: 11),
-            destinations: items.map((item) => NavigationRailDestination(
-              icon: Icon(item.icon, color: const Color(0xFF64748B)),
-              selectedIcon: Icon(item.activeIcon, color: const Color(0xFF818CF8)),
-              label: Text(item.label),
-            )).toList(),
+            selectedLabelTextStyle: const TextStyle(
+              color: Color(0xFF818CF8),
+              fontSize: 11,
+              fontWeight: FontWeight.bold,
+            ),
+            unselectedLabelTextStyle: const TextStyle(
+              color: Color(0xFF64748B),
+              fontSize: 11,
+            ),
+            destinations: items
+                .map(
+                  (item) => NavigationRailDestination(
+                    icon: Icon(item.icon, color: const Color(0xFF64748B)),
+                    selectedIcon: Icon(
+                      item.activeIcon,
+                      color: const Color(0xFF818CF8),
+                    ),
+                    label: Text(item.label),
+                  ),
+                )
+                .toList(),
           ),
           const VerticalDivider(width: 1, color: Color(0xFF1E293B)),
           Expanded(child: child),
@@ -349,21 +475,34 @@ class _DesktopShell extends StatelessWidget {
                           height: 38,
                           decoration: BoxDecoration(
                             gradient: const LinearGradient(
-                              colors: [Color(0xFF6366F1), Color(0xFFA855F7), Color(0xFFEC4899)],
+                              colors: [
+                                Color(0xFF6366F1),
+                                Color(0xFFA855F7),
+                                Color(0xFFEC4899),
+                              ],
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
                             ),
                             borderRadius: BorderRadius.circular(12),
                             boxShadow: [
                               BoxShadow(
-                                color: const Color(0xFF6366F1).withValues(alpha: 0.4),
+                                color: const Color(
+                                  0xFF6366F1,
+                                ).withValues(alpha: 0.4),
                                 blurRadius: 10,
                                 offset: const Offset(0, 2),
                               ),
                             ],
                           ),
                           child: const Center(
-                            child: Text('✦', style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold)),
+                            child: Text(
+                              '✦',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 12),
@@ -372,11 +511,18 @@ class _DesktopShell extends StatelessWidget {
                           children: [
                             Text(
                               'StudySpace',
-                              style: TextStyle(color: Colors.white, fontSize: 18, fontWeight: FontWeight.bold),
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
                             Text(
                               'Student Operating System',
-                              style: TextStyle(color: Color(0xFF94A3B8), fontSize: 10),
+                              style: TextStyle(
+                                color: Color(0xFF94A3B8),
+                                fontSize: 10,
+                              ),
                             ),
                           ],
                         ),
@@ -405,11 +551,20 @@ class _DesktopShell extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 5),
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 12,
+                            vertical: 5,
+                          ),
                           decoration: BoxDecoration(
-                            color: const Color(0xFF6366F1).withValues(alpha: 0.12),
+                            color: const Color(
+                              0xFF6366F1,
+                            ).withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(20),
-                            border: Border.all(color: const Color(0xFF6366F1).withValues(alpha: 0.25)),
+                            border: Border.all(
+                              color: const Color(
+                                0xFF6366F1,
+                              ).withValues(alpha: 0.25),
+                            ),
                           ),
                           child: const Text(
                             'v${AppConstants.appVersion}',
@@ -441,7 +596,11 @@ class _SidebarItem extends StatelessWidget {
   final bool isSelected;
   final VoidCallback onTap;
 
-  const _SidebarItem({required this.item, required this.isSelected, required this.onTap});
+  const _SidebarItem({
+    required this.item,
+    required this.isSelected,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -467,14 +626,18 @@ class _SidebarItem extends StatelessWidget {
                   : null,
               borderRadius: BorderRadius.circular(12),
               border: isSelected
-                  ? Border.all(color: const Color(0xFF6366F1).withValues(alpha: 0.4))
+                  ? Border.all(
+                      color: const Color(0xFF6366F1).withValues(alpha: 0.4),
+                    )
                   : Border.all(color: Colors.transparent),
             ),
             child: Row(
               children: [
                 Icon(
                   isSelected ? item.activeIcon : item.icon,
-                  color: isSelected ? const Color(0xFF818CF8) : const Color(0xFF64748B),
+                  color: isSelected
+                      ? const Color(0xFF818CF8)
+                      : const Color(0xFF64748B),
                   size: 20,
                 ),
                 const SizedBox(width: 12),

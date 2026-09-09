@@ -16,6 +16,7 @@ import '../features/community/presentation/pages/chat_page.dart';
 import '../features/calculator/presentation/pages/calculator_page.dart';
 import '../features/pdf_tools/presentation/pages/pdf_tools_page.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
+import '../features/study_tools/presentation/pages/study_tools_page.dart';
 
 import '../core/widgets/error_landing_page.dart';
 
@@ -44,10 +45,10 @@ class AppRouter {
     // Still loading the initial auth state — don't redirect yet
     if (!authProvider.initialized) return null;
 
-    final isAuth      = authProvider.isAuthenticated;
-    final isGuest     = authProvider.isGuest;
-    final isRecovery  = authProvider.isPasswordRecovery;
-    final location    = state.matchedLocation;
+    final isAuth = authProvider.isAuthenticated;
+    final isGuest = authProvider.isGuest;
+    final isRecovery = authProvider.isPasswordRecovery;
+    final location = state.matchedLocation;
 
     // Password recovery flow takes highest priority
     if (isRecovery && location != '/reset-password') {
@@ -55,7 +56,8 @@ class AppRouter {
     }
 
     // Pages that don't require login
-    final isPublicPage = location == '/' ||
+    final isPublicPage =
+        location == '/' ||
         location == '/login' ||
         location == '/signup' ||
         location == '/forgot-password' ||
@@ -66,7 +68,10 @@ class AppRouter {
     if (!isAuth && !isGuest && !isPublicPage) return '/';
 
     // Already logged in (authenticated) and trying to visit landing/login/signup → go to dashboard
-    if (isAuth && !isRecovery && (location == '/' || location == '/login' || location == '/signup')) return '/dashboard';
+    if (isAuth &&
+        !isRecovery &&
+        (location == '/' || location == '/login' || location == '/signup'))
+      return '/dashboard';
 
     // No redirect needed
     return null;
@@ -75,33 +80,42 @@ class AppRouter {
   // ── Route definitions ───────────────────────────────────────────────────────
   List<RouteBase> get _routes => [
     // ── Public routes (no auth required) ────────────────────────────────────
-    GoRoute(path: '/',                builder: (context, state) => const LandingPage()),
-    GoRoute(path: '/login',           builder: (context, state) => const LoginPage()),
-    GoRoute(path: '/signup',          builder: (context, state) => const SignupPage()),
+    GoRoute(path: '/', builder: (context, state) => const LandingPage()),
+    GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
+    GoRoute(path: '/signup', builder: (context, state) => const SignupPage()),
     GoRoute(
       path: '/forgot-password',
       builder: (context, state) => ForgotPasswordPage(
-        initialEmail: state.extra as String? ?? (state.uri.queryParameters['email'] ?? ''),
+        initialEmail:
+            state.extra as String? ??
+            (state.uri.queryParameters['email'] ?? ''),
       ),
     ),
     GoRoute(
       path: '/reset-password',
       builder: (context, state) => ForgotPasswordPage(
-        initialEmail: state.extra as String? ?? (state.uri.queryParameters['email'] ?? ''),
+        initialEmail:
+            state.extra as String? ??
+            (state.uri.queryParameters['email'] ?? ''),
       ),
     ),
     GoRoute(
       path: '/verify-otp',
       builder: (context, state) => OtpVerificationPage(
-        email: state.extra as String? ?? (state.uri.queryParameters['email'] ?? ''),
+        email:
+            state.extra as String? ??
+            (state.uri.queryParameters['email'] ?? ''),
       ),
     ),
 
     // ── Protected routes (require auth) ─────────────────────────────────────
-    GoRoute(path: '/dashboard',   builder: (context, state) => const DashboardPage()),
-    GoRoute(path: '/todo',        builder: (context, state) => const TodoPage()),
-    GoRoute(path: '/ai',          builder: (context, state) => const AiPage()),
-    GoRoute(path: '/search',      builder: (context, state) => const SearchPage()),
+    GoRoute(
+      path: '/dashboard',
+      builder: (context, state) => const DashboardPage(),
+    ),
+    GoRoute(path: '/todo', builder: (context, state) => const TodoPage()),
+    GoRoute(path: '/ai', builder: (context, state) => const AiPage()),
+    GoRoute(path: '/search', builder: (context, state) => const SearchPage()),
     GoRoute(
       path: '/community',
       builder: (context, state) => const CommunityListPage(),
@@ -123,8 +137,18 @@ class AppRouter {
         ),
       ],
     ),
-    GoRoute(path: '/calculator',  builder: (context, state) => const CalculatorPage()),
-    GoRoute(path: '/pdf-tools',   builder: (context, state) => const PdfToolsPage()),
-    GoRoute(path: '/profile',     builder: (context, state) => const ProfilePage()),
+    GoRoute(
+      path: '/calculator',
+      builder: (context, state) => const CalculatorPage(),
+    ),
+    GoRoute(
+      path: '/pdf-tools',
+      builder: (context, state) => const PdfToolsPage(),
+    ),
+    GoRoute(path: '/profile', builder: (context, state) => const ProfilePage()),
+    GoRoute(
+      path: '/study-tools',
+      builder: (context, state) => const StudyToolsPage(),
+    ),
   ];
 }
