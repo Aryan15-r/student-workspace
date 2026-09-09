@@ -48,7 +48,7 @@ class SearchProvider extends ChangeNotifier {
     try {
       final raw = await _ai.searchAcademicEngine(clean);
       _searchData = SearchData.fromMap(raw);
-      await _saveHistory(clean);
+      unawaited(_saveHistory(clean));
     } catch (e) {
       _error = 'Could not fetch search results. Please try again.';
     } finally {

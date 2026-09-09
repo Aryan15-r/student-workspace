@@ -8,7 +8,16 @@ import '../../../core/constants/app_constants.dart';
 /// Calls the Google Gemini REST API to generate AI responses.
 /// Includes a dynamic academic knowledge engine when running offline.
 class AiService {
+  final http.Client _client = http.Client();
   String get _apiKey => dotenv.env['GEMINI_API_KEY'] ?? '';
+
+  // Keep the stable Flash model first. The previous list tried several
+  // unavailable model names sequentially, adding up to minutes of latency.
+  static const _models = <String>[
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-flash-latest',
+  ];
 
   /// Sends the full conversation history to Gemini and returns the AI reply.
   Future<String> sendMessage(
@@ -19,7 +28,6 @@ class AiService {
 
     // If no valid key is provided, use the intelligent dynamic academic response generator
     if (apiKey.isEmpty || apiKey == 'your-gemini-api-key-here') {
-      await Future.delayed(const Duration(milliseconds: 500));
       return _generateSmartResponse(userMessage);
     }
 
@@ -44,15 +52,7 @@ class AiService {
       ],
     });
 
-    final modelsToTry = [
-      'gemini-3.6-flash',
-      'gemini-3.7-flash',
-      'gemini-3.5-flash',
-      'gemini-3.1-flash-lite',
-      'gemini-flash-latest',
-    ];
-
-    for (final model in modelsToTry) {
+    for (final model in _models) {
       try {
         final url = Uri.parse(
           'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey',
@@ -86,9 +86,9 @@ class AiService {
           'generationConfig': {'temperature': 0.7, 'maxOutputTokens': 16384},
         });
 
-        final response = await http
+        final response = await _client
             .post(url, headers: headers, body: body)
-            .timeout(const Duration(seconds: 40));
+            .timeout(const Duration(seconds: 25));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
@@ -131,7 +131,6 @@ class AiService {
     final cleanQuery = query.trim();
 
     if (apiKey.isEmpty || apiKey == 'your-gemini-api-key-here') {
-      await Future.delayed(const Duration(milliseconds: 300));
       return _getFallbackSearchData(cleanQuery);
     }
 
@@ -152,20 +151,12 @@ For the search query: "$cleanQuery", analyze the core topic and return a JSON ob
 Return ONLY valid raw JSON.
 ''';
 
-    final modelsToTry = [
-      'gemini-3.6-flash',
-      'gemini-3.7-flash',
-      'gemini-3.5-flash',
-      'gemini-3.1-flash-lite',
-      'gemini-flash-latest',
-    ];
-
-    for (final model in modelsToTry) {
+    for (final model in _models) {
       try {
         final url = Uri.parse(
           'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey',
         );
-        final response = await http
+        final response = await _client
             .post(
               url,
               headers: {
@@ -187,7 +178,7 @@ Return ONLY valid raw JSON.
                 },
               }),
             )
-            .timeout(const Duration(seconds: 15));
+            .timeout(const Duration(seconds: 12));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
