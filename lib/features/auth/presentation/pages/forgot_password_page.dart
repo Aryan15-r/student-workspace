@@ -399,7 +399,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
             TextButton(
               onPressed: () =>
                   setState(() => _currentStep = _ResetStep.enterEmail),
-              child: const Text('Change email', style: TextStyle(fontSize: 13)),
+              child: const Text('Change email', style: TextStyle(fontSize: 13, color: AppColors.primary)),
             ),
           ],
         ),

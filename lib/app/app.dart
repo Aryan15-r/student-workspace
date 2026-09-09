@@ -31,7 +31,9 @@ class _StudySpaceAppState extends State<StudySpaceApp> {
     return MaterialApp.router(
       title: 'StudySpace',
       debugShowCheckedModeBanner: false,
-      theme: AppTheme.dark,
+      theme: AppTheme.light,
+      darkTheme: AppTheme.dark,
+      themeMode: ThemeMode.light,
       routerConfig: _appRouter.router,
     );
   }
