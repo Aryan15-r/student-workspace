@@ -30,9 +30,12 @@ class _StudyToolsPageState extends State<StudyToolsPage> {
         _now = DateTime.now();
         if (_running) {
           final elapsed = _now.difference(_startedAt ?? _now).inSeconds;
-          _remaining = _remaining - Duration(seconds: elapsed);
+          final tracked = elapsed > _remaining.inSeconds
+              ? _remaining.inSeconds
+              : elapsed;
+          _remaining = _remaining - Duration(seconds: tracked);
           _startedAt = _now;
-          _focusedSeconds += elapsed;
+          _focusedSeconds += tracked;
           if (_remaining <= Duration.zero) {
             _remaining = Duration.zero;
             _running = false;
@@ -124,13 +127,14 @@ class _StudyToolsPageState extends State<StudyToolsPage> {
     );
     minutes.dispose();
     seconds.dispose();
-    if (result != null && mounted)
+    if (result != null && mounted) {
       setState(() {
         _remaining = result;
         _running = false;
         _startedAt = null;
         _interacted();
       });
+    }
   }
 
   Future<void> _addAlarm() async {
