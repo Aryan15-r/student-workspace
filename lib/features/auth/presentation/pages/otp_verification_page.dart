@@ -206,7 +206,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                               height: 20,
                               child: CircularProgressIndicator(
                                 strokeWidth: 2,
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                               ),
                             )
                           : const Text(
@@ -214,7 +214,7 @@ class _OtpVerificationPageState extends State<OtpVerificationPage> {
                               style: TextStyle(
                                 fontSize: 16,
                                 fontWeight: FontWeight.w600,
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                               ),
                             ),
                     ),

@@ -122,7 +122,7 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
                 child: const Text(
                   'Generate & Download PDF',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
                   ),
                 ),
@@ -239,11 +239,11 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
                       borderRadius: BorderRadius.circular(14),
                     ),
                   ),
-                  icon: const Icon(Icons.download_rounded, color: Colors.white),
+                  icon: const Icon(Icons.download_rounded, color: AppColors.textPrimary),
                   label: const Text(
                     'Export Formatted PDF',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -332,7 +332,7 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
               child: const Text(
                 'Generate Slides',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -436,7 +436,7 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
               child: const Text(
                 'Generate & Download PDF',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -796,12 +796,12 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
                       icon: const Icon(
                         Icons.download_rounded,
                         size: 16,
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                       ),
                       label: const Text(
                         'Export PDF Deck',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -1227,7 +1227,7 @@ class _ActiveToolCardState extends State<_ActiveToolCard> {
                         style: TextStyle(
                           color: widget.isLocked
                               ? AppColors.textMuted
-                              : Colors.white,
+                              : AppColors.textPrimary,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -1240,7 +1240,7 @@ class _ActiveToolCardState extends State<_ActiveToolCard> {
                         size: 14,
                         color: widget.isLocked
                             ? AppColors.textMuted
-                            : Colors.white,
+                            : AppColors.textPrimary,
                       ),
                     ],
                   ),
@@ -1332,7 +1332,7 @@ class _SlideViewerCard extends StatelessWidget {
                     icon: const Icon(
                       Icons.arrow_back_ios_new_rounded,
                       size: 16,
-                      color: Colors.white70,
+                      color: AppColors.textSecondary,
                     ),
                     onPressed: onPrev,
                   ),
@@ -1340,7 +1340,7 @@ class _SlideViewerCard extends StatelessWidget {
                     icon: const Icon(
                       Icons.arrow_forward_ios_rounded,
                       size: 16,
-                      color: Colors.white70,
+                      color: AppColors.textSecondary,
                     ),
                     onPressed: onNext,
                   ),
@@ -1352,7 +1352,7 @@ class _SlideViewerCard extends StatelessWidget {
           Text(
             slide.title,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontSize: 20,
               fontWeight: FontWeight.bold,
             ),
@@ -1385,7 +1385,7 @@ class _SlideViewerCard extends StatelessWidget {
                     child: Text(
                       point,
                       style: const TextStyle(
-                        color: Colors.white70,
+                        color: AppColors.textSecondary,
                         fontSize: 14,
                         height: 1.4,
                       ),
@@ -1905,7 +1905,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
                       Text(
                         widget.fileName,
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                           fontWeight: FontWeight.bold,
                           fontSize: 14,
                         ),
@@ -1991,7 +1991,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
                 IconButton(
                   icon: const Icon(
                     Icons.download_rounded,
-                    color: Colors.white70,
+                    color: AppColors.textSecondary,
                     size: 20,
                   ),
                   tooltip: 'Download Copy',
@@ -2000,7 +2000,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
                 IconButton(
                   icon: const Icon(
                     Icons.close_rounded,
-                    color: Colors.white70,
+                    color: AppColors.textSecondary,
                     size: 22,
                   ),
                   tooltip: 'Close Viewer',
@@ -2052,7 +2052,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
         return const Center(
           child: Text(
             'No slides found in presentation.',
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: AppColors.textSecondary),
           ),
         );
       }
@@ -2088,7 +2088,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
         return const Center(
           child: Text(
             'No data found in spreadsheet.',
-            style: TextStyle(color: Colors.white70),
+            style: TextStyle(color: AppColors.textSecondary),
           ),
         );
       }
@@ -2120,7 +2120,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
               children: [
                 Expanded(
                   child: TextField(
-                    style: const TextStyle(color: Colors.white, fontSize: 13),
+                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 13),
                     decoration: InputDecoration(
                       hintText: 'Search spreadsheet cells...',
                       hintStyle: const TextStyle(
@@ -2181,7 +2181,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
                           Text(
                             colIdx < row.length ? row[colIdx] : '',
                             style: const TextStyle(
-                              color: Colors.white70,
+                              color: AppColors.textSecondary,
                               fontSize: 12,
                             ),
                           ),
@@ -2217,7 +2217,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
                 SizedBox(height: 8),
                 Text(
                   'Could not render image',
-                  style: TextStyle(color: Colors.white70),
+                  style: TextStyle(color: AppColors.textSecondary),
                 ),
               ],
             ),
@@ -2302,13 +2302,13 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
                       height: 1.6,
                     ),
                     h1: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
                       height: 1.4,
                     ),
                     h2: const TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                       height: 1.4,
@@ -2339,7 +2339,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
                     ),
                     strong: const TextStyle(
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                     ),
                     em: const TextStyle(
                       fontStyle: FontStyle.italic,
@@ -2441,7 +2441,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
                     child: SelectableText(
                       _parsedTextDoc,
                       style: const TextStyle(
-                        color: Colors.white70,
+                        color: AppColors.textSecondary,
                         fontSize: 13,
                         height: 1.6,
                       ),
@@ -2467,7 +2467,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
             Text(
               widget.fileName,
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -2486,12 +2486,12 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
               icon: const Icon(
                 Icons.download_rounded,
                 size: 16,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
               label: const Text(
                 'Download PDF',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -2518,7 +2518,7 @@ class _InAppDocumentViewerModalState extends State<InAppDocumentViewerModal> {
               child: SelectableText(
                 _parsedTextDoc,
                 style: const TextStyle(
-                  color: Colors.white70,
+                  color: AppColors.textSecondary,
                   fontSize: 13,
                   height: 1.6,
                 ),

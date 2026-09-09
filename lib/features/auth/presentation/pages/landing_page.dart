@@ -290,7 +290,7 @@ class _CTAButtons extends StatelessWidget {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
             ),
           ),

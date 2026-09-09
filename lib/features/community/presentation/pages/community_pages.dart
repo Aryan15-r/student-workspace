@@ -59,7 +59,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
               child: Text(
                 'Private Room: ${room.name}',
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontSize: 17,
                   fontWeight: FontWeight.bold,
                 ),
@@ -81,7 +81,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
             TextField(
               controller: passCtrl,
               obscureText: true,
-              style: const TextStyle(color: Colors.white),
+              style: const TextStyle(color: AppColors.textPrimary),
               decoration: InputDecoration(
                 labelText: 'Passcode / Access Code',
                 prefixIcon: const Icon(
@@ -130,7 +130,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
             child: const Text(
               'Enter Room',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
               ),
             ),
@@ -219,7 +219,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                   const Text(
                     'Create Study Room',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 18,
                       fontWeight: FontWeight.bold,
                     ),
@@ -272,7 +272,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
               const SizedBox(height: 16),
               TextField(
                 controller: nameCtrl,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   labelText: 'Room Name / Code',
                   hintText: 'e.g. CS201-Study, Physics-Lab',
@@ -290,7 +290,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
               const SizedBox(height: 14),
               TextField(
                 controller: descCtrl,
-                style: const TextStyle(color: Colors.white),
+                style: const TextStyle(color: AppColors.textPrimary),
                 decoration: InputDecoration(
                   labelText: 'Topic / Description (Optional)',
                   hintText: 'What is this room about?',
@@ -335,7 +335,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             Text(
                               'Private Room',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 14,
                               ),
@@ -366,7 +366,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                 TextField(
                   controller: passCtrl,
                   obscureText: true,
-                  style: const TextStyle(color: Colors.white),
+                  style: const TextStyle(color: AppColors.textPrimary),
                   decoration: InputDecoration(
                     labelText: 'Set Room Passcode',
                     hintText: 'Set a secret room passcode',
@@ -424,7 +424,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                   child: const Text(
                     'Create Room',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontWeight: FontWeight.bold,
                       fontSize: 15,
                     ),
@@ -450,7 +450,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
           backgroundColor: const Color(0xFFFFFCF8).withValues(alpha: 0.8),
           title: Text(
             'Student Lounge & Study Rooms',
-            style: AppTextStyles.headlineSmall.copyWith(color: Colors.white),
+            style: AppTextStyles.headlineSmall.copyWith(color: AppColors.textPrimary),
           ),
           actions: [
             IconButton(
@@ -554,7 +554,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             Text(
                               'Join Room by Code',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 fontSize: 16,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -576,7 +576,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                               child: TextField(
                                 controller: _roomCodeController,
                                 style: const TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.textPrimary,
                                   fontSize: 14,
                                 ),
                                 decoration: InputDecoration(
@@ -624,7 +624,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                               child: const Text(
                                 'Join Room',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.textPrimary,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 13,
                                 ),
@@ -666,13 +666,13 @@ class _CommunityListPageState extends State<CommunityListPage> {
                                   const Icon(
                                     Icons.public_rounded,
                                     size: 16,
-                                    color: Colors.white,
+                                    color: AppColors.textPrimary,
                                   ),
                                   const SizedBox(width: 6),
                                   Text(
                                     'Public Lounge (${publicRooms.length})',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: AppColors.textPrimary,
                                       fontSize: 13,
                                       fontWeight: _selectedTab == 0
                                           ? FontWeight.bold
@@ -708,7 +708,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                                   Text(
                                     'Private Rooms (${privateRooms.length})',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: AppColors.textPrimary,
                                       fontSize: 13,
                                       fontWeight: _selectedTab == 1
                                           ? FontWeight.bold
@@ -733,7 +733,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             ? 'Public Study Lounges'
                             : 'Private Passcode Rooms',
                         style: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -941,7 +941,7 @@ class _RoomCard extends StatelessWidget {
                 Text(
                   community.name,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     fontWeight: FontWeight.bold,
                     fontSize: 14,
                   ),
@@ -1010,7 +1010,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
                 const Text(
                   'Sign In Required',
                   style: TextStyle(
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     fontSize: 20,
                     fontWeight: FontWeight.bold,
                   ),
@@ -1048,7 +1048,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
         leading: BackButton(onPressed: () => context.go('/community')),
         title: Text(
           community?.name ?? 'Room Channels',
-          style: AppTextStyles.headlineSmall.copyWith(color: Colors.white),
+          style: AppTextStyles.headlineSmall.copyWith(color: AppColors.textPrimary),
         ),
       ),
       body: cp.isLoading
@@ -1087,7 +1087,7 @@ class _ChannelListPageState extends State<ChannelListPage> {
                     title: Text(
                       '#${ch.name}',
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.bold,
                         fontSize: 15,
                       ),
@@ -1245,7 +1245,7 @@ class _ChatPageState extends State<ChatPage> {
                   const SizedBox(height: 2),
                   Text(
                     message.content,
-                    style: const TextStyle(color: Colors.white, fontSize: 13.5),
+                    style: const TextStyle(color: AppColors.textPrimary, fontSize: 13.5),
                   ),
                 ],
               ),
@@ -1258,7 +1258,7 @@ class _ChatPageState extends State<ChatPage> {
               title: const Text(
                 'Copy Message Text',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.w600,
                 ),
               ),
@@ -1380,7 +1380,7 @@ class _ChatPageState extends State<ChatPage> {
                             Text(
                               community?.name ?? 'Room Profile',
                               style: const TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -1415,7 +1415,7 @@ class _ChatPageState extends State<ChatPage> {
                   const Text(
                     'Channel Members',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
                     ),
@@ -1488,7 +1488,7 @@ class _ChatPageState extends State<ChatPage> {
                                 Text(
                                   member.username ?? 'Student',
                                   style: const TextStyle(
-                                    color: Colors.white,
+                                    color: AppColors.textPrimary,
                                     fontSize: 14,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -1535,7 +1535,7 @@ class _ChatPageState extends State<ChatPage> {
                                           title: const Text(
                                             'Kick Member',
                                             style: TextStyle(
-                                              color: Colors.white,
+                                              color: AppColors.textPrimary,
                                             ),
                                           ),
                                           content: Text(
@@ -1593,12 +1593,12 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     icon: const Icon(
                       Icons.delete_forever_rounded,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                     ),
                     label: const Text(
                       'Delete Room & All Chats (Admin)',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         fontWeight: FontWeight.bold,
                       ),
                     ),
@@ -1609,7 +1609,7 @@ class _ChatPageState extends State<ChatPage> {
                           backgroundColor: const Color(0xFFFFFCF8),
                           title: const Text(
                             'Delete Entire Room?',
-                            style: TextStyle(color: Colors.white),
+                            style: TextStyle(color: AppColors.textPrimary),
                           ),
                           content: const Text(
                             'This will delete the channel, messages, and room for all users permanently.',
@@ -1717,7 +1717,7 @@ class _ChatPageState extends State<ChatPage> {
               Text(
                 '#${channel?.name ?? 'chat'}',
                 style: AppTextStyles.headlineSmall.copyWith(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                 ),
               ),
               const SizedBox(width: 6),
@@ -1816,7 +1816,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     child: TextField(
                       controller: _ctrl,
-                      style: const TextStyle(color: Colors.white),
+                      style: const TextStyle(color: AppColors.textPrimary),
                       decoration: const InputDecoration(
                         hintText: 'Type a message...',
                         border: InputBorder.none,
@@ -1844,7 +1844,7 @@ class _ChatPageState extends State<ChatPage> {
                     ),
                     child: const Icon(
                       Icons.send_rounded,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       size: 18,
                     ),
                   ),
@@ -1943,7 +1943,7 @@ class _MessageTile extends StatelessWidget {
                     child: Text(
                       message.content,
                       style: TextStyle(
-                        color: isMe ? Colors.white : const Color(0xFFF1F5F9),
+                        color: isMe ? AppColors.textPrimary : AppColors.textPrimary,
                         fontSize: 14,
                       ),
                     ),

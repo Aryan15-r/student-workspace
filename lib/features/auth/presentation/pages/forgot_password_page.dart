@@ -326,7 +326,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                           ),
                         )
                       : Text(
@@ -336,7 +336,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           style: const TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                 ),
@@ -485,7 +485,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                           ),
                         )
                       : const Text(
@@ -493,7 +493,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                 ),
@@ -658,7 +658,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           height: 20,
                           child: CircularProgressIndicator(
                             strokeWidth: 2,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                           ),
                         )
                       : const Text(
@@ -666,7 +666,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                           style: TextStyle(
                             fontSize: 16,
                             fontWeight: FontWeight.w600,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                 ),
@@ -732,7 +732,7 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.w600,
-                color: Colors.white,
+                color: AppColors.textPrimary,
               ),
             ),
           ),

@@ -66,7 +66,7 @@ class LoginPromptDialog extends StatelessWidget {
                   gradient: AppColors.primaryGradient,
                   shape: BoxShape.circle,
                 ),
-                child: Icon(icon, color: Colors.white, size: 28),
+                child: Icon(icon, color: AppColors.textPrimary, size: 28),
               ),
               const SizedBox(height: 18),
               Text(
@@ -105,7 +105,7 @@ class LoginPromptDialog extends StatelessWidget {
                     style: TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.w600,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                     ),
                   ),
                 ),

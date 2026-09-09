@@ -13,6 +13,7 @@ import '../widgets/code_syntax_highlighter.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../shared/widgets/login_prompt_dialog.dart';
+import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
 
 /// Route: /ai — StudySpace AI Assistant Page with ultra-modern UI & Copy Prompt capabilities
@@ -132,7 +133,7 @@ class _AiPageState extends State<AiPage> {
                             Text(
                               'StudySpace AI',
                               style: AppTextStyles.headlineSmall.copyWith(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 fontWeight: FontWeight.bold,
                                 fontSize: 17,
                               ),
@@ -164,7 +165,7 @@ class _AiPageState extends State<AiPage> {
                                   Text(
                                     'Gemini 3.6',
                                     style: TextStyle(
-                                      color: Color(0xFF4ADE80),
+                                      color: Color(0xFF16A34A),
                                       fontSize: 10,
                                       fontWeight: FontWeight.bold,
                                     ),
@@ -178,8 +179,9 @@ class _AiPageState extends State<AiPage> {
                         const Text(
                           'Zero-Downtime Academic Assistant',
                           style: TextStyle(
-                            color: Color(0xFF806A63),
+                            color: AppColors.textSecondary,
                             fontSize: 11,
+                            fontWeight: FontWeight.w500,
                           ),
                         ),
                       ],
@@ -190,7 +192,7 @@ class _AiPageState extends State<AiPage> {
                   IconButton(
                     icon: const Icon(
                       Icons.delete_sweep_rounded,
-                      color: Color(0xFF806A63),
+                      color: AppColors.textSecondary,
                     ),
                     onPressed: () {
                       context.read<AiProvider>().clearChat();
@@ -351,7 +353,8 @@ class _AiPageState extends State<AiPage> {
                                 'Guest Mode: ${context.watch<AuthProvider>().guestAiQueries} of 3 questions used • ',
                                 style: const TextStyle(
                                   fontSize: 12,
-                                  color: Colors.white70,
+                                  color: AppColors.textSecondary,
+                                  fontWeight: FontWeight.w500,
                                 ),
                               ),
                               InkWell(
@@ -436,9 +439,9 @@ class _EmptyChatState extends StatelessWidget {
             ShaderMask(
               shaderCallback: (bounds) => const LinearGradient(
                 colors: [
-                  Color(0xFFD66A50),
-                  Color(0xFFC084FC),
                   Color(0xFFE07A5F),
+                  Color(0xFF9333EA),
+                  Color(0xFFB85C38),
                 ],
               ).createShader(bounds),
               child: const Text(
@@ -452,15 +455,19 @@ class _EmptyChatState extends StatelessWidget {
             ).animate().fadeIn(delay: 100.ms),
             const SizedBox(height: 8),
             Container(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+              padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 6),
               decoration: BoxDecoration(
-                color: Colors.white.withValues(alpha: 0.06),
+                color: AppColors.card,
                 borderRadius: BorderRadius.circular(20),
-                border: Border.all(color: Colors.white.withValues(alpha: 0.1)),
+                border: Border.all(color: AppColors.border),
               ),
               child: const Text(
                 '⚡ Powered by Gemini 3.6 • Zero-Downtime Cascade • Copy Prompt Ready',
-                style: TextStyle(color: Color(0xFF806A63), fontSize: 12),
+                style: TextStyle(
+                  color: AppColors.textSecondary,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w600,
+                ),
                 textAlign: TextAlign.center,
               ),
             ).animate().fadeIn(delay: 200.ms),
@@ -470,9 +477,9 @@ class _EmptyChatState extends StatelessWidget {
               child: Text(
                 'Suggested Topics:',
                 style: TextStyle(
-                  color: Color(0xFFCBD5E1),
-                  fontSize: 14,
-                  fontWeight: FontWeight.w600,
+                  color: AppColors.textPrimary,
+                  fontSize: 15,
+                  fontWeight: FontWeight.bold,
                 ),
               ),
             ),
@@ -487,16 +494,18 @@ class _EmptyChatState extends StatelessWidget {
                       child: Container(
                         padding: const EdgeInsets.symmetric(
                           horizontal: 14,
-                          vertical: 10,
+                          vertical: 11,
                         ),
                         decoration: BoxDecoration(
-                          color: const Color(0xFFF7EBDD).withValues(alpha: 0.8),
+                          color: AppColors.surface,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: const Color(0xFFE8D4C4)),
+                          border: Border.all(color: AppColors.border),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withValues(alpha: 0.2),
-                              blurRadius: 6,
+                              color: const Color(
+                                0xFFE07A5F,
+                              ).withValues(alpha: 0.08),
+                              blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
                           ],
@@ -506,17 +515,18 @@ class _EmptyChatState extends StatelessWidget {
                           children: [
                             const Icon(
                               Icons.auto_awesome_rounded,
-                              size: 14,
-                              color: Color(0xFFD66A50),
+                              size: 15,
+                              color: AppColors.primary,
                             ),
                             const SizedBox(width: 8),
                             Flexible(
                               child: Text(
                                 s,
                                 style: const TextStyle(
-                                  color: Color(0xFFE2E8F0),
-                                  fontSize: 13,
-                                  height: 1.3,
+                                  color: AppColors.textPrimary,
+                                  fontSize: 13.5,
+                                  fontWeight: FontWeight.w600,
+                                  height: 1.35,
                                 ),
                               ),
                             ),
@@ -645,12 +655,12 @@ class _MessageBubble extends StatelessWidget {
         decoration: BoxDecoration(
           gradient: isUser
               ? const LinearGradient(
-                  colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                  colors: [Color(0xFF8F4F3A), Color(0xFFC96B52)],
                   begin: Alignment.topLeft,
                   end: Alignment.bottomRight,
                 )
               : null,
-          color: isUser ? null : const Color(0xFFF7EBDD),
+          color: isUser ? null : AppColors.surface,
           borderRadius: BorderRadius.circular(20).copyWith(
             bottomRight: isUser ? const Radius.circular(4) : null,
             bottomLeft: isUser ? null : const Radius.circular(4),
@@ -658,13 +668,13 @@ class _MessageBubble extends StatelessWidget {
           border: Border.all(
             color: isUser
                 ? const Color(0xFFD66A50).withValues(alpha: 0.5)
-                : const Color(0xFFE8D4C4),
+                : AppColors.border,
           ),
           boxShadow: [
             BoxShadow(
               color: isUser
                   ? const Color(0xFFE07A5F).withValues(alpha: 0.25)
-                  : Colors.black.withValues(alpha: 0.3),
+                  : const Color(0xFFE07A5F).withValues(alpha: 0.08),
               blurRadius: 10,
               offset: const Offset(0, 3),
             ),
@@ -679,7 +689,7 @@ class _MessageBubble extends StatelessWidget {
               decoration: BoxDecoration(
                 color: isUser
                     ? Colors.white.withValues(alpha: 0.1)
-                    : const Color(0xFFFFFCF8).withValues(alpha: 0.5),
+                    : AppColors.card,
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(19),
                   topRight: Radius.circular(19),
@@ -696,16 +706,16 @@ class _MessageBubble extends StatelessWidget {
                             : Icons.auto_awesome_rounded,
                         size: 14,
                         color: isUser
-                            ? Colors.white70
-                            : const Color(0xFFD66A50),
+                            ? AppColors.textSecondary
+                            : AppColors.primary,
                       ),
                       const SizedBox(width: 6),
                       Text(
                         isUser ? 'You' : 'StudySpace AI',
                         style: TextStyle(
                           color: isUser
-                              ? Colors.white
-                              : const Color(0xFFCBD5E1),
+                              ? AppColors.textPrimary
+                              : AppColors.textPrimary,
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
@@ -734,16 +744,16 @@ class _MessageBubble extends StatelessWidget {
                                 Icons.copy_rounded,
                                 size: 12,
                                 color: isUser
-                                    ? Colors.white70
-                                    : const Color(0xFF806A63),
+                                    ? AppColors.textSecondary
+                                    : AppColors.textSecondary,
                               ),
                               const SizedBox(width: 4),
                               Text(
                                 isUser ? 'Copy Prompt' : 'Copy Response',
                                 style: TextStyle(
                                   color: isUser
-                                      ? Colors.white70
-                                      : const Color(0xFF806A63),
+                                      ? AppColors.textSecondary
+                                      : AppColors.textSecondary,
                                   fontSize: 11,
                                   fontWeight: FontWeight.w500,
                                 ),
@@ -767,13 +777,13 @@ class _MessageBubble extends StatelessWidget {
                                 Icon(
                                   Icons.edit_note_rounded,
                                   size: 13,
-                                  color: Colors.white70,
+                                  color: AppColors.textSecondary,
                                 ),
                                 SizedBox(width: 2),
                                 Text(
                                   'Edit',
                                   style: TextStyle(
-                                    color: Colors.white70,
+                                    color: AppColors.textSecondary,
                                     fontSize: 11,
                                     fontWeight: FontWeight.w500,
                                   ),
@@ -796,7 +806,7 @@ class _MessageBubble extends StatelessWidget {
                   ? SelectableText(
                       message.content,
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         fontSize: 14.5,
                         height: 1.5,
                       ),
@@ -816,85 +826,83 @@ class _MessageBubble extends StatelessWidget {
                       },
                       styleSheet: MarkdownStyleSheet(
                         p: const TextStyle(
-                          color: Color(0xFFF1F5F9),
+                          color: AppColors.textPrimary,
                           fontSize: 14.5,
                           height: 1.6,
                         ),
                         h1: AppTextStyles.headlineSmall.copyWith(
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                           fontWeight: FontWeight.w700,
                         ),
                         h2: AppTextStyles.titleLarge.copyWith(
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                           fontWeight: FontWeight.w700,
                         ),
                         h3: AppTextStyles.titleMedium.copyWith(
-                          color: const Color(0xFFD66A50),
+                          color: AppColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                         h4: const TextStyle(
-                          color: Color(0xFFF1F5F9),
+                          color: AppColors.textPrimary,
                           fontSize: 14,
                           fontWeight: FontWeight.w600,
                         ),
                         code: const TextStyle(
-                          backgroundColor: Color(0xFFFFFCF8),
-                          color: Color(0xFF38BDF8),
+                          backgroundColor: AppColors.card,
+                          color: Color(0xFFC2410C),
                           fontFamily: 'monospace',
                           fontSize: 13,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: FontWeight.w600,
                         ),
                         codeblockDecoration: BoxDecoration(
-                          color: const Color(0xFFFFFCF8),
+                          color: AppColors.surface,
                           borderRadius: BorderRadius.circular(10),
-                          border: Border.all(color: const Color(0xFFE8D4C4)),
+                          border: Border.all(color: AppColors.border),
                         ),
                         blockquote: const TextStyle(
-                          color: Color(0xFFCBD5E1),
+                          color: AppColors.textSecondary,
                           fontStyle: FontStyle.italic,
                         ),
                         blockquoteDecoration: BoxDecoration(
                           border: const Border(
                             left: BorderSide(
-                              color: Color(0xFFD66A50),
+                              color: AppColors.primary,
                               width: 3,
                             ),
                           ),
-                          color: const Color(
-                            0xFFE07A5F,
-                          ).withValues(alpha: 0.08),
+                          color: AppColors.primary.withValues(alpha: 0.08),
                         ),
                         blockquotePadding: const EdgeInsets.symmetric(
                           horizontal: 12,
                           vertical: 8,
                         ),
                         listBullet: const TextStyle(
-                          color: Color(0xFFD66A50),
+                          color: AppColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                         strong: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                         ),
                         em: const TextStyle(
                           fontStyle: FontStyle.italic,
-                          color: Color(0xFF806A63),
+                          color: AppColors.textSecondary,
                         ),
                         a: const TextStyle(
-                          color: Color(0xFF38BDF8),
+                          color: Color(0xFF2563EB),
                           decoration: TextDecoration.underline,
                         ),
                         tableBody: const TextStyle(
-                          color: Color(0xFFF1F5F9),
+                          color: AppColors.textPrimary,
                           fontSize: 13,
                         ),
                         tableHead: const TextStyle(
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                           fontWeight: FontWeight.bold,
                           fontSize: 13,
                         ),
                         tableBorder: TableBorder.all(
-                          color: const Color(0xFFE8D4C4),
+                          color: AppColors.border,
                           width: 1,
                         ),
                         tablePadding: const EdgeInsets.all(8),
@@ -1044,19 +1052,24 @@ class _InputBar extends StatelessWidget {
   Widget build(BuildContext context) {
     return Container(
       padding: const EdgeInsets.fromLTRB(16, 12, 16, 16),
-      color: const Color(0xFF090D16),
+      decoration: const BoxDecoration(
+        color: AppColors.surface,
+        border: Border(
+          top: BorderSide(color: AppColors.border, width: 1),
+        ),
+      ),
       child: Row(
         children: [
           Expanded(
             child: Container(
               padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
               decoration: BoxDecoration(
-                color: const Color(0xFFF7EBDD),
+                color: AppColors.card,
                 borderRadius: BorderRadius.circular(24),
                 border: Border.all(
                   color: focusNode.hasFocus
-                      ? const Color(0xFFD66A50)
-                      : const Color(0xFFE8D4C4),
+                      ? AppColors.primary
+                      : AppColors.border,
                   width: 1.2,
                 ),
               ),
@@ -1067,7 +1080,7 @@ class _InputBar extends StatelessWidget {
                       controller: ctrl,
                       focusNode: focusNode,
                       style: const TextStyle(
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         fontSize: 14.5,
                       ),
                       maxLines: 4,
@@ -1081,7 +1094,7 @@ class _InputBar extends StatelessWidget {
                         focusedBorder: InputBorder.none,
                         contentPadding: EdgeInsets.symmetric(vertical: 10),
                         hintStyle: TextStyle(
-                          color: Color(0xFF64748B),
+                          color: AppColors.textMuted,
                           fontSize: 14,
                         ),
                         filled: false,
@@ -1093,7 +1106,7 @@ class _InputBar extends StatelessWidget {
                       icon: const Icon(
                         Icons.clear_rounded,
                         size: 16,
-                        color: Color(0xFF64748B),
+                        color: AppColors.textMuted,
                       ),
                       onPressed: () => ctrl.clear(),
                       padding: EdgeInsets.zero,
@@ -1149,7 +1162,7 @@ class _InputBar extends StatelessWidget {
                       ),
                       child: const Icon(
                         Icons.send_rounded,
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         size: 19,
                       ),
                     ),

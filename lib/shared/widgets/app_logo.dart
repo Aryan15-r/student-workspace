@@ -85,7 +85,7 @@ class _LogoIcon extends StatelessWidget {
       child: Center(
         child: Text(
           '✦',
-          style: TextStyle(fontSize: size * 0.5, color: Colors.white),
+          style: TextStyle(fontSize: size * 0.5, color: AppColors.textPrimary),
         ),
       ),
     );

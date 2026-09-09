@@ -6,6 +6,8 @@ import '../../../auth/providers/auth_provider.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../shared/widgets/login_prompt_dialog.dart';
 import '../../../../app/theme/app_text_styles.dart';
+import '../../../../app/theme/app_colors.dart';
+
 
 /// Route: /calculator — Ultra-Modern Offline Scientific Calculator
 class CalculatorPage extends StatelessWidget {
@@ -41,7 +43,7 @@ class CalculatorPage extends StatelessWidget {
                         Text(
                           'Calculation History',
                           style: TextStyle(
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
                           ),
@@ -188,7 +190,7 @@ class CalculatorPage extends StatelessWidget {
               Text(
                 'Scientific Calculator',
                 style: AppTextStyles.headlineSmall.copyWith(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                 ),
               ),
             ],
@@ -412,12 +414,12 @@ class _CalcButton extends StatelessWidget {
 
   Color _textColor(bool isLocked) {
     if (isLocked) return const Color(0xFF64748B);
-    if (_isEquals(label)) return Colors.white;
+    if (_isEquals(label)) return AppColors.textPrimary;
     if (_isClear(label)) return const Color(0xFFF87171);
     if (_isBack(label)) return const Color(0xFFFBBF24);
     if (_isOp(label)) return const Color(0xFFD66A50);
     if (_isSci(label)) return const Color(0xFF38BDF8);
-    return Colors.white;
+    return AppColors.textPrimary;
   }
 
   void _onTap(BuildContext context) {

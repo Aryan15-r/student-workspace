@@ -163,7 +163,7 @@ class _MobileShell extends StatelessWidget {
                           child: const Icon(
                             Icons.apps_rounded,
                             size: 18,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                         const SizedBox(width: 10),
@@ -499,7 +499,7 @@ class _DesktopShell extends StatelessWidget {
                             child: Text(
                               '✦',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),

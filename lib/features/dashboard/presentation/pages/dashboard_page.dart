@@ -7,6 +7,7 @@ import '../../../auth/providers/auth_provider.dart';
 import '../../../todo/presentation/widgets/task_card.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../app/theme/app_text_styles.dart';
+import '../../../../app/theme/app_colors.dart';
 
 /// Route: /dashboard — Ultra-Modern Student Dashboard
 class DashboardPage extends StatefulWidget {
@@ -116,7 +117,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                   style: AppTextStyles
                                                       .headlineLarge
                                                       .copyWith(
-                                                        color: Colors.white,
+                                                        color: AppColors.textPrimary,
                                                         fontWeight:
                                                             FontWeight.bold,
                                                       ),
@@ -181,7 +182,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                             style: const TextStyle(
                                               fontSize: 13,
                                               fontWeight: FontWeight.bold,
-                                              color: Colors.white,
+                                              color: AppColors.textPrimary,
                                             ),
                                           ),
                                         ],
@@ -255,7 +256,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                         fontSize: 18,
                                                         fontWeight:
                                                             FontWeight.bold,
-                                                        color: Colors.white,
+                                                        color: AppColors.textPrimary,
                                                       ),
                                                     ),
                                                     SizedBox(width: 8),
@@ -272,10 +273,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                                   'Instant problem solver, zero-downtime model cascade, copy prompt ready',
                                                   style: TextStyle(
                                                     fontSize: 13,
-                                                    color: Colors.white
-                                                        .withValues(
-                                                          alpha: 0.85,
-                                                        ),
+                                                    color: AppColors.textSecondary,
                                                   ),
                                                 ),
                                               ],
@@ -284,12 +282,12 @@ class _DashboardPageState extends State<DashboardPage> {
                                           Container(
                                             padding: const EdgeInsets.all(10),
                                             decoration: const BoxDecoration(
-                                              color: Colors.white24,
+                                              color: AppColors.card,
                                               shape: BoxShape.circle,
                                             ),
                                             child: const Icon(
                                               Icons.arrow_forward_rounded,
-                                              color: Colors.white,
+                                              color: AppColors.textPrimary,
                                               size: 20,
                                             ),
                                           ),
@@ -306,7 +304,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               const Text(
                                 'Quick Tools & Utilities',
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.textPrimary,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -384,7 +382,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               const Text(
                                 "Today's Tasks",
                                 style: TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.textPrimary,
                                   fontSize: 18,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -436,7 +434,7 @@ class _DashboardPageState extends State<DashboardPage> {
                                             const Text(
                                               'No tasks due today!',
                                               style: TextStyle(
-                                                color: Colors.white,
+                                                color: AppColors.textPrimary,
                                                 fontSize: 16,
                                                 fontWeight: FontWeight.bold,
                                               ),
@@ -480,7 +478,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           child: const Text(
                             'Explore Modules',
                             style: TextStyle(
-                              color: Colors.white,
+                              color: AppColors.textPrimary,
                               fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
@@ -583,7 +581,7 @@ class _QuickTool extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -644,7 +642,7 @@ class _FeatureCard extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
               ),

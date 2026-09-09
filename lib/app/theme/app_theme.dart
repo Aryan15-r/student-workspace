@@ -22,10 +22,10 @@ class AppTheme {
         tertiary: AppColors.accent,
         surface: AppColors.surface,
         error: AppColors.error,
-        onPrimary: Colors.white,
+        onPrimary: AppColors.textPrimary,
         onSecondary: AppColors.textPrimary,
         onSurface: AppColors.textPrimary,
-        onError: Colors.white,
+        onError: AppColors.textPrimary,
         surfaceContainerHighest: AppColors.card,
       ),
 
@@ -50,7 +50,7 @@ class AppTheme {
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
           backgroundColor: AppColors.primary,
-          foregroundColor: Colors.white,
+          foregroundColor: AppColors.textPrimary,
           elevation: 0,
           padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           shape: RoundedRectangleBorder(
@@ -273,7 +273,7 @@ class AppTheme {
       // ── Floating Action Button ────────────────────────────────────────────
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         backgroundColor: AppColors.primary,
-        foregroundColor: Colors.white,
+        foregroundColor: AppColors.textPrimary,
         elevation: 4,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
       ),

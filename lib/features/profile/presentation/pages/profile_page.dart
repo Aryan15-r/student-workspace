@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../../../app/theme/app_text_styles.dart';
+import '../../../../app/theme/app_colors.dart';
+
 
 class ProfilePage extends StatefulWidget {
   const ProfilePage({super.key});
@@ -30,7 +32,7 @@ class _ProfilePageState extends State<ProfilePage> {
           backgroundColor: const Color(0xFFFFFCF8).withValues(alpha: 0.8),
           title: Text(
             'Profile & Settings',
-            style: AppTextStyles.headlineSmall.copyWith(color: Colors.white),
+            style: AppTextStyles.headlineSmall.copyWith(color: AppColors.textPrimary),
           ),
         ),
         body: isGuest
@@ -64,7 +66,7 @@ class _ProfilePageState extends State<ProfilePage> {
                           Text(
                             profile.displayName,
                             style: AppTextStyles.headlineMedium.copyWith(
-                              color: Colors.white,
+                              color: AppColors.textPrimary,
                             ),
                           ).animate().fadeIn(delay: 100.ms),
                           Text(
@@ -83,7 +85,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     const Text(
                       'Academic Profile',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -126,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
                     const Text(
                       'App & Account Settings',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
                       ),
@@ -244,7 +246,7 @@ class _GuestProfileView extends StatelessWidget {
           const Text(
             'Guest Mode Active',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
@@ -271,11 +273,11 @@ class _GuestProfileView extends StatelessWidget {
                   borderRadius: BorderRadius.circular(14),
                 ),
               ),
-              icon: const Icon(Icons.login_rounded, color: Colors.white),
+              icon: const Icon(Icons.login_rounded, color: AppColors.textPrimary),
               label: const Text(
                 'Sign In to Account',
                 style: TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontWeight: FontWeight.bold,
                   fontSize: 15,
                 ),
@@ -316,7 +318,7 @@ class _GuestProfileView extends StatelessWidget {
             child: Text(
               'App Information',
               style: TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
               ),
@@ -380,7 +382,7 @@ class _InfoRow extends StatelessWidget {
             Text(
               value,
               style: const TextStyle(
-                color: Colors.white,
+                color: AppColors.textPrimary,
                 fontSize: 14,
                 fontWeight: FontWeight.w600,
               ),
@@ -424,7 +426,7 @@ class _SettingSwitchTile extends StatelessWidget {
               Text(
                 title,
                 style: const TextStyle(
-                  color: Colors.white,
+                  color: AppColors.textPrimary,
                   fontSize: 13.5,
                   fontWeight: FontWeight.w600,
                 ),
@@ -478,7 +480,7 @@ class _SettingActionTile extends StatelessWidget {
                 Text(
                   title,
                   style: const TextStyle(
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     fontSize: 13.5,
                     fontWeight: FontWeight.w600,
                   ),

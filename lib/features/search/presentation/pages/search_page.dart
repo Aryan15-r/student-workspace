@@ -87,7 +87,7 @@ class _SearchPageState extends State<SearchPage> {
                 child: const Center(
                   child: Icon(
                     Icons.search_rounded,
-                    color: Colors.white,
+                    color: AppColors.textPrimary,
                     size: 18,
                   ),
                 ),
@@ -368,14 +368,14 @@ class _AiOverviewCard extends StatelessWidget {
                   children: [
                     Icon(
                       Icons.auto_awesome_rounded,
-                      color: Colors.white,
+                      color: AppColors.textPrimary,
                       size: 14,
                     ),
                     SizedBox(width: 6),
                     Text(
                       'AI Academic Overview',
                       style: TextStyle(
-                        color: Colors.white,
+                        color: AppColors.textPrimary,
                         fontSize: 12,
                         fontWeight: FontWeight.w700,
                       ),
@@ -520,7 +520,7 @@ class _CategoryFilterPills extends StatelessWidget {
               selectedColor: AppColors.primary,
               backgroundColor: AppColors.surface,
               labelStyle: TextStyle(
-                color: isSelected ? Colors.white : AppColors.textSecondary,
+                color: isSelected ? AppColors.textPrimary : AppColors.textSecondary,
                 fontSize: 12,
                 fontWeight: isSelected ? FontWeight.w600 : FontWeight.w400,
               ),

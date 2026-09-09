@@ -79,7 +79,7 @@ class _TodoPageState extends State<TodoPage>
           backgroundColor: const Color(0xFFFFFCF8).withValues(alpha: 0.8),
           title: Text(
             'Task & Study Tracker',
-            style: AppTextStyles.headlineSmall.copyWith(color: Colors.white),
+            style: AppTextStyles.headlineSmall.copyWith(color: AppColors.textPrimary),
           ),
           bottom: TabBar(
             controller: _tabs,
@@ -98,10 +98,10 @@ class _TodoPageState extends State<TodoPage>
         floatingActionButton: FloatingActionButton.extended(
           onPressed: _openAddTask,
           backgroundColor: const Color(0xFFE07A5F),
-          icon: const Icon(Icons.add_rounded, color: Colors.white),
+          icon: const Icon(Icons.add_rounded, color: AppColors.textPrimary),
           label: const Text(
             'Add Task',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+            style: TextStyle(color: AppColors.textPrimary, fontWeight: FontWeight.bold),
           ),
         ),
         body: Consumer<TodoProvider>(
@@ -223,7 +223,7 @@ class _TodoPageState extends State<TodoPage>
                                 _weekdayName(day.weekday),
                                 style: TextStyle(
                                   color: isSelected
-                                      ? Colors.white
+                                      ? AppColors.textPrimary
                                       : const Color(0xFF806A63),
                                   fontSize: 11,
                                   fontWeight: FontWeight.w600,
@@ -234,10 +234,10 @@ class _TodoPageState extends State<TodoPage>
                                 '${day.day}',
                                 style: TextStyle(
                                   color: isSelected
-                                      ? Colors.white
+                                      ? AppColors.textPrimary
                                       : (isToday
                                             ? const Color(0xFFD66A50)
-                                            : Colors.white),
+                                            : AppColors.textPrimary),
                                   fontSize: 16,
                                   fontWeight: FontWeight.bold,
                                 ),
@@ -341,7 +341,7 @@ class _ActivityStatsView extends StatelessWidget {
           const Text(
             'Study Activity & Progress',
             style: TextStyle(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontSize: 18,
               fontWeight: FontWeight.bold,
             ),
@@ -419,7 +419,7 @@ class _ActivityStatsView extends StatelessWidget {
                       const Text(
                         'Study Streak Active',
                         style: TextStyle(
-                          color: Colors.white,
+                          color: AppColors.textPrimary,
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
                         ),
@@ -428,7 +428,7 @@ class _ActivityStatsView extends StatelessWidget {
                       Text(
                         'Keep completing daily tasks to maintain your study focus!',
                         style: TextStyle(
-                          color: Colors.white.withValues(alpha: 0.8),
+                          color: AppColors.textSecondary,
                           fontSize: 13,
                         ),
                       ),
@@ -472,7 +472,7 @@ class _StatCard extends StatelessWidget {
           Text(
             value,
             style: const TextStyle(
-              color: Colors.white,
+              color: AppColors.textPrimary,
               fontSize: 22,
               fontWeight: FontWeight.bold,
             ),
