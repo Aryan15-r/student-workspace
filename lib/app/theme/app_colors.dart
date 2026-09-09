@@ -36,9 +36,15 @@ class AppColors {
   static const Color card = Color(0xFFF7EBDD); // Inner cards
   static const Color overlay = Color(0xFFF0DCCB); // Hover / pressed states
 
+  // ── Menu & Side Panel ─────────────────────────────────────────────────────
+  static const Color menuBackground = Color(0xFFFFFDF9); // Dedicated menu background
+  static const Color menuPanelBackground = Color(0xFFFAF0E6); // Distinct sidebar panel background
+  static const Color menuBorder = Color(0xFFD6C0B0); // Crisp menu panel border
+  static const Color menuSelectedBackground = Color(0xFFFCEBE3); // Selected menu item background
+
   // ── Borders & Dividers ────────────────────────────────────────────────────
-  static const Color border = Color(0xFFE8D4C4);
-  static const Color divider = Color(0xFFF0E1D4);
+  static const Color border = Color(0xFFDCC4B2); // Defined border color for high contrast
+  static const Color divider = Color(0xFFE5D2C2);
 
   // ── Status Colors ─────────────────────────────────────────────────────────
   static const Color success = Color(0xFF10B981); // Green — done / success
@@ -46,10 +52,10 @@ class AppColors {
   static const Color error = Color(0xFFEF4444); // Red — errors
   static const Color info = Color(0xFF3B82F6); // Blue — informational
 
-  // ── Text Colors ───────────────────────────────────────────────────────────
-  static const Color textPrimary = Color(0xFF3D2C2E); // Main readable text
-  static const Color textSecondary = Color(0xFF806A63); // Subtitles, hints
-  static const Color textMuted = Color(0xFFB39A8F); // Placeholder text
+  // ── Text Colors (High Contrast) ───────────────────────────────────────────
+  static const Color textPrimary = Color(0xFF1E1012); // Deeper dark text for crisp contrast
+  static const Color textSecondary = Color(0xFF57423D); // Strong, readable secondary text
+  static const Color textMuted = Color(0xFF7C645C); // High-contrast muted text/placeholders
 
   // ── Priority Colors (used in To-Do) ───────────────────────────────────────
   static const Color priorityHigh = Color(0xFFEF4444);

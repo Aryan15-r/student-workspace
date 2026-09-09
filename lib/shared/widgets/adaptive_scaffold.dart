@@ -136,9 +136,10 @@ class _MobileShell extends StatelessWidget {
   void _showMoreMenu(BuildContext context) {
     showModalBottomSheet(
       context: context,
-      backgroundColor: const Color(0xFFFFFCF8),
+      backgroundColor: AppColors.surface,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+        side: BorderSide(color: AppColors.menuBorder, width: 1.5),
       ),
       builder: (ctx) {
         return SafeArea(
@@ -155,7 +156,7 @@ class _MobileShell extends StatelessWidget {
                       children: [
                         Container(
                           padding: const EdgeInsets.all(8),
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             gradient: AppColors.primaryGradient,
                             shape: BoxShape.circle,
                           ),
@@ -171,7 +172,7 @@ class _MobileShell extends StatelessWidget {
                           style: TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
-                            color: Colors.white,
+                            color: AppColors.textPrimary,
                           ),
                         ),
                       ],
@@ -179,7 +180,7 @@ class _MobileShell extends StatelessWidget {
                     IconButton(
                       icon: const Icon(
                         Icons.close_rounded,
-                        color: Color(0xFF806A63),
+                        color: AppColors.textSecondary,
                       ),
                       onPressed: () => Navigator.pop(ctx),
                     ),
@@ -188,7 +189,7 @@ class _MobileShell extends StatelessWidget {
                 const SizedBox(height: 16),
                 _MenuTile(
                   icon: Icons.forum_rounded,
-                  color: const Color(0xFF38BDF8),
+                  color: const Color(0xFF0284C7),
                   title: 'Community Lounge',
                   subtitle:
                       'Real-time discussion & notes sharing with classmates',
@@ -199,7 +200,7 @@ class _MobileShell extends StatelessWidget {
                 ),
                 _MenuTile(
                   icon: Icons.calculate_rounded,
-                  color: const Color(0xFFF2CC8F),
+                  color: const Color(0xFFD97706),
                   title: 'Scientific Calculator',
                   subtitle:
                       '100% offline scientific calculations & expression history',
@@ -210,7 +211,7 @@ class _MobileShell extends StatelessWidget {
                 ),
                 _MenuTile(
                   icon: Icons.description_rounded,
-                  color: const Color(0xFFF59E0B),
+                  color: const Color(0xFFEA580C),
                   title: 'PDF & Document Studio',
                   subtitle:
                       'Convert, merge, extract text & view Word/PDF docs in-app',
@@ -221,7 +222,7 @@ class _MobileShell extends StatelessWidget {
                 ),
                 _MenuTile(
                   icon: Icons.person_rounded,
-                  color: const Color(0xFFE07A5F),
+                  color: AppColors.primary,
                   title: 'My Profile & Preferences',
                   subtitle:
                       'Manage account, guest status, and academic settings',
@@ -238,16 +239,16 @@ class _MobileShell extends StatelessWidget {
                       vertical: 5,
                     ),
                     decoration: BoxDecoration(
-                      color: const Color(0xFFE07A5F).withValues(alpha: 0.12),
+                      color: AppColors.primary.withValues(alpha: 0.12),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
-                        color: const Color(0xFFE07A5F).withValues(alpha: 0.25),
+                        color: AppColors.primary.withValues(alpha: 0.25),
                       ),
                     ),
                     child: const Text(
                       'StudySpace v${AppConstants.appVersion}',
                       style: TextStyle(
-                        color: Color(0xFFD66A50),
+                        color: AppColors.primary,
                         fontSize: 11,
                         fontWeight: FontWeight.bold,
                       ),
@@ -267,12 +268,12 @@ class _MobileShell extends StatelessWidget {
     final mobileIndex = selectedIndex < 4 ? selectedIndex : 4;
 
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F0),
+      backgroundColor: AppColors.background,
       body: child,
       bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: const Color(0xFFFFFCF8).withValues(alpha: 0.85),
-          border: const Border(top: BorderSide(color: Color(0xFFF7EBDD))),
+        decoration: const BoxDecoration(
+          color: AppColors.surface,
+          border: Border(top: BorderSide(color: AppColors.menuBorder, width: 1.5)),
         ),
         child: ClipRRect(
           child: BackdropFilter(
@@ -290,8 +291,8 @@ class _MobileShell extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 type: BottomNavigationBarType.fixed,
-                selectedItemColor: const Color(0xFFD66A50),
-                unselectedItemColor: const Color(0xFF64748B),
+                selectedItemColor: AppColors.primary,
+                unselectedItemColor: AppColors.textMuted,
                 selectedFontSize: 11,
                 unselectedFontSize: 11,
                 items: const [
@@ -350,9 +351,9 @@ class _MenuTile extends StatelessWidget {
     return Container(
       margin: const EdgeInsets.only(bottom: 8),
       decoration: BoxDecoration(
-        color: const Color(0xFFF7EBDD).withValues(alpha: 0.6),
+        color: AppColors.menuBackground,
         borderRadius: BorderRadius.circular(14),
-        border: Border.all(color: const Color(0xFFE8D4C4)),
+        border: Border.all(color: AppColors.menuBorder, width: 1.2),
       ),
       child: ListTile(
         leading: Container(
@@ -366,14 +367,14 @@ class _MenuTile extends StatelessWidget {
         title: Text(
           title,
           style: const TextStyle(
-            color: Colors.white,
+            color: AppColors.textPrimary,
             fontWeight: FontWeight.w600,
             fontSize: 14,
           ),
         ),
         subtitle: Text(
           subtitle,
-          style: const TextStyle(color: Color(0xFF806A63), fontSize: 12),
+          style: const TextStyle(color: AppColors.textSecondary, fontSize: 12),
         ),
         onTap: onTap,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
@@ -399,39 +400,39 @@ class _TabletShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F0),
+      backgroundColor: AppColors.background,
       body: Row(
         children: [
           NavigationRail(
             selectedIndex: selectedIndex.clamp(0, items.length - 1),
             onDestinationSelected: onTap,
-            backgroundColor: const Color(0xFFFFFCF8),
+            backgroundColor: AppColors.menuPanelBackground,
             useIndicator: true,
-            indicatorColor: const Color(0xFFE07A5F).withValues(alpha: 0.2),
+            indicatorColor: AppColors.menuSelectedBackground,
             labelType: NavigationRailLabelType.selected,
             selectedLabelTextStyle: const TextStyle(
-              color: Color(0xFFD66A50),
+              color: AppColors.primary,
               fontSize: 11,
               fontWeight: FontWeight.bold,
             ),
             unselectedLabelTextStyle: const TextStyle(
-              color: Color(0xFF64748B),
+              color: AppColors.textSecondary,
               fontSize: 11,
             ),
             destinations: items
                 .map(
                   (item) => NavigationRailDestination(
-                    icon: Icon(item.icon, color: const Color(0xFF64748B)),
+                    icon: Icon(item.icon, color: AppColors.textSecondary),
                     selectedIcon: Icon(
                       item.activeIcon,
-                      color: const Color(0xFFD66A50),
+                      color: AppColors.primary,
                     ),
                     label: Text(item.label),
                   ),
                 )
                 .toList(),
           ),
-          const VerticalDivider(width: 1, color: Color(0xFFF7EBDD)),
+          const VerticalDivider(width: 1, color: AppColors.menuBorder, thickness: 1.5),
           Expanded(child: child),
         ],
       ),
@@ -456,13 +457,13 @@ class _DesktopShell extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color(0xFFFFF8F0),
+      backgroundColor: AppColors.background,
       body: Row(
         children: [
           SizedBox(
             width: 250,
             child: Container(
-              color: const Color(0xFFFFFCF8),
+              color: AppColors.menuPanelBackground,
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -512,7 +513,7 @@ class _DesktopShell extends StatelessWidget {
                             Text(
                               'StudySpace',
                               style: TextStyle(
-                                color: Colors.white,
+                                color: AppColors.textPrimary,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -520,8 +521,9 @@ class _DesktopShell extends StatelessWidget {
                             Text(
                               'Student Operating System',
                               style: TextStyle(
-                                color: Color(0xFF806A63),
+                                color: AppColors.textSecondary,
                                 fontSize: 10,
+                                fontWeight: FontWeight.w600,
                               ),
                             ),
                           ],
@@ -544,7 +546,7 @@ class _DesktopShell extends StatelessWidget {
                       },
                     ),
                   ),
-                  const Divider(color: Color(0xFFF7EBDD), height: 1),
+                  const Divider(color: AppColors.menuBorder, height: 1, thickness: 1),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: Row(
@@ -556,20 +558,16 @@ class _DesktopShell extends StatelessWidget {
                             vertical: 5,
                           ),
                           decoration: BoxDecoration(
-                            color: const Color(
-                              0xFFE07A5F,
-                            ).withValues(alpha: 0.12),
+                            color: AppColors.primary.withValues(alpha: 0.12),
                             borderRadius: BorderRadius.circular(20),
                             border: Border.all(
-                              color: const Color(
-                                0xFFE07A5F,
-                              ).withValues(alpha: 0.25),
+                              color: AppColors.primary.withValues(alpha: 0.25),
                             ),
                           ),
                           child: const Text(
                             'v${AppConstants.appVersion}',
                             style: TextStyle(
-                              color: Color(0xFFD66A50),
+                              color: AppColors.primary,
                               fontSize: 11,
                               fontWeight: FontWeight.bold,
                               letterSpacing: 0.3,
@@ -583,7 +581,7 @@ class _DesktopShell extends StatelessWidget {
               ),
             ),
           ),
-          const VerticalDivider(width: 1, color: Color(0xFFF7EBDD)),
+          const VerticalDivider(width: 1, color: AppColors.menuBorder, thickness: 1.5),
           Expanded(child: child),
         ],
       ),
@@ -616,18 +614,12 @@ class _SidebarItem extends StatelessWidget {
             duration: const Duration(milliseconds: 200),
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 11),
             decoration: BoxDecoration(
-              gradient: isSelected
-                  ? LinearGradient(
-                      colors: [
-                        const Color(0xFFE07A5F).withValues(alpha: 0.22),
-                        const Color(0xFFF2CC8F).withValues(alpha: 0.15),
-                      ],
-                    )
-                  : null,
+              color: isSelected ? AppColors.menuSelectedBackground : Colors.transparent,
               borderRadius: BorderRadius.circular(12),
               border: isSelected
                   ? Border.all(
-                      color: const Color(0xFFE07A5F).withValues(alpha: 0.4),
+                      color: AppColors.primary.withValues(alpha: 0.5),
+                      width: 1.2,
                     )
                   : Border.all(color: Colors.transparent),
             ),
@@ -636,15 +628,15 @@ class _SidebarItem extends StatelessWidget {
                 Icon(
                   isSelected ? item.activeIcon : item.icon,
                   color: isSelected
-                      ? const Color(0xFFD66A50)
-                      : const Color(0xFF64748B),
+                      ? AppColors.primary
+                      : AppColors.textSecondary,
                   size: 20,
                 ),
                 const SizedBox(width: 12),
                 Text(
                   item.label,
                   style: TextStyle(
-                    color: isSelected ? Colors.white : const Color(0xFF806A63),
+                    color: isSelected ? AppColors.primary : AppColors.textPrimary,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     fontSize: 14,
                   ),

@@ -46,17 +46,6 @@ class AppTheme {
         ),
       ),
 
-      // ── Cards ───────────────────────────────────────────────────────────────
-      cardTheme: CardThemeData(
-        color: AppColors.surface,
-        elevation: 0,
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(16),
-          side: const BorderSide(color: AppColors.border, width: 1),
-        ),
-        margin: const EdgeInsets.all(0),
-      ),
-
       // ── Elevated Button ──────────────────────────────────────────────────────
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ElevatedButton.styleFrom(
@@ -153,14 +142,125 @@ class AppTheme {
         elevation: 0,
       ),
 
-      // ── Navigation Rail ───────────────────────────────────────────────────
-      navigationRailTheme: const NavigationRailThemeData(
+      // ── Navigation Rail & Side Panels ──────────────────────────────────────
+      navigationRailTheme: NavigationRailThemeData(
+        backgroundColor: AppColors.menuPanelBackground,
+        selectedIconTheme: const IconThemeData(color: AppColors.primary, size: 22),
+        unselectedIconTheme: const IconThemeData(color: AppColors.textSecondary, size: 22),
+        selectedLabelTextStyle: GoogleFonts.inter(
+          color: AppColors.primary,
+          fontSize: 12,
+          fontWeight: FontWeight.bold,
+        ),
+        unselectedLabelTextStyle: GoogleFonts.inter(
+          color: AppColors.textSecondary,
+          fontSize: 12,
+          fontWeight: FontWeight.w500,
+        ),
+        indicatorColor: const Color(0x33E07A5F),
+      ),
+
+      // ── Drawer & Side Menu ────────────────────────────────────────────────
+      drawerTheme: const DrawerThemeData(
+        backgroundColor: AppColors.menuPanelBackground,
+        elevation: 6,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.horizontal(right: Radius.circular(20)),
+          side: BorderSide(color: AppColors.menuBorder, width: 1.5),
+        ),
+      ),
+      navigationDrawerTheme: NavigationDrawerThemeData(
+        backgroundColor: AppColors.menuPanelBackground,
+        elevation: 6,
+        indicatorColor: AppColors.menuSelectedBackground,
+        labelTextStyle: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) {
+            return GoogleFonts.inter(color: AppColors.primary, fontWeight: FontWeight.bold, fontSize: 14);
+          }
+          return GoogleFonts.inter(color: AppColors.textSecondary, fontWeight: FontWeight.w500, fontSize: 14);
+        }),
+      ),
+
+      // ── Popup Menu & Dropdowns ──────────────────────────────────────────────
+      popupMenuTheme: PopupMenuThemeData(
+        color: AppColors.menuBackground,
+        elevation: 8,
+        shadowColor: const Color(0x33000000),
+        surfaceTintColor: Colors.transparent,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(14),
+          side: const BorderSide(color: AppColors.menuBorder, width: 1.5),
+        ),
+        textStyle: GoogleFonts.inter(
+          color: AppColors.textPrimary,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+        labelTextStyle: WidgetStatePropertyAll(
+          GoogleFonts.inter(
+            color: AppColors.textPrimary,
+            fontSize: 14,
+            fontWeight: FontWeight.w600,
+          ),
+        ),
+      ),
+
+      menuTheme: MenuThemeData(
+        style: MenuStyle(
+          backgroundColor: const WidgetStatePropertyAll(AppColors.menuBackground),
+          elevation: const WidgetStatePropertyAll(8),
+          shadowColor: const WidgetStatePropertyAll(Color(0x33000000)),
+          surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+              side: const BorderSide(color: AppColors.menuBorder, width: 1.5),
+            ),
+          ),
+        ),
+      ),
+
+      dropdownMenuTheme: DropdownMenuThemeData(
+        menuStyle: MenuStyle(
+          backgroundColor: const WidgetStatePropertyAll(AppColors.menuBackground),
+          elevation: const WidgetStatePropertyAll(8),
+          shadowColor: const WidgetStatePropertyAll(Color(0x33000000)),
+          surfaceTintColor: const WidgetStatePropertyAll(Colors.transparent),
+          shape: WidgetStatePropertyAll(
+            RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(14),
+              side: const BorderSide(color: AppColors.menuBorder, width: 1.5),
+            ),
+          ),
+        ),
+        textStyle: GoogleFonts.inter(
+          color: AppColors.textPrimary,
+          fontSize: 14,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+
+      // ── Bottom Sheet ─────────────────────────────────────────────────────
+      bottomSheetTheme: const BottomSheetThemeData(
         backgroundColor: AppColors.surface,
-        selectedIconTheme: IconThemeData(color: AppColors.primary),
-        unselectedIconTheme: IconThemeData(color: AppColors.textMuted),
-        selectedLabelTextStyle: TextStyle(color: AppColors.primary),
-        unselectedLabelTextStyle: TextStyle(color: AppColors.textMuted),
-        indicatorColor: Color(0x33E07A5F), // primary with 20% opacity
+        modalBackgroundColor: AppColors.surface,
+        elevation: 8,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+          side: BorderSide(color: AppColors.menuBorder, width: 1.5),
+        ),
+      ),
+
+      // ── Cards ───────────────────────────────────────────────────────────────
+      cardTheme: CardThemeData(
+        color: AppColors.surface,
+        elevation: 2,
+        shadowColor: const Color(0x0F000000),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(16),
+          side: const BorderSide(color: AppColors.border, width: 1.2),
+        ),
+        margin: const EdgeInsets.all(0),
       ),
 
       // ── Divider ───────────────────────────────────────────────────────────
@@ -180,10 +280,11 @@ class AppTheme {
 
       // ── Snackbar ─────────────────────────────────────────────────────────
       snackBarTheme: SnackBarThemeData(
-        backgroundColor: AppColors.card,
+        backgroundColor: AppColors.textPrimary,
         contentTextStyle: GoogleFonts.inter(
-          color: AppColors.textPrimary,
+          color: Colors.white,
           fontSize: 14,
+          fontWeight: FontWeight.w500,
         ),
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
         behavior: SnackBarBehavior.floating,
@@ -192,10 +293,14 @@ class AppTheme {
       // ── Dialog ───────────────────────────────────────────────────────────
       dialogTheme: DialogThemeData(
         backgroundColor: AppColors.surface,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        elevation: 10,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(20),
+          side: const BorderSide(color: AppColors.menuBorder, width: 1.5),
+        ),
         titleTextStyle: GoogleFonts.outfit(
           fontSize: 20,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w700,
           color: AppColors.textPrimary,
         ),
       ),
@@ -208,7 +313,7 @@ class AppTheme {
         contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       ),
 
-      // ── Text Theme (fallback) ─────────────────────────────────────────────
+      // ── Text Theme ────────────────────────────────────────────────────────
       textTheme: GoogleFonts.interTextTheme(ThemeData.light().textTheme)
           .copyWith(
             displayLarge: GoogleFonts.outfit(
@@ -226,16 +331,44 @@ class AppTheme {
               fontWeight: FontWeight.w600,
               color: AppColors.textPrimary,
             ),
+            titleLarge: GoogleFonts.outfit(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.textPrimary,
+            ),
+            titleMedium: GoogleFonts.outfit(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+            titleSmall: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textSecondary,
+            ),
             bodyLarge: GoogleFonts.inter(
               fontSize: 16,
+              fontWeight: FontWeight.w500,
               color: AppColors.textPrimary,
             ),
             bodyMedium: GoogleFonts.inter(
               fontSize: 14,
+              fontWeight: FontWeight.w400,
               color: AppColors.textPrimary,
             ),
             bodySmall: GoogleFonts.inter(
               fontSize: 12,
+              fontWeight: FontWeight.w400,
+              color: AppColors.textSecondary,
+            ),
+            labelLarge: GoogleFonts.inter(
+              fontSize: 14,
+              fontWeight: FontWeight.w600,
+              color: AppColors.textPrimary,
+            ),
+            labelMedium: GoogleFonts.inter(
+              fontSize: 12,
+              fontWeight: FontWeight.w500,
               color: AppColors.textSecondary,
             ),
           ),
