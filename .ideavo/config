@@ -1,0 +1,60 @@
+{
+  "systemSetup": [
+    {
+      "name": "Install Flutter",
+      "command": "if [ ! -d \"$HOME/flutter\" ]; then git clone https://github.com/flutter/flutter.git --depth 1 -b stable \"$HOME/flutter\"; fi"
+    }
+  ],
+  "templateName": "custom",
+  "projectDependencies": [
+    {
+      "name": "Install Dependencies",
+      "command": "flutter pub get"
+    }
+  ],
+  "codeChecks": [
+    {
+      "name": "Analyze Dart Code",
+      "command": "flutter analyze"
+    },
+    {
+      "name": "Run Tests",
+      "command": "flutter test"
+    }
+  ],
+  "buildSteps": [
+    {
+      "name": "Build Web App",
+      "command": "flutter build web --release --base-href /"
+    }
+  ],
+  "runStep": [
+    {
+      "name": "Run Dev Server",
+      "command": "flutter run -d web-server --web-hostname 0.0.0.0 --web-port 8080",
+      "port": "8080"
+    }
+  ],
+  "deploySteps": [
+    {
+      "name": "Build Deployment",
+      "command": "bash vercel_build.sh"
+    }
+  ],
+  "cleanupFiles": [
+    ".dart_tool/",
+    ".flutter-plugins",
+    ".flutter-plugins-dependencies",
+    ".packages",
+    "build/",
+    "coverage/",
+    "flutter/"
+  ],
+  "packageManager": "flutter",
+  "envPaths": [
+    {
+      "name": "default",
+      "path": ".env"
+    }
+  ]
+}
