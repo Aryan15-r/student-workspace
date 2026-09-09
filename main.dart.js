@@ -140006,7 +140006,7 @@ if(o.at)B.k.L(r,A.b([B.cg,A.ca(A.Nl(B.a4Z,B.bea,new A.aZ1(o),A.yY(n,n,n,n,n,n,n,
 r.push(B.cL)
 r.push(A.cy(A.Ge(B.a51,B.be5,new A.aZ2(o)),n,n))
 return A.aL(A.b([l,B.cs,k,B.jp,j,B.cs,i,B.c6,h,B.jp,A.bN(A.bv(A.xQ(n,A.aL(r,B.E,B.A,B.B,0,B.N),o.d),n),A.aJ(0,3e5,0,0,0),n)],p),B.a9,B.A,B.B,0,B.N)},
-asA(a){var s,r,q,p,o,n,m=this,l=null,k=t.p,j=A.aA(A.b([A.dy(l,l,B.iO,l,l,new A.aZ5(m),B.ak,l,l),A.fx(B.beY,new A.aZ6(m),l)],k),B.E,B.bS,B.B,0,l,l),i=A.jY(A.bN(A.bv(A.aB(l,B.a4n,B.H,l,l,new A.ap(B.O.aq(0.1),l,l,A.a9(12),l,l,B.S),l,l,l,B.iu,l,l,l),l),l,l),l,l,l,l),h=A.bN(A.bv(A.V("Enter Verification OTP",l,l,l,l,A.dF().$4$color$fontSize$fontWeight$letterSpacing(B.a2,28,B.ab,-0.5),l,l,l),l),A.aJ(0,1e5,0,0,0),l),g=m.r
+asA(a){var s,r,q,p,o,n,m=this,l=null,k=t.p,j=A.aA(A.b([A.dy(l,l,B.iO,l,l,new A.aZ5(m),B.ak,l,l),A.fx(B.beZ,new A.aZ6(m),l)],k),B.E,B.bS,B.B,0,l,l),i=A.jY(A.bN(A.bv(A.aB(l,B.a4n,B.H,l,l,new A.ap(B.O.aq(0.1),l,l,A.a9(12),l,l,B.S),l,l,l,B.iu,l,l,l),l),l,l),l,l,l,l),h=A.bN(A.bv(A.V("Enter Verification OTP",l,l,l,l,A.dF().$4$color$fontSize$fontWeight$letterSpacing(B.a2,28,B.ab,-0.5),l,l,l),l),A.aJ(0,1e5,0,0,0),l),g=m.r
 g===$&&A.a()
 g=A.bN(A.bv(A.V("Please enter the 6-digit verification code sent to "+B.o.b7(g.a.a)+".",l,l,l,l,A.cd().$4$color$fontSize$fontWeight$height(B.a2,14,B.X,1.5).oA(B.aq,1.4),l,l,l),l),A.aJ(0,2e5,0,0,0),l)
 s=A.m2(!1,m.w,A.hc(l,l,l,l,l,l,"",l,!0,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,l,A.dv(l,l,B.aU.aq(0.4),l,l,l,l,l,l,l,l,l,l,l,l,l,l,!0,l,6,l,l,l,l,l,l),"123456",l,l,l,l,l,l,l,l,"6-Digit OTP Code",!0,!0,!1,l,B.Bq,l,l,l,l,l,l,l,l,l,l,l,l),!1,l,l,B.q1,8,1,!1,l,l,l,l,l,B.TP,B.bm,l,new A.aZ7())
@@ -142366,7 +142366,7 @@ n.push(A.bN(A.bv(A.aB(j,A.aA(A.b([B.a54,B.cf,A.V(""+A.cV(new A.bw(Date.now(),0,!
 p=A.a9(22)
 o=A.bY(B.az.aq(0.4),1)
 n=A.b([new A.da(0,B.bz,B.O.aq(0.25),B.vG,20)],t.V)
-n=A.aL(A.b([e,B.cL,A.rE(A.bN(A.bv(A.eb(j,A.aB(j,A.aA(A.b([A.aB(j,B.Ze,B.H,j,j,new A.ap(B.J.aq(0.15),j,j,A.a9(16),j,j,B.S),j,56,j,j,j,j,56),B.pW,A.bM(A.aL(A.b([B.b3B,B.jr,A.V("Instant problem solver, zero-downtime model cascade, copy prompt ready",j,j,j,j,A.dv(j,j,B.J.aq(0.85),j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j,j)],m),B.a9,B.A,B.B,0,B.N),1,j),A.aB(j,B.a5P,B.H,j,j,B.Xa,j,j,j,B.A0,j,j,j)],m),B.E,B.A,B.B,0,j,j),B.H,j,j,new A.ap(j,j,o,p,n,B.a7n,B.S),j,j,j,B.A6,j,j,j),B.Z,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,new A.aWL(a),j,j,j,j,j,j,!1,B.bb),j),A.aJ(0,2e5,0,0,0),j),0.08,0),B.d6,B.beX,B.cb],m),B.a9,B.A,B.B,0,B.N)
+n=A.aL(A.b([e,B.cL,A.rE(A.bN(A.bv(A.eb(j,A.aB(j,A.aA(A.b([A.aB(j,B.Ze,B.H,j,j,new A.ap(B.J.aq(0.15),j,j,A.a9(16),j,j,B.S),j,56,j,j,j,j,56),B.pW,A.bM(A.aL(A.b([B.b3B,B.jr,A.V("Instant problem solver, zero-downtime model cascade, copy prompt ready",j,j,j,j,A.dv(j,j,B.J.aq(0.85),j,j,j,j,j,j,j,j,13,j,j,j,j,j,!0,j,j,j,j,j,j,j,j),j,j,j)],m),B.a9,B.A,B.B,0,B.N),1,j),A.aB(j,B.a5P,B.H,j,j,B.Xa,j,j,j,B.A0,j,j,j)],m),B.E,B.A,B.B,0,j,j),B.H,j,j,new A.ap(j,j,o,p,n,B.a7n,B.S),j,j,j,B.A6,j,j,j),B.Z,!1,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,j,new A.aWL(a),j,j,j,j,j,j,!1,B.bb),j),A.aJ(0,2e5,0,0,0),j),0.08,0),B.d6,B.beY,B.cb],m),B.a9,B.A,B.B,0,B.N)
 p=A.bf8(A.PH(A.b([new A.pS("\ud83e\udd16","AI Tutor","/ai",0,j),new A.pS("\ud83d\udcc4","PDF Tools",i,40,j),new A.pS("\u2705","To-Do","/todo",80,j),new A.pS("\ud83d\udcac","Community",h,120,j),new A.pS("\ud83e\uddee","Calculator","/calculator",160,j),new A.pS("\ud83d\udd0d","Search","/search",200,j),new A.pS("\ud83d\udc64","Profile","/profile",240,j)],m),!0,!0,!0),B.b69)
 o=A.aA(A.b([B.beT,B.fF,A.fx(B.bfo,new A.aWM(a),j)],m),B.E,B.A,B.B,0,j,j)
 e=f.b
@@ -145015,7 +145015,7 @@ return new A.EF(r,q,p)},
 $S:929}
 A.ac5.prototype={
 H(a){var s=null,r=t.p,q=A.aA(A.b([A.aB(s,B.Zf,B.H,s,s,new A.ap(s,s,s,A.a9(12),A.b([new A.da(0,B.bz,B.O.aq(0.4),B.j9,10)],t.V),B.uh,B.S),s,38,s,s,s,s,38),B.e2,B.a05],r),B.E,B.A,B.B,0,s,s),p=A.bM(A.Eg(s,new A.aXw(this),9,B.A1,B.aA,!1),1,s),o=B.O.aq(0.12),n=A.a9(20)
-return A.hj(s,B.c0,A.aA(A.b([A.ca(A.aB(s,A.aL(A.b([new A.aw(B.a26,q,s),p,B.a0U,new A.aw(B.dv,A.aA(A.b([A.aB(s,B.bf_,B.H,s,s,new A.ap(o,s,A.bY(B.O.aq(0.25),1),n,s,s,B.S),s,s,s,B.a1Q,s,s,s)],r),B.E,B.ca,B.B,0,s,s),s)],r),B.a9,B.A,B.B,0,B.N),B.H,B.k3,s,s,s,s,s,s,s,s,s),s,250),B.UM,A.bM(this.c,1,s)],r),B.E,B.A,B.B,0,s,s),s,!1,s)},
+return A.hj(s,B.c0,A.aA(A.b([A.ca(A.aB(s,A.aL(A.b([new A.aw(B.a26,q,s),p,B.a0U,new A.aw(B.dv,A.aA(A.b([A.aB(s,B.beX,B.H,s,s,new A.ap(o,s,A.bY(B.O.aq(0.25),1),n,s,s,B.S),s,s,s,B.a1Q,s,s,s)],r),B.E,B.ca,B.B,0,s,s),s)],r),B.a9,B.A,B.B,0,B.N),B.H,B.k3,s,s,s,s,s,s,s,s,s),s,250),B.UM,A.bM(this.c,1,s)],r),B.E,B.A,B.B,0,s,s),s,!1,s)},
 gU(){return this.c}}
 A.aXw.prototype={
 $2(a,b){var s=this.a
@@ -157470,8 +157470,8 @@ B.bfx=new A.ak("Room deleted \ud83d\uddd1\ufe0f",null,null,null,null,null,null,n
 B.b6m=new A.fw(B.bfx,null,null,null,null,null,null,null,null,null,null,null,null,B.be,!1,null,null,null,B.V,null)
 B.beq=new A.ak("Please drop a PDF file.",null,null,null,null,null,null,null,null,null,null)
 B.b6n=new A.fw(B.beq,B.bM,null,null,null,null,null,null,B.bD,null,null,null,null,B.be,!1,null,null,null,B.V,null)
-B.beZ=new A.ak("Please enter a room code or name.",null,null,null,null,null,null,null,null,null,null)
-B.b6o=new A.fw(B.beZ,null,null,null,null,null,null,null,null,null,null,null,null,B.be,!1,null,null,null,B.V,null)
+B.bf_=new A.ak("Please enter a room code or name.",null,null,null,null,null,null,null,null,null,null)
+B.b6o=new A.fw(B.bf_,null,null,null,null,null,null,null,null,null,null,null,null,B.be,!1,null,null,null,B.V,null)
 B.bdy=new A.ak("A fresh 6-digit OTP code has been sent!",null,null,null,null,null,null,null,null,null,null)
 B.b6p=new A.fw(B.bdy,B.bL,null,null,null,null,null,null,B.bD,null,null,null,null,B.be,!1,null,null,null,B.V,null)
 B.bft=new A.ak("Copied text to clipboard!",null,null,null,null,null,null,null,null,null,null)
@@ -158072,7 +158072,7 @@ B.beC=new A.ak("Sign In with 6-Digit Email OTP",null,null,null,null,null,null,nu
 B.beE=new A.ak("App & Account Settings",null,B.fH,null,null,null,null,null,null,null,null)
 B.beF=new A.ak("Sign In for Unlimited",null,B.i_,null,null,null,null,null,null,null,null)
 B.beH=new A.ak("Sign up",null,B.TI,null,null,null,null,null,null,null,null)
-B.beI=new A.ak("StudySpace v1.0.25",null,B.TJ,null,null,null,null,null,null,null,null)
+B.beI=new A.ak("StudySpace v1.0.26",null,B.TJ,null,null,null,null,null,null,null,null)
 B.b9U=new A.u(!0,B.J,null,null,null,null,null,B.ad,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.beL=new A.ak("Copy Message Text",null,B.b9U,null,null,null,null,null,null,null,null)
 B.beM=new A.ak("This will delete the channel, messages, and room for all users permanently.",null,null,null,null,null,null,null,null,null,null)
@@ -158082,11 +158082,11 @@ B.beP=new A.ak("No tasks due today!",null,B.fH,null,null,null,null,null,null,nul
 B.beQ=new A.ak("Delete Entire Room?",null,B.fI,null,null,null,null,null,null,null,null)
 B.beT=new A.ak("Today's Tasks",null,B.ff,null,null,null,null,null,null,null,null)
 B.beW=new A.ak("Page Not Found",null,null,null,null,null,null,null,null,null,null)
-B.beX=new A.ak("Quick Tools & Utilities",null,B.ff,null,null,null,null,null,null,null,null)
-B.b83=new A.u(!0,null,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.beY=new A.ak("Change email",null,B.b83,null,null,null,null,null,null,null,null)
 B.b8c=new A.u(!0,B.O,null,null,null,null,11,B.ab,null,0.3,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
-B.bf_=new A.ak("v1.0.25",null,B.b8c,null,null,null,null,null,null,null,null)
+B.beX=new A.ak("v1.0.26",null,B.b8c,null,null,null,null,null,null,null,null)
+B.beY=new A.ak("Quick Tools & Utilities",null,B.ff,null,null,null,null,null,null,null,null)
+B.b83=new A.u(!0,null,null,null,null,null,13,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
+B.beZ=new A.ak("Change email",null,B.b83,null,null,null,null,null,null,null,null)
 B.bb0=new A.u(!0,null,null,null,null,null,15,B.ad,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null)
 B.bf0=new A.ak("Add Task",null,B.bb0,null,null,null,null,null,null,null,null)
 B.bf1=new A.ak("Download PDF",null,B.fe,null,null,null,null,null,null,null,null)
