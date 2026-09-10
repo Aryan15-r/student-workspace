@@ -130,7 +130,7 @@ class AuthProvider extends ChangeNotifier {
             username:
                 user.userMetadata?['username'] as String? ??
                 (user.email?.split('@').first ?? 'student'),
-            fullName: user.userMetadata?['full_name'] as String? ?? 'Student',
+            fullName: _nameFromMetadata(user) ?? 'Student',
             avatarUrl: '',
             bio: '',
             college: '',
@@ -151,7 +151,7 @@ class AuthProvider extends ChangeNotifier {
           username:
               user.userMetadata?['username'] as String? ??
               (user.email?.split('@').first ?? 'student'),
-          fullName: user.userMetadata?['full_name'] as String? ?? 'Student',
+          fullName: _nameFromMetadata(user) ?? 'Student',
           avatarUrl: '',
           bio: '',
           college: '',
@@ -358,5 +358,15 @@ class AuthProvider extends ChangeNotifier {
   void _setLoading(bool value) {
     _isLoading = value;
     notifyListeners();
+  }
+
+  /// Google supplies the selected account name as `name`; email/password
+  /// registration uses `full_name`. Supporting both keeps the profile header
+  /// correct for either sign-up path.
+  String? _nameFromMetadata(User user) {
+    final metadata = user.userMetadata;
+    return metadata?['full_name'] as String? ??
+        metadata?['name'] as String? ??
+        metadata?['given_name'] as String?;
   }
 }

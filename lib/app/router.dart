@@ -16,6 +16,7 @@ import '../features/community/presentation/pages/chat_page.dart';
 import '../features/calculator/presentation/pages/calculator_page.dart';
 import '../features/pdf_tools/presentation/pages/pdf_tools_page.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
+import '../features/profile/presentation/pages/app_info_page.dart';
 import '../features/study_tools/presentation/pages/study_tools_page.dart';
 
 import '../core/widgets/error_landing_page.dart';
@@ -89,6 +90,8 @@ class AppRouter {
     GoRoute(path: '/', builder: (context, state) => const LandingPage()),
     GoRoute(path: '/login', builder: (context, state) => const LoginPage()),
     GoRoute(path: '/signup', builder: (context, state) => const SignupPage()),
+    GoRoute(path: '/about', builder: (context, state) => const AppInfoPage.about()),
+    GoRoute(path: '/privacy', builder: (context, state) => const AppInfoPage.privacy()),
     GoRoute(
       path: '/forgot-password',
       builder: (context, state) => ForgotPasswordPage(

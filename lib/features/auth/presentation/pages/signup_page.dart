@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
 import '../../providers/auth_provider.dart';
@@ -61,6 +62,29 @@ class _SignupPageState extends State<SignupPage> {
           backgroundColor: AppColors.error,
           behavior: SnackBarBehavior.floating,
         ),
+      );
+    }
+  }
+
+  Future<void> _signUpWithGoogle() async {
+    final webClientId = dotenv.env['GOOGLE_WEB_CLIENT_ID'] ?? '';
+    final iosClientId = dotenv.env['GOOGLE_IOS_CLIENT_ID'];
+    if (webClientId.isEmpty || webClientId == 'your_web_client_id_here') {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Google sign-in has not been configured yet.')),
+      );
+      return;
+    }
+
+    final auth = context.read<AuthProvider>();
+    final ok = await auth.signInWithGoogle(
+      webClientId: webClientId,
+      iosClientId: iosClientId,
+    );
+    if (!mounted) return;
+    if (!ok) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(auth.error ?? 'Google sign-up failed'), backgroundColor: AppColors.error),
       );
     }
   }
@@ -229,6 +253,31 @@ class _SignupPageState extends State<SignupPage> {
                                       fontWeight: FontWeight.w600,
                                     ),
                                   ),
+                          ),
+                        ),
+                        const SizedBox(height: 14),
+                        Row(
+                          children: [
+                            const Expanded(child: Divider()),
+                            Padding(
+                              padding: const EdgeInsets.symmetric(horizontal: 12),
+                              child: Text('or', style: AppTextStyles.bodySmall),
+                            ),
+                            const Expanded(child: Divider()),
+                          ],
+                        ),
+                        const SizedBox(height: 14),
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            onPressed: auth.isLoading ? null : _signUpWithGoogle,
+                            icon: const Icon(Icons.g_mobiledata_rounded, size: 28),
+                            label: const Text('Continue with Google'),
+                            style: OutlinedButton.styleFrom(
+                              foregroundColor: const Color(0xFF3C4043),
+                              padding: const EdgeInsets.symmetric(vertical: 15),
+                              side: const BorderSide(color: Color(0xFFD0D0D0)),
+                            ),
                           ),
                         ),
                       ],

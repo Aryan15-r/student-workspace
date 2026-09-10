@@ -166,6 +166,20 @@ class _ProfilePageState extends State<ProfilePage> {
                       subtitle: 'Update your account password',
                       onTap: () => context.go('/reset-password'),
                     ),
+                    const SizedBox(height: 10),
+                    _SettingActionTile(
+                      icon: Icons.info_outline_rounded,
+                      title: 'About the app',
+                      subtitle: 'Learn about StudySpace and its features',
+                      onTap: () => context.push('/about'),
+                    ),
+                    const SizedBox(height: 10),
+                    _SettingActionTile(
+                      icon: Icons.privacy_tip_outlined,
+                      title: 'Privacy policy',
+                      subtitle: 'How your account and study data are handled',
+                      onTap: () => context.push('/privacy'),
+                    ),
                     const SizedBox(height: 28),
 
                     // Sign out button
@@ -329,14 +343,14 @@ class _GuestProfileView extends StatelessWidget {
             icon: Icons.info_outline_rounded,
             title: 'About StudySpace',
             subtitle: 'Academic productivity suite & peer collaboration hub',
-            onTap: () {},
+            onTap: () => context.push('/about'),
           ),
           const SizedBox(height: 10),
           _SettingActionTile(
             icon: Icons.shield_outlined,
             title: 'Privacy & Security',
             subtitle: 'End-to-end encrypted storage & Supabase backend',
-            onTap: () {},
+            onTap: () => context.push('/privacy'),
           ),
           const SizedBox(height: 30),
           const Text(

@@ -23,6 +23,8 @@ class StudyToolsProvider extends ChangeNotifier {
   int _focusedSeconds = 0;
   DateTime _lastInteraction = DateTime.now();
   DateTime? _lastReminder;
+  DateTime? _lastSavedAt;
+  DateTime? _lastCloudSyncAt;
   final List<TimeOfDay> _alarms = [];
   bool _isInitialized = false;
 
@@ -189,7 +191,7 @@ class StudyToolsProvider extends ChangeNotifier {
     Alarm.set(alarmSettings: alarmSettings);
     
     registerInteraction();
-    _saveToStorage();
+    _saveToStorage(forceCloudSync: true);
     notifyListeners();
   }
 
@@ -198,7 +200,7 @@ class StudyToolsProvider extends ChangeNotifier {
     _startedAt = null;
     Alarm.stop(1); // Stop native focus timer
     registerInteraction();
-    _saveToStorage();
+    _saveToStorage(forceCloudSync: true);
     notifyListeners();
   }
 
@@ -216,7 +218,7 @@ class StudyToolsProvider extends ChangeNotifier {
     _remaining = defaultDuration;
     Alarm.stop(1);
     registerInteraction();
-    _saveToStorage();
+    _saveToStorage(forceCloudSync: true);
     notifyListeners();
   }
 
@@ -226,7 +228,7 @@ class StudyToolsProvider extends ChangeNotifier {
     _startedAt = null;
     Alarm.stop(1);
     registerInteraction();
-    _saveToStorage();
+    _saveToStorage(forceCloudSync: true);
     notifyListeners();
   }
 
@@ -249,7 +251,7 @@ class StudyToolsProvider extends ChangeNotifier {
        );
        Alarm.set(alarmSettings: alarmSettings);
     }
-    _saveToStorage();
+    _saveToStorage(forceCloudSync: true);
     notifyListeners();
   }
 
@@ -286,7 +288,7 @@ class StudyToolsProvider extends ChangeNotifier {
       );
       Alarm.set(alarmSettings: alarmSettings);
       
-      _saveToStorage();
+      _saveToStorage(forceCloudSync: true);
       notifyListeners();
     }
   }
@@ -295,20 +297,22 @@ class StudyToolsProvider extends ChangeNotifier {
     _alarms.remove(time);
     final id = time.hour * 100 + time.minute;
     Alarm.stop(id);
-    _saveToStorage();
+    _saveToStorage(forceCloudSync: true);
     notifyListeners();
   }
 
   // ── Storage Persistence ────────────────────────────────────────────────────
-  Future<void> _saveToStorage() async {
+  Future<void> _saveToStorage({bool forceCloudSync = false}) async {
     try {
       final prefs = await SharedPreferences.getInstance();
+      final savedAt = DateTime.now();
+      _lastSavedAt = savedAt;
       await prefs.setInt('timer_remaining_seconds', _remaining.inSeconds);
       await prefs.setBool('timer_is_running', _running);
       await prefs.setInt('timer_focused_seconds', _focusedSeconds);
 
       if (_running && _startedAt != null) {
-        final targetEnd = _now.add(_remaining);
+        final targetEnd = DateTime.now().add(_remaining);
         await prefs.setInt('timer_target_end_ms', targetEnd.millisecondsSinceEpoch);
       } else {
         await prefs.remove('timer_target_end_ms');
@@ -318,31 +322,73 @@ class StudyToolsProvider extends ChangeNotifier {
           .map((a) => '${a.hour.toString().padLeft(2, '0')}:${a.minute.toString().padLeft(2, '0')}')
           .toList();
       await prefs.setStringList('timer_alarms', alarmStrings);
+      await prefs.setInt('timer_state_saved_at_ms', savedAt.millisecondsSinceEpoch);
       
-      // Sync to Supabase
+      // SharedPreferences is an offline cache. The signed-in source of truth is
+      // Supabase, so clearing app storage or reinstalling cannot erase progress.
       final user = Supabase.instance.client.auth.currentUser;
       if (user != null) {
+        final shouldSync = forceCloudSync ||
+            _lastCloudSyncAt == null ||
+            savedAt.difference(_lastCloudSyncAt!) >= const Duration(seconds: 15);
+        if (!shouldSync) return;
+        _lastCloudSyncAt = savedAt;
+        final targetEnd = _running && _startedAt != null
+            ? savedAt.add(_remaining)
+            : null;
+        await Supabase.instance.client.from('study_tracker_states').upsert({
+          'user_id': user.id,
+          'remaining_seconds': _remaining.inSeconds,
+          'is_running': _running,
+          'target_end_at': targetEnd?.toUtc().toIso8601String(),
+          'alarms': alarmStrings,
+          'updated_at': savedAt.toUtc().toIso8601String(),
+        }, onConflict: 'user_id');
+
         final date = DateTime.now();
         final dateStr = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
-        try {
-          await Supabase.instance.client.from('user_daily_stats').upsert({
-            'user_id': user.id,
-            'date': dateStr,
-            'focused_seconds': _focusedSeconds,
-          }, onConflict: 'user_id, date');
-        } catch (_) {}
+        await Supabase.instance.client.from('user_daily_stats').upsert({
+          'user_id': user.id,
+          'date': dateStr,
+          'focused_seconds': _focusedSeconds,
+        }, onConflict: 'user_id, date');
       }
-    } catch (_) {}
+    } catch (_) {
+      // Offline use remains available; the next save retries cloud sync.
+      _lastCloudSyncAt = null;
+    }
   }
 
   Future<void> _loadFromStorage() async {
     try {
       final prefs = await SharedPreferences.getInstance();
       _focusedSeconds = prefs.getInt('timer_focused_seconds') ?? 0;
+      final localSavedAtMs = prefs.getInt('timer_state_saved_at_ms');
+      _lastSavedAt = localSavedAtMs == null
+          ? null
+          : DateTime.fromMillisecondsSinceEpoch(localSavedAtMs);
       
-      // Sync from Supabase if available
+      // Restore the complete tracker first. This path also works when the app
+      // cache is empty following a clear-data action or a reinstall.
       final user = Supabase.instance.client.auth.currentUser;
       if (user != null) {
+        try {
+          final remoteState = await Supabase.instance.client
+              .from('study_tracker_states')
+              .select()
+              .eq('user_id', user.id)
+              .maybeSingle();
+          if (remoteState != null) {
+            final remoteUpdatedAt = DateTime.tryParse(remoteState['updated_at'] as String? ?? '');
+            final remoteIsNewer = _lastSavedAt == null ||
+                (remoteUpdatedAt != null && remoteUpdatedAt.isAfter(_lastSavedAt!));
+            if (remoteIsNewer) {
+              _applyRemoteTrackerState(remoteState);
+              _lastSavedAt = remoteUpdatedAt;
+            }
+          }
+        } catch (_) {}
+
         final date = DateTime.now();
         final dateStr = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
         try {
@@ -357,11 +403,16 @@ class StudyToolsProvider extends ChangeNotifier {
         } catch (_) {}
       }
 
+      // If cloud state was restored, do not overwrite it with an old/empty
+      // local cache below.
+      final useLocalTimer = _lastSavedAt == null ||
+          (localSavedAtMs != null &&
+              _lastSavedAt!.millisecondsSinceEpoch == localSavedAtMs);
       final isRunningSaved = prefs.getBool('timer_is_running') ?? false;
       final targetEndMs = prefs.getInt('timer_target_end_ms');
       final remainingSecs = prefs.getInt('timer_remaining_seconds');
 
-      if (isRunningSaved && targetEndMs != null) {
+      if (useLocalTimer && isRunningSaved && targetEndMs != null) {
         final targetEnd = DateTime.fromMillisecondsSinceEpoch(targetEndMs);
         final diff = targetEnd.difference(DateTime.now()).inSeconds;
         if (diff > 0) {
@@ -373,24 +424,66 @@ class StudyToolsProvider extends ChangeNotifier {
           _running = false;
           _startedAt = null;
         }
-      } else if (remainingSecs != null) {
+      } else if (useLocalTimer && remainingSecs != null) {
         _remaining = Duration(seconds: remainingSecs);
         _running = false;
       }
 
-      final alarmStrings = prefs.getStringList('timer_alarms') ?? [];
-      _alarms.clear();
-      for (final s in alarmStrings) {
-        final parts = s.split(':');
-        if (parts.length == 2) {
-          final h = int.tryParse(parts[0]);
-          final m = int.tryParse(parts[1]);
-          if (h != null && m != null) {
-            _alarms.add(TimeOfDay(hour: h, minute: m));
+      if (useLocalTimer) {
+        final alarmStrings = prefs.getStringList('timer_alarms') ?? [];
+        _alarms.clear();
+        for (final s in alarmStrings) {
+          final parts = s.split(':');
+          if (parts.length == 2) {
+            final h = int.tryParse(parts[0]);
+            final m = int.tryParse(parts[1]);
+            if (h != null && m != null) {
+              _alarms.add(TimeOfDay(hour: h, minute: m));
+            }
           }
         }
       }
+
+      // The first cloud sync migrates any existing local tracker for a signed-in
+      // user. A newer cloud snapshot is intentionally never overwritten here.
+      if (user != null && useLocalTimer) {
+        _saveToStorage(forceCloudSync: true);
+      }
     } catch (_) {}
+  }
+
+  void _applyRemoteTrackerState(Map<String, dynamic> state) {
+    _remaining = Duration(
+      seconds: (state['remaining_seconds'] as num?)?.toInt() ?? 1500,
+    );
+    _running = state['is_running'] as bool? ?? false;
+    final targetEnd = DateTime.tryParse(state['target_end_at'] as String? ?? '');
+    if (_running && targetEnd != null) {
+      final secondsLeft = targetEnd.difference(DateTime.now()).inSeconds;
+      if (secondsLeft > 0) {
+        _remaining = Duration(seconds: secondsLeft);
+        _startedAt = DateTime.now();
+      } else {
+        _remaining = Duration.zero;
+        _running = false;
+        _startedAt = null;
+      }
+    } else {
+      _running = false;
+      _startedAt = null;
+    }
+
+    _alarms
+      ..clear()
+      ..addAll((state['alarms'] as List? ?? const [])
+          .map((value) => value.toString().split(':'))
+          .where((parts) => parts.length == 2)
+          .map(
+            (parts) => TimeOfDay(
+              hour: int.tryParse(parts[0]) ?? 0,
+              minute: int.tryParse(parts[1]) ?? 0,
+            ),
+          ));
   }
 
   @override
