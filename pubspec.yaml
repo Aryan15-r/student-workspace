@@ -1,7 +1,7 @@
 name: student_workspace
 description: "StudySpace — An all-in-one student productivity workspace"
 publish_to: 'none'
-version: 1.0.31+32
+version: 1.0.32+33
 
 environment:
   sdk: ^3.12.2
@@ -12,7 +12,7 @@ dependencies:
   cupertino_icons: ^1.0.8
 
   # ── Backend ──────────────────────────────────────────────
-  supabase_flutter: ^2.8.4       # Supabase: auth, database, realtime, storage
+  supabase_flutter: ^2.17.2       # Supabase: auth, database, realtime, storage
 
   # ── State Management ─────────────────────────────────────
   provider: ^6.1.2               # Simplest, most beginner-friendly option
@@ -27,7 +27,7 @@ dependencies:
   cached_network_image: ^3.4.1   # Efficient network image loading
 
   # ── Utilities ────────────────────────────────────────────
-  flutter_dotenv: ^5.2.1         # Load .env environment variables
+  flutter_dotenv: ^6.0.1         # Load .env environment variables
   http: ^1.2.2                   # HTTP requests (AI backend calls)
   intl: ^0.19.0                  # Date/time formatting
   timeago: ^3.7.0                # "5 minutes ago" timestamps
@@ -46,6 +46,8 @@ dependencies:
   shared_preferences: ^2.5.5
   table_calendar: ^3.1.3
   alarm: ^5.12.0
+  google_sign_in: ^7.2.0
+  permission_handler: ^13.0.2
 
 dev_dependencies:
   flutter_test:
