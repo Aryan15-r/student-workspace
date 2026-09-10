@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:table_calendar/table_calendar.dart';
 import '../../providers/dashboard_provider.dart';
 import '../../../auth/providers/auth_provider.dart';
 import '../../../todo/presentation/widgets/task_card.dart';
@@ -370,6 +371,95 @@ class _DashboardPageState extends State<DashboardPage> {
                               delay: 240,
                             ),
                           ]),
+                        ),
+                      ),
+
+                      // ── Attendance Calendar ─────────────────────────────────────
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.fromLTRB(24, 32, 24, 12),
+                          child: const Text(
+                            "Attendance Tracker",
+                            style: TextStyle(
+                              color: AppColors.textPrimary,
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              color: AppColors.surface,
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: const Color(0xFFE8D4C4),
+                              ),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withValues(alpha: 0.05),
+                                  blurRadius: 10,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            child: TableCalendar(
+                              firstDay: DateTime.utc(2023, 1, 1),
+                              lastDay: DateTime.utc(2030, 12, 31),
+                              focusedDay: DateTime.now(),
+                              calendarFormat: CalendarFormat.week,
+                              availableCalendarFormats: const {
+                                CalendarFormat.month: 'Month',
+                                CalendarFormat.twoWeeks: '2 Weeks',
+                                CalendarFormat.week: 'Week',
+                              },
+                              headerStyle: const HeaderStyle(
+                                formatButtonVisible: false,
+                                titleCentered: true,
+                                titleTextStyle: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 16,
+                                ),
+                              ),
+                              calendarBuilders: CalendarBuilders(
+                                markerBuilder: (context, date, events) {
+                                  final normalizedDate = DateTime(date.year, date.month, date.day);
+                                  final attendance = dashboard.attendance;
+                                  
+                                  // Don't show dots for future dates
+                                  final today = DateTime.now();
+                                  final normalizedToday = DateTime(today.year, today.month, today.day);
+                                  if (normalizedDate.isAfter(normalizedToday)) return null;
+
+                                  final isPresent = attendance[normalizedDate] ?? false;
+                                  
+                                  return Positioned(
+                                    bottom: 4,
+                                    child: Container(
+                                      width: 6,
+                                      height: 6,
+                                      decoration: BoxDecoration(
+                                        shape: BoxShape.circle,
+                                        color: isPresent ? Colors.green : Colors.red,
+                                      ),
+                                    ),
+                                  );
+                                },
+                              ),
+                              onDaySelected: (selectedDay, focusedDay) {
+                                final today = DateTime.now();
+                                final normalizedToday = DateTime(today.year, today.month, today.day);
+                                final normalizedSelected = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
+                                
+                                if (!normalizedSelected.isAfter(normalizedToday)) {
+                                  context.read<DashboardProvider>().toggleAttendance(selectedDay);
+                                }
+                              },
+                            ),
+                          ).animate().fadeIn(delay: 280.ms).slideY(begin: 0.05, end: 0),
                         ),
                       ),
 

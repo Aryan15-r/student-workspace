@@ -231,6 +231,16 @@ class _MobileShell extends StatelessWidget {
                     onTap(7);
                   },
                 ),
+                _MenuTile(
+                  icon: Icons.timer_rounded,
+                  color: const Color(0xFF10B981),
+                  title: 'Focus & Rhythm',
+                  subtitle: 'Study timers and productivity tracker',
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    onTap(8);
+                  },
+                ),
                 const SizedBox(height: 16),
                 Center(
                   child: Container(
