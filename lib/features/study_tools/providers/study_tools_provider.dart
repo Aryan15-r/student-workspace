@@ -2,6 +2,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:alarm/alarm.dart';
 import '../../../app/router.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
@@ -42,6 +44,18 @@ class StudyToolsProvider extends ChangeNotifier {
   Future<void> _init() async {
     await _loadFromStorage();
     _isInitialized = true;
+    
+    // Listen to native alarms
+    Alarm.ringStream.stream.listen((alarmSettings) {
+      if (alarmSettings.id == 1) {
+        _showAlarmDialog('Focus Timer', 'Time is up! Take a break.', isTimer: true);
+      } else {
+        final h = (alarmSettings.id ~/ 100).toString().padLeft(2, '0');
+        final m = (alarmSettings.id % 100).toString().padLeft(2, '0');
+        _showAlarmDialog('Study Alarm', 'It is $h:$m! Time to focus.');
+      }
+    });
+    
     _startTicker();
     notifyListeners();
   }
@@ -142,6 +156,22 @@ class StudyToolsProvider extends ChangeNotifier {
   void startTimer() {
     _running = true;
     _startedAt = DateTime.now();
+    
+    final targetEnd = _now.add(_remaining);
+    final alarmSettings = AlarmSettings(
+      id: 1, // Focus timer ID
+      dateTime: targetEnd,
+      assetAudioPath: 'assets/alarm.mp3',
+      volumeSettings: const VolumeSettings.fixed(volume: 0.8),
+      notificationSettings: NotificationSettings(
+        title: 'Focus Timer',
+        body: 'Time is up! Take a break.',
+      ),
+      loopAudio: true,
+      vibrate: true,
+    );
+    Alarm.set(alarmSettings: alarmSettings);
+    
     registerInteraction();
     _saveToStorage();
     notifyListeners();
@@ -150,6 +180,7 @@ class StudyToolsProvider extends ChangeNotifier {
   void pauseTimer() {
     _running = false;
     _startedAt = null;
+    Alarm.stop(1); // Stop native focus timer
     registerInteraction();
     _saveToStorage();
     notifyListeners();
@@ -167,6 +198,7 @@ class StudyToolsProvider extends ChangeNotifier {
     _running = false;
     _startedAt = null;
     _remaining = defaultDuration;
+    Alarm.stop(1);
     registerInteraction();
     _saveToStorage();
     notifyListeners();
@@ -176,6 +208,7 @@ class StudyToolsProvider extends ChangeNotifier {
     _remaining = duration;
     _running = false;
     _startedAt = null;
+    Alarm.stop(1);
     registerInteraction();
     _saveToStorage();
     notifyListeners();
@@ -183,6 +216,23 @@ class StudyToolsProvider extends ChangeNotifier {
 
   void addMinutes(int minutes) {
     _remaining += Duration(minutes: minutes);
+    if (_running) {
+       Alarm.stop(1);
+       final targetEnd = DateTime.now().add(_remaining);
+       final alarmSettings = AlarmSettings(
+         id: 1,
+         dateTime: targetEnd,
+         assetAudioPath: 'assets/alarm.mp3',
+         volumeSettings: const VolumeSettings.fixed(volume: 0.8),
+         notificationSettings: NotificationSettings(
+           title: 'Focus Timer',
+           body: 'Time is up! Take a break.',
+         ),
+         loopAudio: true,
+         vibrate: true,
+       );
+       Alarm.set(alarmSettings: alarmSettings);
+    }
     _saveToStorage();
     notifyListeners();
   }
@@ -200,6 +250,26 @@ class StudyToolsProvider extends ChangeNotifier {
   void addAlarm(TimeOfDay time) {
     if (!_alarms.contains(time)) {
       _alarms.add(time);
+      
+      final now = DateTime.now();
+      var alarmTime = DateTime(now.year, now.month, now.day, time.hour, time.minute);
+      if (alarmTime.isBefore(now)) alarmTime = alarmTime.add(const Duration(days: 1));
+      
+      final id = time.hour * 100 + time.minute;
+      final alarmSettings = AlarmSettings(
+        id: id,
+        dateTime: alarmTime,
+        assetAudioPath: 'assets/alarm.mp3',
+        volumeSettings: const VolumeSettings.fixed(volume: 0.8),
+        notificationSettings: NotificationSettings(
+          title: 'Study Alarm',
+          body: 'Time to focus!',
+        ),
+        loopAudio: true,
+        vibrate: true,
+      );
+      Alarm.set(alarmSettings: alarmSettings);
+      
       _saveToStorage();
       notifyListeners();
     }
@@ -207,6 +277,8 @@ class StudyToolsProvider extends ChangeNotifier {
 
   void removeAlarm(TimeOfDay time) {
     _alarms.remove(time);
+    final id = time.hour * 100 + time.minute;
+    Alarm.stop(id);
     _saveToStorage();
     notifyListeners();
   }
@@ -230,6 +302,20 @@ class StudyToolsProvider extends ChangeNotifier {
           .map((a) => '${a.hour.toString().padLeft(2, '0')}:${a.minute.toString().padLeft(2, '0')}')
           .toList();
       await prefs.setStringList('timer_alarms', alarmStrings);
+      
+      // Sync to Supabase
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null) {
+        final date = DateTime.now();
+        final dateStr = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+        try {
+          await Supabase.instance.client.from('user_daily_stats').upsert({
+            'user_id': user.id,
+            'date': dateStr,
+            'focused_seconds': _focusedSeconds,
+          }, onConflict: 'user_id, date');
+        } catch (_) {}
+      }
     } catch (_) {}
   }
 
@@ -237,6 +323,23 @@ class StudyToolsProvider extends ChangeNotifier {
     try {
       final prefs = await SharedPreferences.getInstance();
       _focusedSeconds = prefs.getInt('timer_focused_seconds') ?? 0;
+      
+      // Sync from Supabase if available
+      final user = Supabase.instance.client.auth.currentUser;
+      if (user != null) {
+        final date = DateTime.now();
+        final dateStr = '${date.year}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}';
+        try {
+          final data = await Supabase.instance.client.from('user_daily_stats')
+              .select('focused_seconds').eq('user_id', user.id).eq('date', dateStr).maybeSingle();
+          if (data != null && data['focused_seconds'] != null) {
+            final remoteSeconds = data['focused_seconds'] as int;
+            if (remoteSeconds > _focusedSeconds) {
+              _focusedSeconds = remoteSeconds;
+            }
+          }
+        } catch (_) {}
+      }
 
       final isRunningSaved = prefs.getBool('timer_is_running') ?? false;
       final targetEndMs = prefs.getInt('timer_target_end_ms');

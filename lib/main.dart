@@ -3,6 +3,8 @@ import 'package:flutter_dotenv/flutter_dotenv.dart';
 import 'package:provider/provider.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
+import 'package:alarm/alarm.dart';
+
 import 'app/app.dart';
 
 // ── Feature Providers ─────────────────────────────────────────────────────────
@@ -29,6 +31,9 @@ import 'features/study_tools/providers/study_tools_provider.dart';
 Future<void> main() async {
   // Required before using async code in main()
   WidgetsFlutterBinding.ensureInitialized();
+  
+  // Initialize native alarm package
+  await Alarm.init();
 
   // Step 1: Load environment variables from the .env asset file
   await dotenv.load(fileName: '.env');

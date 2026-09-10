@@ -34,7 +34,7 @@ class DashboardProvider extends ChangeNotifier {
           .take(3)
           .toList();
           
-      // Load attendance
+      // Load attendance from local
       final prefs = await SharedPreferences.getInstance();
       final keys = prefs.getKeys().where((k) => k.startsWith('attendance_'));
       final newAttendance = <DateTime, bool>{};
@@ -47,6 +47,19 @@ class DashboardProvider extends ChangeNotifier {
         }
       }
       _attendance = newAttendance;
+
+      // Sync with Supabase
+      final data = await Supabase.instance.client.from('user_daily_stats').select('date, attended').eq('user_id', userId);
+      for (final row in data) {
+        if (row['attended'] == true) {
+          final dateParts = (row['date'] as String).split('-');
+          final d = DateTime(int.parse(dateParts[0]), int.parse(dateParts[1]), int.parse(dateParts[2]));
+          _attendance[d] = true;
+          // also update local
+          await prefs.setBool('attendance_${d.year}-${d.month}-${d.day}', true);
+        }
+      }
+
     } catch (_) {
     } finally {
       _loading = false;
@@ -55,7 +68,9 @@ class DashboardProvider extends ChangeNotifier {
   }
   
   Future<void> markAttendance(DateTime date) async {
+    final userId = Supabase.instance.client.auth.currentUser?.id;
     final normalizedDate = DateTime(date.year, date.month, date.day);
+    final dateStr = '${normalizedDate.year}-${normalizedDate.month.toString().padLeft(2, '0')}-${normalizedDate.day.toString().padLeft(2, '0')}';
     final key = 'attendance_${normalizedDate.year}-${normalizedDate.month}-${normalizedDate.day}';
     final prefs = await SharedPreferences.getInstance();
     
@@ -64,6 +79,16 @@ class DashboardProvider extends ChangeNotifier {
       await prefs.setBool(key, true);
       _attendance[normalizedDate] = true;
       notifyListeners();
+
+      if (userId != null) {
+        try {
+          await Supabase.instance.client.from('user_daily_stats').upsert({
+            'user_id': userId,
+            'date': dateStr,
+            'attended': true,
+          }, onConflict: 'user_id, date');
+        } catch (_) {}
+      }
     }
   }
 }
