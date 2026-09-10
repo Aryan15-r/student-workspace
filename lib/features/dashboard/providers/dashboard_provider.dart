@@ -54,17 +54,17 @@ class DashboardProvider extends ChangeNotifier {
     }
   }
   
-  Future<void> toggleAttendance(DateTime date) async {
+  Future<void> markAttendance(DateTime date) async {
     final normalizedDate = DateTime(date.year, date.month, date.day);
     final key = 'attendance_${normalizedDate.year}-${normalizedDate.month}-${normalizedDate.day}';
     final prefs = await SharedPreferences.getInstance();
     
-    final currentStatus = _attendance[normalizedDate] ?? false;
-    final newStatus = !currentStatus;
-    
-    await prefs.setBool(key, newStatus);
-    _attendance[normalizedDate] = newStatus;
-    notifyListeners();
+    // Only set if not already marked
+    if (_attendance[normalizedDate] != true) {
+      await prefs.setBool(key, true);
+      _attendance[normalizedDate] = true;
+      notifyListeners();
+    }
   }
 }
 

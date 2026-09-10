@@ -1,6 +1,8 @@
+import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../features/auth/providers/auth_provider.dart';
+import '../features/dashboard/providers/dashboard_provider.dart';
 import 'router.dart';
 import 'theme/app_theme.dart';
 
@@ -18,12 +20,26 @@ class StudySpaceApp extends StatefulWidget {
 
 class _StudySpaceAppState extends State<StudySpaceApp> {
   late final AppRouter _appRouter;
+  Timer? _attendanceTimer;
 
   @override
   void initState() {
     super.initState();
     // Create the router, passing it the AuthProvider so it can redirect
     _appRouter = AppRouter(context.read<AuthProvider>());
+
+    // Mark attendance if user stays for 10 minutes
+    _attendanceTimer = Timer(const Duration(minutes: 10), () {
+      if (mounted) {
+        context.read<DashboardProvider>().markAttendance(DateTime.now());
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _attendanceTimer?.cancel();
+    super.dispose();
   }
 
   @override

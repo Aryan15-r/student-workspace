@@ -425,39 +425,11 @@ class _DashboardPageState extends State<DashboardPage> {
                                 ),
                               ),
                               calendarBuilders: CalendarBuilders(
-                                markerBuilder: (context, date, events) {
-                                  final normalizedDate = DateTime(date.year, date.month, date.day);
-                                  final attendance = dashboard.attendance;
-                                  
-                                  // Don't show dots for future dates
-                                  final today = DateTime.now();
-                                  final normalizedToday = DateTime(today.year, today.month, today.day);
-                                  if (normalizedDate.isAfter(normalizedToday)) return null;
-
-                                  final isPresent = attendance[normalizedDate] ?? false;
-                                  
-                                  return Positioned(
-                                    bottom: 4,
-                                    child: Container(
-                                      width: 6,
-                                      height: 6,
-                                      decoration: BoxDecoration(
-                                        shape: BoxShape.circle,
-                                        color: isPresent ? Colors.green : Colors.red,
-                                      ),
-                                    ),
-                                  );
-                                },
+                                defaultBuilder: (context, day, focusedDay) => _buildCalCell(day, dashboard),
+                                todayBuilder: (context, day, focusedDay) => _buildCalCell(day, dashboard, isToday: true),
+                                outsideBuilder: (context, day, focusedDay) => _buildCalCell(day, dashboard, isOutside: true),
+                                disabledBuilder: (context, day, focusedDay) => _buildCalCell(day, dashboard, isOutside: true),
                               ),
-                              onDaySelected: (selectedDay, focusedDay) {
-                                final today = DateTime.now();
-                                final normalizedToday = DateTime(today.year, today.month, today.day);
-                                final normalizedSelected = DateTime(selectedDay.year, selectedDay.month, selectedDay.day);
-                                
-                                if (!normalizedSelected.isAfter(normalizedToday)) {
-                                  context.read<DashboardProvider>().toggleAttendance(selectedDay);
-                                }
-                              },
                             ),
                           ).animate().fadeIn(delay: 280.ms).slideY(begin: 0.05, end: 0),
                         ),
@@ -624,6 +596,52 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCalCell(DateTime date, DashboardProvider dashboard, {bool isToday = false, bool isOutside = false}) {
+    final normalizedDate = DateTime(date.year, date.month, date.day);
+    final today = DateTime.now();
+    final normalizedToday = DateTime(today.year, today.month, today.day);
+
+    Color? bgColor;
+    Color textColor = AppColors.textPrimary;
+
+    if (normalizedDate.isAfter(normalizedToday)) {
+      bgColor = Colors.transparent;
+      textColor = AppColors.textMuted;
+    } else {
+      final isPresent = dashboard.attendance[normalizedDate] ?? false;
+      bgColor = isPresent ? Colors.green.withValues(alpha: 0.15) : Colors.red.withValues(alpha: 0.15);
+      textColor = isPresent ? Colors.green[700]! : Colors.red[700]!;
+      
+      if (isToday) {
+        bgColor = isPresent ? Colors.green : Colors.red;
+        textColor = Colors.white;
+      }
+    }
+
+    if (isOutside) {
+      textColor = textColor.withValues(alpha: 0.4);
+      if (bgColor != Colors.transparent && bgColor != null) {
+        bgColor = bgColor.withValues(alpha: 0.05);
+      }
+    }
+
+    return Container(
+      margin: const EdgeInsets.all(6.0),
+      decoration: BoxDecoration(
+        color: bgColor,
+        shape: BoxShape.circle,
+      ),
+      alignment: Alignment.center,
+      child: Text(
+        '${date.day}',
+        style: TextStyle(
+          color: textColor,
+          fontWeight: isToday ? FontWeight.bold : FontWeight.w500,
         ),
       ),
     );
