@@ -14,8 +14,8 @@ class AiService {
   // Keep the stable Flash model first. The previous list tried several
   // unavailable model names sequentially, adding up to minutes of latency.
   static const _models = <String>[
-    'gemini-1.5-flash',
-    'gemini-1.5-pro',
+    'gemini-3.6-flash',
+    'gemini-3.7-flash',
   ];
 
   /// Sends the full conversation history to Gemini and returns the AI reply.
