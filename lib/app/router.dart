@@ -20,6 +20,8 @@ import '../features/study_tools/presentation/pages/study_tools_page.dart';
 
 import '../core/widgets/error_landing_page.dart';
 
+final GlobalKey<NavigatorState> rootNavigatorKey = GlobalKey<NavigatorState>();
+
 /// ─────────────────────────────────────────────────────────────────────────────
 /// AppRouter — Centralized routing for StudySpace
 ///
@@ -33,6 +35,7 @@ class AppRouter {
   AppRouter(this.authProvider);
 
   late final GoRouter router = GoRouter(
+    navigatorKey: rootNavigatorKey,
     initialLocation: '/',
     refreshListenable: authProvider,
     redirect: _redirect,

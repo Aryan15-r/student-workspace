@@ -258,7 +258,7 @@ class CalculatorPage extends StatelessWidget {
                               fontWeight: FontWeight.bold,
                               color: calc.result == 'Error'
                                   ? const Color(0xFFF87171)
-                                  : const Color(0xFFF8FAFC),
+                                  : AppColors.textPrimary,
                               letterSpacing: 0.5,
                             ),
                           ),

@@ -1,6 +1,8 @@
 import 'dart:async';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import '../../../app/router.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
 /// StudyToolsProvider — Global timer & focus state management
@@ -44,6 +46,54 @@ class StudyToolsProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  void _showAlarmDialog(String title, String message, {bool isTimer = false, TimeOfDay? alarm}) {
+    final context = rootNavigatorKey.currentContext;
+    if (context == null) return;
+    
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (ctx) => AlertDialog(
+        title: Row(
+          children: [
+            const Icon(Icons.alarm_rounded, color: Color(0xFFD66A50)),
+            const SizedBox(width: 8),
+            Text(title),
+          ],
+        ),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              if (isTimer) {
+                setCustomRemaining(const Duration(minutes: 5));
+                startTimer();
+              } else if (alarm != null) {
+                final snoozed = TimeOfDay(
+                  hour: (alarm.hour + (alarm.minute + 5) ~/ 60) % 24,
+                  minute: (alarm.minute + 5) % 60,
+                );
+                addAlarm(snoozed);
+                removeAlarm(alarm);
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text('Snooze (5m)'),
+          ),
+          FilledButton(
+            onPressed: () {
+              if (alarm != null) {
+                removeAlarm(alarm);
+              }
+              Navigator.pop(ctx);
+            },
+            child: const Text('Turn Off'),
+          ),
+        ],
+      ),
+    );
+  }
+
   void _startTicker() {
     _ticker?.cancel();
     _ticker = Timer.periodic(const Duration(seconds: 1), (_) {
@@ -64,8 +114,23 @@ class StudyToolsProvider extends ChangeNotifier {
             _remaining = Duration.zero;
             _running = false;
             _startedAt = null;
+            SystemSound.play(SystemSoundType.alert);
+            HapticFeedback.heavyImpact();
+            _showAlarmDialog('Focus Timer', 'Time is up! Take a break.', isTimer: true);
           }
           _saveToStorage();
+        }
+      }
+
+      if (_now.second == 0) {
+        for (final alarm in _alarms.toList()) {
+          if (alarm.hour == _now.hour && alarm.minute == _now.minute) {
+            SystemSound.play(SystemSoundType.alert);
+            HapticFeedback.heavyImpact();
+            
+            final timeStr = '${alarm.hour.toString().padLeft(2, '0')}:${alarm.minute.toString().padLeft(2, '0')}';
+            _showAlarmDialog('Study Alarm', 'It is $timeStr! Time to focus.', alarm: alarm);
+          }
         }
       }
 
