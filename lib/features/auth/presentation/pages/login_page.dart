@@ -227,15 +227,29 @@ class _LoginPageState extends State<LoginPage> {
                         // Google Sign In button
                         SizedBox(
                           width: double.infinity,
-                          child: OutlinedButton.icon(
+                          child: ElevatedButton.icon(
                             icon: Image.network(
                               'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
                               height: 18,
                             ),
-                            label: const Text('Sign In with Google'),
-                            style: OutlinedButton.styleFrom(
+                            label: const Text('Sign in with Google'),
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.white,
+                              foregroundColor: const Color(0xFF3C4043), // Google text color
+                              elevation: 2,
+                              shadowColor: Colors.black.withValues(alpha: 0.15),
                               padding: const EdgeInsets.symmetric(vertical: 16),
-                              foregroundColor: AppColors.textPrimary,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(12),
+                                side: BorderSide(
+                                  color: Colors.grey.withValues(alpha: 0.3),
+                                ),
+                              ),
+                              textStyle: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w600,
+                                fontFamily: 'Roboto', // Recommended for Google branding
+                              ),
                             ),
                             onPressed: auth.isLoading
                                 ? null

@@ -45,8 +45,8 @@ class StudyToolsProvider extends ChangeNotifier {
   StreamSubscription<AuthState>? _authSub;
 
   Future<void> _init() async {
-    await Permission.scheduleExactAlarm.request();
-    await Permission.notification.request();
+    Permission.scheduleExactAlarm.request();
+    Permission.notification.request();
     
     await _loadFromStorage();
     _isInitialized = true;

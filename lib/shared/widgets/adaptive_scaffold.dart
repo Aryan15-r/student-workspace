@@ -61,16 +61,16 @@ class AdaptiveScaffold extends StatelessWidget {
       route: '/pdf-tools',
     ),
     NavItem(
-      icon: Icons.person_outline_rounded,
-      activeIcon: Icons.person_rounded,
-      label: 'Profile',
-      route: '/profile',
-    ),
-    NavItem(
       icon: Icons.timer_outlined,
       activeIcon: Icons.timer_rounded,
       label: 'Focus',
       route: '/study-tools',
+    ),
+    NavItem(
+      icon: Icons.person_outline_rounded,
+      activeIcon: Icons.person_rounded,
+      label: 'Profile',
+      route: '/profile',
     ),
   ];
 

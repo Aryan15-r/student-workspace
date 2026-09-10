@@ -25,7 +25,7 @@ class _ProfilePageState extends State<ProfilePage> {
     final isGuest = auth.isGuest;
 
     return AdaptiveScaffold(
-      selectedIndex: 7,
+      selectedIndex: 8,
       child: Scaffold(
         backgroundColor: const Color(0xFFFFF8F0),
         appBar: AppBar(
@@ -146,13 +146,13 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 10),
 
                     _SettingActionTile(
-                      icon: Icons.cleaning_services_rounded,
-                      title: 'Clear Local Cache & Storage',
-                      subtitle: 'Free up local offline document cache',
+                      icon: Icons.feedback_outlined,
+                      title: 'Submit Feedback',
+                      subtitle: 'Help us improve StudySpace',
                       onTap: () {
                         ScaffoldMessenger.of(context).showSnackBar(
                           const SnackBar(
-                            content: Text('Local cache cleared! 🧹'),
+                            content: Text('Feedback feature coming soon! 🚀'),
                             duration: Duration(seconds: 2),
                           ),
                         );

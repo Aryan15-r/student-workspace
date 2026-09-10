@@ -72,7 +72,7 @@ class AuthProvider extends ChangeNotifier {
 
   void _init() {
     // 1. Immediately evaluate local/cached Supabase session
-    final initialUser = _authService.currentUser;
+    final initialUser = _authService.currentSession?.user;
     if (initialUser != null) {
       // Routing must not wait for a profile request when the device is offline.
       _initialized = true;
@@ -89,7 +89,7 @@ class AuthProvider extends ChangeNotifier {
     // 2. Listen for auth changes (token refresh, sign in, sign out, password recovery)
     _authService.authStateChanges.listen((authState) async {
       final event = authState.event;
-      final user = authState.session?.user ?? _authService.currentUser;
+      final user = authState.session?.user ?? _authService.currentSession?.user;
 
       if (event == AuthChangeEvent.signedOut) {
         _profile = null;
@@ -123,7 +123,7 @@ class AuthProvider extends ChangeNotifier {
           .fetchProfile(userId)
           .timeout(const Duration(seconds: 4));
       if (_profile == null) {
-        final user = _authService.currentUser;
+        final user = _authService.currentSession?.user;
         if (user != null) {
           _profile = UserProfile(
             id: user.id,
@@ -144,7 +144,7 @@ class AuthProvider extends ChangeNotifier {
       }
     } catch (e) {
       debugPrint('Error loading profile: $e');
-      final user = _authService.currentUser;
+      final user = _authService.currentSession?.user;
       if (user != null) {
         _profile = UserProfile(
           id: user.id,
@@ -228,7 +228,7 @@ class AuthProvider extends ChangeNotifier {
     _setLoading(true);
     try {
       await _authService.signIn(email: email, password: password);
-      final user = _authService.currentUser;
+      final user = _authService.currentSession?.user;
       if (user != null) {
         await _loadProfile(user.id);
       }
@@ -254,7 +254,7 @@ class AuthProvider extends ChangeNotifier {
         webClientId: webClientId,
         iosClientId: iosClientId,
       );
-      final user = _authService.currentUser;
+      final user = _authService.currentSession?.user;
       if (user != null) {
         await _loadProfile(user.id);
       }

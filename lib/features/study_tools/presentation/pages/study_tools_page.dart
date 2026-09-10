@@ -105,7 +105,7 @@ class StudyToolsPage extends StatelessWidget {
     _checkInactivity(context, provider);
 
     return AdaptiveScaffold(
-      selectedIndex: 8,
+      selectedIndex: 7,
       child: Listener(
         onPointerDown: (_) => provider.registerInteraction(),
         child: Scaffold(

@@ -188,7 +188,7 @@ class AuthService {
   Session? get currentSession => _supabase.auth.currentSession;
   User? get currentUser =>
       _supabase.auth.currentUser ?? _supabase.auth.currentSession?.user;
-  bool get isAuthenticated => currentUser != null || currentSession != null;
+  bool get isAuthenticated => currentSession != null;
 
   Stream<AuthState> get authStateChanges => _supabase.auth.onAuthStateChange;
 
