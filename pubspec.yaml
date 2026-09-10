@@ -1,7 +1,7 @@
 name: student_workspace
 description: "StudySpace — An all-in-one student productivity workspace"
 publish_to: 'none'
-version: 1.0.28+29
+version: 1.0.29+30
 
 environment:
   sdk: ^3.12.2
@@ -45,6 +45,7 @@ dependencies:
   archive: ^4.0.9
   shared_preferences: ^2.5.5
   table_calendar: ^3.1.3
+  alarm: ^5.12.0
 
 dev_dependencies:
   flutter_test:
@@ -56,3 +57,4 @@ flutter:
 
   assets:
     - .env          # Environment variables (gitignored — never committed)
+    - assets/
