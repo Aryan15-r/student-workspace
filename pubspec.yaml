@@ -1,7 +1,7 @@
 name: student_workspace
 description: "StudySpace — An all-in-one student productivity workspace"
 publish_to: 'none'
-version: 1.0.32+33
+version: 1.0.33+34
 
 environment:
   sdk: ^3.12.2
