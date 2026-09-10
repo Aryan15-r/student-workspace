@@ -147,7 +147,12 @@ class _MobileShell extends StatelessWidget {
         return SingleChildScrollView(
           child: SafeArea(
             child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+              padding: EdgeInsets.only(
+                left: 20, 
+                right: 20, 
+                top: 24, 
+                bottom: 24 + MediaQuery.of(ctx).padding.bottom,
+              ),
               child: Column(
                 mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,

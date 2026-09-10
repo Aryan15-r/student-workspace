@@ -1,5 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import '../models/user_profile.dart';
 import '../../../core/errors/app_exception.dart';
 
@@ -32,6 +33,34 @@ class AuthService {
     try {
       await _supabase.auth.signInWithPassword(email: email, password: password);
     } catch (e) {
+      throw AppException.from(e);
+    }
+  }
+
+  // ── Sign In with Google ────────────────────────────────────────────────────
+  Future<void> signInWithGoogle({
+    required String webClientId,
+    String? iosClientId,
+  }) async {
+    try {
+      await GoogleSignIn.instance.initialize(
+        clientId: iosClientId,
+        serverClientId: webClientId,
+      );
+      final googleUser = await GoogleSignIn.instance.authenticate();
+      final googleAuth = googleUser.authentication;
+      final idToken = googleAuth.idToken;
+
+      if (idToken == null) {
+        throw AppException(message: 'No ID Token found.');
+      }
+
+      await _supabase.auth.signInWithIdToken(
+        provider: OAuthProvider.google,
+        idToken: idToken,
+      );
+    } catch (e) {
+      if (e is AppException) rethrow;
       throw AppException.from(e);
     }
   }

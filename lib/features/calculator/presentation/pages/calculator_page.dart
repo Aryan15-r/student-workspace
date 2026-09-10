@@ -240,7 +240,7 @@ class CalculatorPage extends StatelessWidget {
                           child: Text(
                             calc.expression.isEmpty ? ' ' : calc.expression,
                             style: const TextStyle(
-                              color: Color(0xFF806A63),
+                              color: AppColors.textPrimary,
                               fontSize: 18,
                               fontFamily: 'monospace',
                               fontWeight: FontWeight.w500,

@@ -4,6 +4,7 @@ import 'package:flutter/services.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 import 'package:alarm/alarm.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../../../app/router.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
@@ -41,11 +42,17 @@ class StudyToolsProvider extends ChangeNotifier {
     _init();
   }
 
+  StreamSubscription<AuthState>? _authSub;
+
   Future<void> _init() async {
+    await Permission.scheduleExactAlarm.request();
+    await Permission.notification.request();
+    
     await _loadFromStorage();
     _isInitialized = true;
     
     // Listen to native alarms
+    // ignore: deprecated_member_use
     Alarm.ringStream.stream.listen((alarmSettings) {
       if (alarmSettings.id == 1) {
         _showAlarmDialog('Focus Timer', 'Time is up! Take a break.', isTimer: true);
@@ -53,6 +60,15 @@ class StudyToolsProvider extends ChangeNotifier {
         final h = (alarmSettings.id ~/ 100).toString().padLeft(2, '0');
         final m = (alarmSettings.id % 100).toString().padLeft(2, '0');
         _showAlarmDialog('Study Alarm', 'It is $h:$m! Time to focus.');
+      }
+    });
+
+    _authSub = Supabase.instance.client.auth.onAuthStateChange.listen((data) {
+      final session = data.session;
+      if (session != null) {
+        _loadFromStorage().then((_) {
+          if (hasListeners) notifyListeners();
+        });
       }
     });
     
@@ -379,6 +395,7 @@ class StudyToolsProvider extends ChangeNotifier {
 
   @override
   void dispose() {
+    _authSub?.cancel();
     _ticker?.cancel();
     super.dispose();
   }

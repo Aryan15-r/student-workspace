@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
 import 'package:provider/provider.dart';
+import 'package:flutter_dotenv/flutter_dotenv.dart';
 import '../../providers/auth_provider.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../app/theme/app_text_styles.dart';
@@ -219,6 +220,54 @@ class _LoginPageState extends State<LoginPage> {
                                 context.go('/verify-otp', extra: email);
                               }
                             },
+                          ),
+                        ),
+                        const SizedBox(height: 12),
+                        
+                        // Google Sign In button
+                        SizedBox(
+                          width: double.infinity,
+                          child: OutlinedButton.icon(
+                            icon: Image.network(
+                              'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
+                              height: 18,
+                            ),
+                            label: const Text('Sign In with Google'),
+                            style: OutlinedButton.styleFrom(
+                              padding: const EdgeInsets.symmetric(vertical: 16),
+                              foregroundColor: AppColors.textPrimary,
+                            ),
+                            onPressed: auth.isLoading
+                                ? null
+                                : () async {
+                                    final webClientId = dotenv.env['GOOGLE_WEB_CLIENT_ID'] ?? '';
+                                    final iosClientId = dotenv.env['GOOGLE_IOS_CLIENT_ID'];
+                                    
+                                    if (webClientId.isEmpty || webClientId == 'your_web_client_id_here') {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        const SnackBar(
+                                          content: Text('Google OAuth not configured in .env yet.'),
+                                          backgroundColor: AppColors.warning,
+                                        ),
+                                      );
+                                      return;
+                                    }
+                                    
+                                    final authProv = context.read<AuthProvider>();
+                                    final ok = await authProv.signInWithGoogle(
+                                      webClientId: webClientId,
+                                      iosClientId: iosClientId,
+                                    );
+                                    if (!ok && context.mounted) {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                        SnackBar(
+                                          content: Text(authProv.error ?? 'Google Login failed'),
+                                          backgroundColor: AppColors.error,
+                                          behavior: SnackBarBehavior.floating,
+                                        ),
+                                      );
+                                    }
+                                  },
                           ),
                         ),
                       ],

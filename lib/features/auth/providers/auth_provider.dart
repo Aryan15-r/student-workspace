@@ -243,6 +243,32 @@ class AuthProvider extends ChangeNotifier {
     }
   }
 
+  // ── Sign In with Google ────────────────────────────────────────────────────
+  Future<bool> signInWithGoogle({
+    required String webClientId,
+    String? iosClientId,
+  }) async {
+    _setLoading(true);
+    try {
+      await _authService.signInWithGoogle(
+        webClientId: webClientId,
+        iosClientId: iosClientId,
+      );
+      final user = _authService.currentUser;
+      if (user != null) {
+        await _loadProfile(user.id);
+      }
+      _error = null;
+      notifyListeners();
+      return true;
+    } catch (e) {
+      _error = e.toString().replaceAll('AppException: ', '');
+      return false;
+    } finally {
+      _setLoading(false);
+    }
+  }
+
   // ── Sign Out ───────────────────────────────────────────────────────────────
   Future<void> signOut() async {
     _setLoading(true);
