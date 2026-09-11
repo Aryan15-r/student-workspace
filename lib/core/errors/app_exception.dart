@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 /// ─────────────────────────────────────────────────────────────────────────────
@@ -52,8 +53,14 @@ class AppException implements Exception {
   );
 
   /// Convert any exception/error to an AppException
-  static AppException from(dynamic error) {
+  static AppException from(dynamic error, {StackTrace? stackTrace}) {
     if (error is AppException) return error;
+
+    // Always log the raw error so devs can see the exact problem
+    debugPrint('───────────────────────────────────────────────');
+    debugPrint('[AppException.from] RAW ERROR: $error');
+    if (stackTrace != null) debugPrint('[AppException.from] STACK:\n$stackTrace');
+    debugPrint('───────────────────────────────────────────────');
 
     if (error is AuthException) {
       return AppException(
@@ -63,8 +70,8 @@ class AppException implements Exception {
       );
     }
 
-    final message = error?.toString() ?? 'An unexpected error occurred.';
-    return AppException(message: _friendlify(message), original: error);
+    final raw = error?.toString() ?? 'An unexpected error occurred.';
+    return AppException(message: _friendlify(raw), code: raw, original: error);
   }
 
   static String _friendlifyAuth(String raw) {
@@ -101,7 +108,8 @@ class AppException implements Exception {
     return raw;
   }
 
-  /// Convert ugly technical error messages to student-friendly ones
+  /// Convert ugly technical error messages to student-friendly ones.
+  /// For unrecognised errors the raw message is surfaced so devs can diagnose.
   static String _friendlify(String raw) {
     if (raw.contains('SocketException') ||
         raw.contains('NetworkException') ||
@@ -120,6 +128,9 @@ class AppException implements Exception {
     if (raw.contains('JWT') || raw.contains('session')) {
       return 'Your session has expired. Please log in again.';
     }
+    // Surface the raw error message in debug builds so the exact problem
+    // is visible. In release builds keep it user-friendly.
+    if (kDebugMode) return raw;
     return 'Something went wrong. Please try again.';
   }
 }

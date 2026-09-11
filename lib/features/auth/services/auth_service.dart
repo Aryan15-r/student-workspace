@@ -10,6 +10,10 @@ import '../../../core/errors/app_exception.dart';
 class AuthService {
   final _supabase = Supabase.instance.client;
 
+  // Tracks whether GoogleSignIn.instance.initialize() has been called.
+  // It can only be called once per app lifetime.
+  static bool _googleSignInInitialized = false;
+
   // ── Sign Up ────────────────────────────────────────────────────────────────
   Future<void> signUp({
     required String email,
@@ -43,25 +47,51 @@ class AuthService {
     String? iosClientId,
   }) async {
     try {
-      await GoogleSignIn.instance.initialize(
-        clientId: iosClientId,
-        serverClientId: webClientId,
-      );
+      debugPrint('[Google SignIn] Starting — kIsWeb: $kIsWeb');
+
+      if (kIsWeb) {
+        // On web: use Supabase OAuth redirect (same as dear-diary React app).
+        // No google_sign_in package needed — Supabase handles the Google popup.
+        debugPrint('[Google SignIn] Web: using Supabase signInWithOAuth...');
+        await _supabase.auth.signInWithOAuth(
+          OAuthProvider.google,
+          redirectTo: '${Uri.base.origin}/',
+        );
+        // signInWithOAuth redirects the browser; execution stops here on web.
+        debugPrint('[Google SignIn] ✅ OAuth redirect initiated.');
+        return;
+      }
+
+      // Mobile (Android / iOS): native google_sign_in flow
+      debugPrint('[Google SignIn] Mobile: using native GoogleSignIn...');
+      if (!_googleSignInInitialized) {
+        await GoogleSignIn.instance.initialize(
+          clientId: iosClientId,
+          serverClientId: webClientId,
+        );
+        _googleSignInInitialized = true;
+      }
+      debugPrint('[Google SignIn] Initialized. Calling authenticate()...');
       final googleUser = await GoogleSignIn.instance.authenticate();
       final googleAuth = googleUser.authentication;
       final idToken = googleAuth.idToken;
+      debugPrint('[Google SignIn] idToken present: ${idToken != null}');
 
       if (idToken == null) {
         throw AppException(message: 'No ID Token found.');
       }
 
+      debugPrint('[Google SignIn] Calling Supabase signInWithIdToken...');
       await _supabase.auth.signInWithIdToken(
         provider: OAuthProvider.google,
         idToken: idToken,
       );
-    } catch (e) {
+      debugPrint('[Google SignIn] ✅ Success!');
+    } catch (e, st) {
+      debugPrint('[Google SignIn] ❌ FAILED: $e');
+      debugPrint('[Google SignIn] Stack trace:\n$st');
       if (e is AppException) rethrow;
-      throw AppException.from(e);
+      throw AppException.from(e, stackTrace: st);
     }
   }
 

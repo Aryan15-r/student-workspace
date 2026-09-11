@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:go_router/go_router.dart';
@@ -229,8 +230,9 @@ class _LoginPageState extends State<LoginPage> {
                           width: double.infinity,
                           child: ElevatedButton.icon(
                             icon: Image.network(
-                              'https://upload.wikimedia.org/wikipedia/commons/c/c1/Google_%22G%22_logo.svg',
+                              'https://www.google.com/favicon.ico',
                               height: 18,
+                              errorBuilder: (_, _, _) => const Icon(Icons.g_mobiledata, size: 22),
                             ),
                             label: const Text('Sign in with Google'),
                             style: ElevatedButton.styleFrom(
@@ -270,7 +272,9 @@ class _LoginPageState extends State<LoginPage> {
                                     final authProv = context.read<AuthProvider>();
                                     final ok = await authProv.signInWithGoogle(
                                       webClientId: webClientId,
-                                      iosClientId: iosClientId,
+                                      // google_sign_in_web does not support serverClientId;
+                                      // pass iosClientId only on non-web platforms.
+                                      iosClientId: kIsWeb ? null : iosClientId,
                                     );
                                     if (!ok && context.mounted) {
                                       ScaffoldMessenger.of(context).showSnackBar(

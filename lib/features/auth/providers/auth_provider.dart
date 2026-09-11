@@ -16,6 +16,7 @@ class AuthProvider extends ChangeNotifier {
   bool _isGuest = false; // True when user browses without signing in
   bool _isPasswordRecovery =
       false; // True when user is in recovery mode to reset password
+  bool _googleSignInInProgress = false; // Guard against rapid repeated taps
 
   // Guest usage limits
   int _guestAiQueries = 0;
@@ -248,6 +249,12 @@ class AuthProvider extends ChangeNotifier {
     required String webClientId,
     String? iosClientId,
   }) async {
+    // Prevent concurrent / spam calls
+    if (_googleSignInInProgress) {
+      debugPrint('[AuthProvider] signInWithGoogle already in progress — ignoring tap.');
+      return false;
+    }
+    _googleSignInInProgress = true;
     _setLoading(true);
     try {
       await _authService.signInWithGoogle(
@@ -261,10 +268,13 @@ class AuthProvider extends ChangeNotifier {
       _error = null;
       notifyListeners();
       return true;
-    } catch (e) {
+    } catch (e, st) {
+      debugPrint('[AuthProvider.signInWithGoogle] ❌ $e\n$st');
       _error = e.toString().replaceAll('AppException: ', '');
+      notifyListeners();
       return false;
     } finally {
+      _googleSignInInProgress = false;
       _setLoading(false);
     }
   }

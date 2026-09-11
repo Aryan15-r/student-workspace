@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "318393076525",
+    "project_id": "study-hub-c7517",
+    "storage_bucket": "study-hub-c7517.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:318393076525:android:60d8dc9796d90523eb21a4",
+        "android_client_info": {
+          "package_name": "com.algopulse.app.student_workspace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCM_60YDBjZ2_4WQh90VpSEeejqj9pTaso"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

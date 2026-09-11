@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_dotenv/flutter_dotenv.dart';
@@ -79,7 +80,7 @@ class _SignupPageState extends State<SignupPage> {
     final auth = context.read<AuthProvider>();
     final ok = await auth.signInWithGoogle(
       webClientId: webClientId,
-      iosClientId: iosClientId,
+      iosClientId: kIsWeb ? null : iosClientId,
     );
     if (!mounted) return;
     if (!ok) {
