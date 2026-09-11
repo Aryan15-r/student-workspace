@@ -70,7 +70,8 @@ class _SignupPageState extends State<SignupPage> {
   Future<void> _signUpWithGoogle() async {
     final webClientId = dotenv.env['GOOGLE_WEB_CLIENT_ID'] ?? '';
     final iosClientId = dotenv.env['GOOGLE_IOS_CLIENT_ID'];
-    if (webClientId.isEmpty || webClientId == 'your_web_client_id_here') {
+    // On web, signInWithOAuth doesn't need a client ID (Supabase handles it), so skip the guard.
+    if (!kIsWeb && (webClientId.isEmpty || webClientId == 'your_web_client_id_here')) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Google sign-in has not been configured yet.')),
       );

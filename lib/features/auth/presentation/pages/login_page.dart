@@ -258,8 +258,10 @@ class _LoginPageState extends State<LoginPage> {
                                 : () async {
                                     final webClientId = dotenv.env['GOOGLE_WEB_CLIENT_ID'] ?? '';
                                     final iosClientId = dotenv.env['GOOGLE_IOS_CLIENT_ID'];
-                                    
-                                    if (webClientId.isEmpty || webClientId == 'your_web_client_id_here') {
+
+                                    // On web, signInWithOAuth doesn't need a client ID
+                                    // (Supabase handles it server-side), so skip the check.
+                                    if (!kIsWeb && (webClientId.isEmpty || webClientId == 'your_web_client_id_here')) {
                                       ScaffoldMessenger.of(context).showSnackBar(
                                         const SnackBar(
                                           content: Text('Google OAuth not configured in .env yet.'),
@@ -268,12 +270,10 @@ class _LoginPageState extends State<LoginPage> {
                                       );
                                       return;
                                     }
-                                    
+
                                     final authProv = context.read<AuthProvider>();
                                     final ok = await authProv.signInWithGoogle(
                                       webClientId: webClientId,
-                                      // google_sign_in_web does not support serverClientId;
-                                      // pass iosClientId only on non-web platforms.
                                       iosClientId: kIsWeb ? null : iosClientId,
                                     );
                                     if (!ok && context.mounted) {
