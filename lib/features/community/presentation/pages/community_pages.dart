@@ -336,14 +336,14 @@ class _CommunityListPageState extends State<CommunityListPage> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    const Row(
+                    Row(
                       children: [
-                        Icon(
+                        const Icon(
                           Icons.lock_rounded,
                           color: Color(0xFFF59E0B),
                           size: 20,
                         ),
-                        SizedBox(width: 10),
+                        const SizedBox(width: 10),
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -352,7 +352,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                               style: AppTextStyles.headlineMedium
                                   .copyWith(color: AppColors.textPrimary),
                             ),
-                            Text(
+                            const Text(
                               'Requires passcode to enter',
                               style: TextStyle(
                                 color: Color(0xFF806A63),
@@ -559,10 +559,10 @@ class _CommunityListPageState extends State<CommunityListPage> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Row(
+                        Row(
                           children: [
-                            Text('⚡', style: TextStyle(fontSize: 22)),
-                            SizedBox(width: 8),
+                            const Text('⚡', style: TextStyle(fontSize: 22)),
+                            const SizedBox(width: 8),
                             Text(
                               'Join Room by Code',
                               style: AppTextStyles.headlineSmall,

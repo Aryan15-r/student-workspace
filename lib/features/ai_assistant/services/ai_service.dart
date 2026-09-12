@@ -14,8 +14,7 @@ class AiService {
   // Keep the stable Flash model first. The previous list tried several
   // unavailable model names sequentially, adding up to minutes of latency.
   static const _models = <String>[
-    'gemini-3.6-flash',
-    'gemini-3.7-flash',
+    'gemini-1.5-flash',
   ];
 
   /// Sends the full conversation history to Gemini and returns the AI reply.
@@ -87,7 +86,7 @@ class AiService {
 
         final response = await _client
             .post(url, headers: headers, body: body)
-            .timeout(const Duration(seconds: 25));
+            .timeout(const Duration(seconds: 60));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
@@ -177,7 +176,7 @@ Return ONLY valid raw JSON.
                 },
               }),
             )
-            .timeout(const Duration(seconds: 12));
+            .timeout(const Duration(seconds: 60));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
@@ -247,7 +246,7 @@ Example:
             'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
             'generationConfig': {'temperature': 0.4, 'responseMimeType': 'application/json'},
           }),
-        ).timeout(const Duration(seconds: 15));
+        ).timeout(const Duration(seconds: 60));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
@@ -317,7 +316,7 @@ Ensure exactly 4 options per question, and correctOptionIndex is between 0 and 3
             'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
             'generationConfig': {'temperature': 0.4, 'responseMimeType': 'application/json'},
           }),
-        ).timeout(const Duration(seconds: 15));
+        ).timeout(const Duration(seconds: 60));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);

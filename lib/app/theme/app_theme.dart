@@ -253,6 +253,37 @@ class AppTheme {
         ),
       ),
 
+      // ── Date Picker ──────────────────────────────────────────────────────
+      datePickerTheme: DatePickerThemeData(
+        backgroundColor: AppColors.surface,
+        headerBackgroundColor: AppColors.primary,
+        headerForegroundColor: AppColors.surface,
+        dayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return AppColors.surface;
+          if (states.contains(WidgetState.disabled)) return AppColors.textMuted;
+          return AppColors.textPrimary;
+        }),
+        todayForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return AppColors.surface;
+          return AppColors.primary;
+        }),
+        yearForegroundColor: WidgetStateProperty.resolveWith((states) {
+          if (states.contains(WidgetState.selected)) return AppColors.surface;
+          return AppColors.textPrimary;
+        }),
+      ),
+
+      // ── Time Picker ──────────────────────────────────────────────────────
+      timePickerTheme: TimePickerThemeData(
+        backgroundColor: AppColors.surface,
+        dialBackgroundColor: AppColors.card,
+        dialHandColor: AppColors.primary,
+        dialTextColor: AppColors.textPrimary,
+        hourMinuteTextColor: AppColors.primary,
+        hourMinuteColor: AppColors.card,
+        dayPeriodTextColor: AppColors.primary,
+      ),
+
       // ── Cards ───────────────────────────────────────────────────────────────
       cardTheme: CardThemeData(
         color: AppColors.surface,

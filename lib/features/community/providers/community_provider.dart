@@ -306,11 +306,18 @@ class CommunityProvider extends ChangeNotifier {
 
       // Join channel_members
       if (user != null) {
-        await _db.from('channel_members').upsert({
+        final existingMember = await _db.from('channel_members').select().match({
           'channel_id': channelId,
           'user_id': user.id,
-          'role': user.id == roomCreatorId ? 'admin' : 'member',
-        }, onConflict: 'channel_id, user_id');
+        }).maybeSingle();
+        
+        if (existingMember == null) {
+          await _db.from('channel_members').insert({
+            'channel_id': channelId,
+            'user_id': user.id,
+            'role': user.id == roomCreatorId ? 'admin' : 'member',
+          });
+        }
       }
 
       await loadCommunities();

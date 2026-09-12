@@ -302,7 +302,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               const SizedBox(height: 28),
 
                               // ── Quick Tools Header ───────────────────────────
-                              const Text(
+                              Text(
                                 'Quick Tools & Utilities',
                                 style: AppTextStyles.headlineMedium,
                               ),
@@ -374,7 +374,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(24, 32, 24, 12),
-                          child: const Text(
+                          child: Text(
                             "Attendance Tracker",
                             style: AppTextStyles.headlineMedium,
                           ),
@@ -433,7 +433,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           padding: const EdgeInsets.fromLTRB(24, 32, 24, 12),
                           child: Row(
                             children: [
-                              const Text(
+                              Text(
                                 "Today's Tasks",
                                 style: AppTextStyles.headlineMedium,
                               ),
@@ -525,7 +525,7 @@ class _DashboardPageState extends State<DashboardPage> {
                       SliverToBoxAdapter(
                         child: Padding(
                           padding: const EdgeInsets.fromLTRB(24, 32, 24, 14),
-                          child: const Text(
+                          child: Text(
                             'Explore Modules',
                             style: AppTextStyles.headlineMedium,
                           ),
