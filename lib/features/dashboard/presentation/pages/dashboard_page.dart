@@ -666,9 +666,9 @@ class _QuickTool extends StatelessWidget {
           child: Container(
             padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 8),
             decoration: BoxDecoration(
-              color: const Color(0xFFF7EBDD).withValues(alpha: 0.8),
+              color: const Color(0xFF1A2A3A),
               borderRadius: BorderRadius.circular(18),
-              border: Border.all(color: const Color(0xFFE8D4C4)),
+              border: Border.all(color: const Color(0xFF1A2A3A).withValues(alpha: 0.8)),
               boxShadow: [
                 BoxShadow(
                   color: Colors.black.withValues(alpha: 0.2),
@@ -689,7 +689,7 @@ class _QuickTool extends StatelessWidget {
                     style: const TextStyle(
                       fontSize: 12,
                       fontWeight: FontWeight.bold,
-                      color: AppColors.textPrimary,
+                      color: Colors.white,
                     ),
                     textAlign: TextAlign.center,
                   ),
@@ -723,9 +723,9 @@ class _FeatureCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(18),
         decoration: BoxDecoration(
-          color: color.withValues(alpha: 0.1),
+          color: const Color(0xFF1A2A3A),
           borderRadius: BorderRadius.circular(20),
-          border: Border.all(color: color.withValues(alpha: 0.3)),
+          border: Border.all(color: color.withValues(alpha: 0.5)),
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.15),
@@ -741,7 +741,7 @@ class _FeatureCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(8),
               decoration: BoxDecoration(
-                color: color.withValues(alpha: 0.18),
+                color: color.withValues(alpha: 0.25),
                 shape: BoxShape.circle,
               ),
               child: Text(emoji, style: const TextStyle(fontSize: 22)),
@@ -750,7 +750,7 @@ class _FeatureCard extends StatelessWidget {
             Text(
               title,
               style: const TextStyle(
-                color: AppColors.textPrimary,
+                color: Colors.white,
                 fontWeight: FontWeight.bold,
                 fontSize: 15,
               ),
@@ -758,7 +758,7 @@ class _FeatureCard extends StatelessWidget {
             const SizedBox(height: 2),
             Text(
               subtitle,
-              style: const TextStyle(color: Color(0xFF806A63), fontSize: 12),
+              style: const TextStyle(color: Colors.white70, fontSize: 12),
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
             ),
