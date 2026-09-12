@@ -17,52 +17,29 @@ class _QuizGeneratorPageState extends State<QuizGeneratorPage> {
   final TextEditingController _topicController = TextEditingController();
 
   void _showCreateDialog(BuildContext context) {
-    double questionCount = 5;
     showDialog(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          title: const Text('Generate AI Quiz'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _topicController,
-                decoration: const InputDecoration(
-                  labelText: 'Topic (e.g., World War II)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Questions:'),
-                  Text('${questionCount.toInt()}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                ],
-              ),
-              Slider(
-                value: questionCount,
-                min: 3,
-                max: 20,
-                divisions: 17,
-                label: questionCount.toInt().toString(),
-                onChanged: (val) => setDialogState(() => questionCount = val),
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        title: const Text('Generate AI Quiz'),
+        content: TextField(
+          controller: _topicController,
+          decoration: const InputDecoration(
+            labelText: 'Topic (e.g., World War II)',
+            border: OutlineInputBorder(),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final topic = _topicController.text.trim();
-                if (topic.isNotEmpty) {
-                  Navigator.pop(ctx);
-                  final provider = context.read<QuizProvider>();
-                  final quiz = await provider.generateQuiz(topic, count: questionCount.toInt());
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final topic = _topicController.text.trim();
+              if (topic.isNotEmpty) {
+                Navigator.pop(ctx);
+                final provider = context.read<QuizProvider>();
+                final quiz = await provider.generateQuiz(topic);
                 if (quiz != null && mounted) {
                   context.push('/quizzes/take/${quiz.id}');
                 } else if (mounted) {
@@ -75,7 +52,6 @@ class _QuizGeneratorPageState extends State<QuizGeneratorPage> {
             child: const Text('Generate'),
           ),
         ],
-      ),
       ),
     );
   }

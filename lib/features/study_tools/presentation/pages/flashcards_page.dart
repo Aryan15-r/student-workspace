@@ -17,52 +17,29 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
   final TextEditingController _topicController = TextEditingController();
 
   void _showCreateDialog(BuildContext context) {
-    double cardCount = 10;
     showDialog(
       context: context,
-      builder: (ctx) => StatefulBuilder(
-        builder: (ctx, setDialogState) => AlertDialog(
-          title: const Text('Generate AI Flashcards'),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextField(
-                controller: _topicController,
-                decoration: const InputDecoration(
-                  labelText: 'Topic (e.g., Photosynthesis)',
-                  border: OutlineInputBorder(),
-                ),
-              ),
-              const SizedBox(height: 16),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text('Cards:'),
-                  Text('${cardCount.toInt()}', style: const TextStyle(fontWeight: FontWeight.bold)),
-                ],
-              ),
-              Slider(
-                value: cardCount,
-                min: 5,
-                max: 30,
-                divisions: 25,
-                label: cardCount.toInt().toString(),
-                onChanged: (val) => setDialogState(() => cardCount = val),
-              ),
-            ],
+      builder: (ctx) => AlertDialog(
+        title: const Text('Generate AI Flashcards'),
+        content: TextField(
+          controller: _topicController,
+          decoration: const InputDecoration(
+            labelText: 'Topic (e.g., Photosynthesis)',
+            border: OutlineInputBorder(),
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel'),
-            ),
-            FilledButton(
-              onPressed: () async {
-                final topic = _topicController.text.trim();
-                if (topic.isNotEmpty) {
-                  Navigator.pop(ctx);
-                  final provider = context.read<FlashcardProvider>();
-                  final success = await provider.generateDeckFromTopic(topic, count: cardCount.toInt());
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () async {
+              final topic = _topicController.text.trim();
+              if (topic.isNotEmpty) {
+                Navigator.pop(ctx);
+                final provider = context.read<FlashcardProvider>();
+                final success = await provider.generateDeckFromTopic(topic);
                 if (!success && mounted) {
                   ScaffoldMessenger.of(context).showSnackBar(
                     const SnackBar(content: Text('Failed to generate flashcards.')),
@@ -73,7 +50,6 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
             child: const Text('Generate'),
           ),
         ],
-      ),
       ),
     );
   }

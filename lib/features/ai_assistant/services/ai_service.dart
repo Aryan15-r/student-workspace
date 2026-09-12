@@ -244,7 +244,7 @@ Example:
           headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey},
           body: jsonEncode({
             'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
-            'generationConfig': {'temperature': 0.4, 'responseMimeType': 'application/json'},
+            'generationConfig': {'temperature': 0.4, 'maxOutputTokens': 8192},
           }),
         ).timeout(const Duration(seconds: 60));
 
@@ -324,7 +324,7 @@ Ensure exactly 4 options per question, and correctOptionIndex is between 0 and 3
           headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey},
           body: jsonEncode({
             'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
-            'generationConfig': {'temperature': 0.4, 'responseMimeType': 'application/json'},
+            'generationConfig': {'temperature': 0.4, 'maxOutputTokens': 8192},
           }),
         ).timeout(const Duration(seconds: 60));
 
