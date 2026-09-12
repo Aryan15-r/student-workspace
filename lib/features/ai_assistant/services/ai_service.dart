@@ -14,7 +14,8 @@ class AiService {
   // Keep the stable Flash model first. The previous list tried several
   // unavailable model names sequentially, adding up to minutes of latency.
   static const _models = <String>[
-    'gemini-1.5-flash',
+    'gemini-3.6-flash',
+    'gemini-3.7-flash',
   ];
 
   /// Sends the full conversation history to Gemini and returns the AI reply.
@@ -86,7 +87,7 @@ class AiService {
 
         final response = await _client
             .post(url, headers: headers, body: body)
-            .timeout(const Duration(seconds: 60));
+            .timeout(const Duration(seconds: 25));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
@@ -176,7 +177,7 @@ Return ONLY valid raw JSON.
                 },
               }),
             )
-            .timeout(const Duration(seconds: 60));
+            .timeout(const Duration(seconds: 12));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
@@ -244,33 +245,23 @@ Example:
           headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey},
           body: jsonEncode({
             'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
-            'generationConfig': {'temperature': 0.4, 'maxOutputTokens': 8192},
+            'generationConfig': {'temperature': 0.4, 'responseMimeType': 'application/json'},
           }),
-        ).timeout(const Duration(seconds: 60));
+        ).timeout(const Duration(seconds: 15));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
-          // content is a Map, not a List — use ['parts'] directly
-          final text = json['candidates']?[0]?['content']?['parts']?[0]?['text'];
-          debugPrint('Flashcard raw response text: $text');
+          final text = json['candidates']?[0]?['content']?[0]?['parts']?[0]?['text'] ??
+              json['candidates']?[0]?['content']?['parts']?[0]?['text'];
           if (text != null && text.toString().trim().isNotEmpty) {
-             String rawText = text.toString().trim();
-             // Strip markdown code fences if present
-             if (rawText.startsWith('```')) {
-               rawText = rawText.replaceAll(RegExp(r'^```[a-z]*\n?'), '').replaceAll(RegExp(r'```$'), '').trim();
-             }
-             final parsed = jsonDecode(rawText);
+             final parsed = jsonDecode(text.toString());
              if (parsed is List) {
                return parsed.map((e) => {
                  'front': e['front']?.toString() ?? '',
                  'back': e['back']?.toString() ?? '',
                }).toList();
              }
-          } else {
-            debugPrint('Flashcard: no text in response. Full body: ${response.body}');
           }
-        } else {
-          debugPrint('Flashcard API error ${response.statusCode}: ${response.body}');
         }
       } catch (e) {
         debugPrint('Generate Flashcards error on $model: $e');
@@ -324,30 +315,20 @@ Ensure exactly 4 options per question, and correctOptionIndex is between 0 and 3
           headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey},
           body: jsonEncode({
             'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
-            'generationConfig': {'temperature': 0.4, 'maxOutputTokens': 8192},
+            'generationConfig': {'temperature': 0.4, 'responseMimeType': 'application/json'},
           }),
-        ).timeout(const Duration(seconds: 60));
+        ).timeout(const Duration(seconds: 15));
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
-          // content is a Map, not a List — use ['parts'] directly
-          final text = json['candidates']?[0]?['content']?['parts']?[0]?['text'];
-          debugPrint('Quiz raw response text: $text');
+          final text = json['candidates']?[0]?['content']?[0]?['parts']?[0]?['text'] ??
+              json['candidates']?[0]?['content']?['parts']?[0]?['text'];
           if (text != null && text.toString().trim().isNotEmpty) {
-             String rawText = text.toString().trim();
-             // Strip markdown code fences if present
-             if (rawText.startsWith('```')) {
-               rawText = rawText.replaceAll(RegExp(r'^```[a-z]*\n?'), '').replaceAll(RegExp(r'```$'), '').trim();
-             }
-             final parsed = jsonDecode(rawText);
+             final parsed = jsonDecode(text.toString());
              if (parsed is Map<String, dynamic>) {
                 return parsed;
              }
-          } else {
-            debugPrint('Quiz: no text in response. Full body: ${response.body}');
           }
-        } else {
-          debugPrint('Quiz API error ${response.statusCode}: ${response.body}');
         }
       } catch (e) {
         debugPrint('Generate Quiz error on $model: $e');
