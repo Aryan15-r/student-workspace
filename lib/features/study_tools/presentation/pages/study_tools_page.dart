@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 import '../../../../app/theme/app_colors.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../providers/study_tools_provider.dart';
+import 'package:go_router/go_router.dart';
 
 class StudyToolsPage extends StatelessWidget {
   const StudyToolsPage({super.key});
@@ -238,6 +239,40 @@ class StudyToolsPage extends StatelessWidget {
                     const SizedBox(height: 8),
                     Text(
                       'Goal: 75 minutes  •  ${(focusedSeconds / StudyToolsProvider.dailyGoalSeconds * 100).clamp(0, 100).toStringAsFixed(0)}% complete',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+              _Panel(
+                icon: Icons.style_rounded,
+                title: 'Flashcard Maker',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Create decks manually or generate them instantly with AI.'),
+                    const SizedBox(height: 12),
+                    FilledButton.icon(
+                      onPressed: () => context.push('/flashcards'),
+                      icon: const Icon(Icons.bolt_rounded),
+                      label: const Text('Open Flashcards'),
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 14),
+              _Panel(
+                icon: Icons.quiz_rounded,
+                title: 'AI Quiz Generator',
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text('Test your knowledge with AI-generated multiple choice quizzes.'),
+                    const SizedBox(height: 12),
+                    FilledButton.icon(
+                      onPressed: () => context.push('/quizzes'),
+                      icon: const Icon(Icons.bolt_rounded),
+                      label: const Text('Open Quiz Generator'),
                     ),
                   ],
                 ),

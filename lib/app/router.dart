@@ -11,6 +11,19 @@ import '../features/todo/presentation/pages/todo_page.dart';
 import '../features/ai_assistant/presentation/pages/ai_page.dart';
 import '../features/search/presentation/pages/search_page.dart';
 import '../features/community/presentation/pages/community_list_page.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+import '../features/auth/providers/auth_provider.dart';
+import '../features/auth/presentation/pages/landing_page.dart';
+import '../features/auth/presentation/pages/login_page.dart';
+import '../features/auth/presentation/pages/signup_page.dart';
+import '../features/auth/presentation/pages/forgot_password_page.dart';
+import '../features/auth/presentation/pages/otp_verification_page.dart';
+import '../features/dashboard/presentation/pages/dashboard_page.dart';
+import '../features/todo/presentation/pages/todo_page.dart';
+import '../features/ai_assistant/presentation/pages/ai_page.dart';
+import '../features/search/presentation/pages/search_page.dart';
+import '../features/community/presentation/pages/community_list_page.dart';
 import '../features/community/presentation/pages/channel_list_page.dart';
 import '../features/community/presentation/pages/chat_page.dart';
 import '../features/calculator/presentation/pages/calculator_page.dart';
@@ -18,6 +31,10 @@ import '../features/pdf_tools/presentation/pages/pdf_tools_page.dart';
 import '../features/profile/presentation/pages/profile_page.dart';
 import '../features/profile/presentation/pages/app_info_page.dart';
 import '../features/study_tools/presentation/pages/study_tools_page.dart';
+import '../features/study_tools/presentation/pages/flashcards_page.dart';
+import '../features/study_tools/presentation/pages/flashcard_study_page.dart';
+import '../features/study_tools/presentation/pages/quiz_generator_page.dart';
+import '../features/study_tools/presentation/pages/quiz_active_page.dart';
 
 import '../core/widgets/error_landing_page.dart';
 
@@ -66,6 +83,10 @@ class AppRouter {
         location == '/signup' ||
         location == '/todo' ||
         location == '/study-tools' ||
+        location == '/flashcards' ||
+        location.startsWith('/flashcards/study') ||
+        location == '/quizzes' ||
+        location.startsWith('/quizzes/take') ||
         location == '/forgot-password' ||
         location == '/reset-password' ||
         location.startsWith('/verify-otp');
@@ -158,6 +179,30 @@ class AppRouter {
     GoRoute(
       path: '/study-tools',
       builder: (context, state) => const StudyToolsPage(),
+    ),
+    GoRoute(
+      path: '/flashcards',
+      builder: (context, state) => const FlashcardsPage(),
+      routes: [
+        GoRoute(
+          path: 'study/:deckId',
+          builder: (context, state) => FlashcardStudyPage(
+            deckId: state.pathParameters['deckId']!,
+          ),
+        ),
+      ]
+    ),
+    GoRoute(
+      path: '/quizzes',
+      builder: (context, state) => const QuizGeneratorPage(),
+      routes: [
+        GoRoute(
+          path: 'take/:quizId',
+          builder: (context, state) => QuizActivePage(
+            quizId: state.pathParameters['quizId']!,
+          ),
+        ),
+      ]
     ),
   ];
 }

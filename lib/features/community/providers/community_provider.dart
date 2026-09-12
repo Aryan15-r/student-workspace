@@ -282,15 +282,6 @@ class CommunityProvider extends ChangeNotifier {
         }
       }
 
-      // Join channel_members
-      if (user != null) {
-        await _db.from('channel_members').upsert({
-          'channel_id': communityId,
-          'user_id': user.id,
-          'role': user.id == roomCreatorId ? 'admin' : 'member',
-        }, onConflict: 'channel_id, user_id');
-      }
-
       final channelData = await _db
           .from('channels')
           .select()
@@ -300,6 +291,15 @@ class CommunityProvider extends ChangeNotifier {
       final channelId = channelData != null
           ? channelData['id'] as String
           : communityId;
+
+      // Join channel_members
+      if (user != null) {
+        await _db.from('channel_members').upsert({
+          'channel_id': channelId,
+          'user_id': user.id,
+          'role': user.id == roomCreatorId ? 'admin' : 'member',
+        }, onConflict: 'channel_id, user_id');
+      }
 
       await loadCommunities();
       return {'communityId': communityId, 'channelId': channelId};

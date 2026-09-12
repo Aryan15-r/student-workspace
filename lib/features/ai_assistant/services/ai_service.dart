@@ -212,7 +212,128 @@ Return ONLY valid raw JSON.
       }
     }
 
-    return _getFallbackSearchData(cleanQuery);
+  }
+
+  /// AI-powered Flashcard generation
+  Future<List<Map<String, String>>> generateFlashcards(String topic, {int count = 10}) async {
+    final apiKey = _apiKey.trim();
+    if (apiKey.isEmpty || apiKey == 'your-gemini-api-key-here') {
+      return [
+        {'front': 'What is $topic?', 'back': 'This is a sample generated back for $topic.'},
+        {'front': 'Example card 2', 'back': 'Set up Gemini API for real AI generation.'},
+      ];
+    }
+
+    final prompt = '''
+You are an expert tutor. Generate exactly $count educational flashcards for the topic: "$topic".
+Return ONLY valid raw JSON array of objects.
+Each object must have exactly two string keys: "front" and "back".
+Example:
+[
+  {"front": "Question or term", "back": "Answer or definition"}
+]
+''';
+
+    for (final model in _models) {
+      try {
+        final url = Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey',
+        );
+        final response = await _client.post(
+          url,
+          headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey},
+          body: jsonEncode({
+            'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
+            'generationConfig': {'temperature': 0.4, 'responseMimeType': 'application/json'},
+          }),
+        ).timeout(const Duration(seconds: 15));
+
+        if (response.statusCode == 200) {
+          final json = jsonDecode(response.body);
+          final text = json['candidates']?[0]?['content']?[0]?['parts']?[0]?['text'] ??
+              json['candidates']?[0]?['content']?['parts']?[0]?['text'];
+          if (text != null && text.toString().trim().isNotEmpty) {
+             final parsed = jsonDecode(text.toString());
+             if (parsed is List) {
+               return parsed.map((e) => {
+                 'front': e['front']?.toString() ?? '',
+                 'back': e['back']?.toString() ?? '',
+               }).toList();
+             }
+          }
+        }
+      } catch (e) {
+        debugPrint('Generate Flashcards error on $model: $e');
+      }
+    }
+    return [];
+  }
+
+  /// AI-powered Quiz generation
+  Future<Map<String, dynamic>> generateQuiz(String topic, {int count = 5}) async {
+    final apiKey = _apiKey.trim();
+    if (apiKey.isEmpty || apiKey == 'your-gemini-api-key-here') {
+      return {
+        'title': 'Sample Quiz on $topic',
+        'questions': [
+          {
+            'question': 'What is the main concept of $topic?',
+            'options': ['Option A', 'Option B', 'Option C', 'Option D'],
+            'correctOptionIndex': 0,
+            'explanation': 'This is a placeholder explanation.'
+          }
+        ]
+      };
+    }
+
+    final prompt = '''
+You are an expert examiner. Generate a multiple-choice quiz about "$topic" with exactly $count questions.
+Return ONLY valid raw JSON.
+Format:
+{
+  "title": "Title of the Quiz",
+  "questions": [
+    {
+      "question": "The question text?",
+      "options": ["Option 1", "Option 2", "Option 3", "Option 4"],
+      "correctOptionIndex": 0,
+      "explanation": "Brief explanation of the correct answer."
+    }
+  ]
+}
+Ensure exactly 4 options per question, and correctOptionIndex is between 0 and 3.
+''';
+
+    for (final model in _models) {
+      try {
+        final url = Uri.parse(
+          'https://generativelanguage.googleapis.com/v1beta/models/$model:generateContent?key=$apiKey',
+        );
+        final response = await _client.post(
+          url,
+          headers: {'Content-Type': 'application/json', 'x-goog-api-key': apiKey},
+          body: jsonEncode({
+            'contents': [{'role': 'user', 'parts': [{'text': prompt}]}],
+            'generationConfig': {'temperature': 0.4, 'responseMimeType': 'application/json'},
+          }),
+        ).timeout(const Duration(seconds: 15));
+
+        if (response.statusCode == 200) {
+          final json = jsonDecode(response.body);
+          final text = json['candidates']?[0]?['content']?[0]?['parts']?[0]?['text'] ??
+              json['candidates']?[0]?['content']?['parts']?[0]?['text'];
+          if (text != null && text.toString().trim().isNotEmpty) {
+             final parsed = jsonDecode(text.toString());
+             if (parsed is Map<String, dynamic>) {
+                return parsed;
+             }
+          }
+        }
+      } catch (e) {
+        debugPrint('Generate Quiz error on $model: $e');
+      }
+    }
+    return {};
   }
 
   /// Legacy list helper for compatibility
