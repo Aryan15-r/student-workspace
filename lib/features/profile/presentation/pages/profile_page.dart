@@ -82,13 +82,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 28),
 
                     // Academic Info Cards
-                    const Text(
+                    Text(
                       'Academic Profile',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppTextStyles.headlineSmall,
                     ),
                     const SizedBox(height: 12),
                     ...[
@@ -125,13 +121,9 @@ class _ProfilePageState extends State<ProfilePage> {
                     const SizedBox(height: 28),
 
                     // Settings Section
-                    const Text(
+                    Text(
                       'App & Account Settings',
-                      style: TextStyle(
-                        color: AppColors.textPrimary,
-                        fontSize: 16,
-                        fontWeight: FontWeight.bold,
-                      ),
+                      style: AppTextStyles.headlineSmall,
                     ),
                     const SizedBox(height: 12),
 

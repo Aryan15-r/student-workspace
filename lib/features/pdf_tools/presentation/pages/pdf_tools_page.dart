@@ -249,8 +249,9 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
                   ),
                   onPressed: () async {
                     if (titleCtrl.text.trim().isEmpty ||
-                        contentCtrl.text.trim().isEmpty)
+                        contentCtrl.text.trim().isEmpty) {
                       return;
+                    }
                     Navigator.pop(ctx);
                     await context.read<PdfProvider>().generateNotesPdf(
                       title: titleCtrl.text.trim(),

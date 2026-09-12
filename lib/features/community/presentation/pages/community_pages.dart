@@ -349,11 +349,8 @@ class _CommunityListPageState extends State<CommunityListPage> {
                           children: [
                             Text(
                               'Private Room',
-                              style: TextStyle(
-                                color: AppColors.textPrimary,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
+                              style: AppTextStyles.headlineMedium
+                                  .copyWith(color: AppColors.textPrimary),
                             ),
                             Text(
                               'Requires passcode to enter',
@@ -458,7 +455,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
     final auth = context.watch<AuthProvider>();
 
     return AdaptiveScaffold(
-      selectedIndex: 3,
+      selectedIndex: 4,
       child: Scaffold(
         backgroundColor: const Color(0xFFFFF8F0),
         appBar: AppBar(
@@ -543,9 +540,9 @@ class _CommunityListPageState extends State<CommunityListPage> {
                     padding: const EdgeInsets.all(18),
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [Color(0xFF1E1B4B), Color(0xFF8F4F3A)],
-                        begin: Alignment.topLeft,
-                        end: Alignment.bottomRight,
+                        colors: [Color(0xFF1A2A3A), Color(0xFFF7EBDD)],
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
                       ),
                       borderRadius: BorderRadius.circular(20),
                       border: Border.all(
@@ -568,11 +565,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                             SizedBox(width: 8),
                             Text(
                               'Join Room by Code',
-                              style: TextStyle(
-                                color: AppColors.textPrimary,
-                                fontSize: 16,
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: AppTextStyles.headlineSmall,
                             ),
                           ],
                         ),
@@ -747,11 +740,7 @@ class _CommunityListPageState extends State<CommunityListPage> {
                         _selectedTab == 0
                             ? 'Public Study Lounges'
                             : 'Private Passcode Rooms',
-                        style: const TextStyle(
-                          color: AppColors.textPrimary,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
+                        style: AppTextStyles.headlineMedium,
                       ),
                       ElevatedButton.icon(
                         style: ElevatedButton.styleFrom(

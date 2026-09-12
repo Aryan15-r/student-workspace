@@ -299,10 +299,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
                 validator: (v) {
-                  if (v == null || v.trim().isEmpty)
+                  if (v == null || v.trim().isEmpty) {
                     return 'Please enter your email';
-                  if (!v.contains('@') || !v.contains('.'))
+                  }
+                  if (!v.contains('@') || !v.contains('.')) {
                     return 'Please enter a valid email address';
+                  }
                   return null;
                 },
               ),
@@ -460,10 +462,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
                 validator: (v) {
-                  if (v == null || v.trim().isEmpty)
+                  if (v == null || v.trim().isEmpty) {
                     return 'Enter the 6-digit OTP code from your email';
-                  if (v.trim().length < 6)
+                  }
+                  if (v.trim().length < 6) {
                     return 'Code must be at least 6 digits';
+                  }
                   return null;
                 },
               ),
@@ -602,10 +606,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
                 validator: (v) {
-                  if (v == null || v.isEmpty)
+                  if (v == null || v.isEmpty) {
                     return 'Please enter a new password';
-                  if (v.length < 6)
+                  }
+                  if (v.length < 6) {
                     return 'Password must be at least 6 characters';
+                  }
                   return null;
                 },
               ),
@@ -633,10 +639,12 @@ class _ForgotPasswordPageState extends State<ForgotPasswordPage> {
                   ),
                 ),
                 validator: (v) {
-                  if (v == null || v.isEmpty)
+                  if (v == null || v.isEmpty) {
                     return 'Please confirm your password';
-                  if (v != _newPasswordCtrl.text)
+                  }
+                  if (v != _newPasswordCtrl.text) {
                     return 'Passwords do not match';
+                  }
                   return null;
                 },
               ),

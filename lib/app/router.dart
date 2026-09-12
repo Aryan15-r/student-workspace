@@ -11,19 +11,6 @@ import '../features/todo/presentation/pages/todo_page.dart';
 import '../features/ai_assistant/presentation/pages/ai_page.dart';
 import '../features/search/presentation/pages/search_page.dart';
 import '../features/community/presentation/pages/community_list_page.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import '../features/auth/providers/auth_provider.dart';
-import '../features/auth/presentation/pages/landing_page.dart';
-import '../features/auth/presentation/pages/login_page.dart';
-import '../features/auth/presentation/pages/signup_page.dart';
-import '../features/auth/presentation/pages/forgot_password_page.dart';
-import '../features/auth/presentation/pages/otp_verification_page.dart';
-import '../features/dashboard/presentation/pages/dashboard_page.dart';
-import '../features/todo/presentation/pages/todo_page.dart';
-import '../features/ai_assistant/presentation/pages/ai_page.dart';
-import '../features/search/presentation/pages/search_page.dart';
-import '../features/community/presentation/pages/community_list_page.dart';
 import '../features/community/presentation/pages/channel_list_page.dart';
 import '../features/community/presentation/pages/chat_page.dart';
 import '../features/calculator/presentation/pages/calculator_page.dart';
@@ -98,8 +85,9 @@ class AppRouter {
     // Already logged in (authenticated) and trying to visit landing/login/signup → go to dashboard
     if (isAuth &&
         !isRecovery &&
-        (location == '/' || location == '/login' || location == '/signup'))
+        (location == '/' || location == '/login' || location == '/signup')) {
       return '/dashboard';
+    }
 
     // No redirect needed
     return null;

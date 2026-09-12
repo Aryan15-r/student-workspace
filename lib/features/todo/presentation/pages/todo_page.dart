@@ -338,13 +338,9 @@ class _ActivityStatsView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text(
+          Text(
             'Study Activity & Progress',
-            style: TextStyle(
-              color: AppColors.textPrimary,
-              fontSize: 18,
-              fontWeight: FontWeight.bold,
-            ),
+            style: AppTextStyles.headlineSmall,
           ),
           const SizedBox(height: 16),
 

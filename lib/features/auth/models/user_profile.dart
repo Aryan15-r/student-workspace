@@ -62,8 +62,9 @@ class UserProfile {
   String get initials {
     if (fullName.isNotEmpty) {
       final parts = fullName.trim().split(' ');
-      if (parts.length >= 2)
+      if (parts.length >= 2) {
         return '${parts[0][0]}${parts[1][0]}'.toUpperCase();
+      }
       return fullName[0].toUpperCase();
     }
     return username.isNotEmpty ? username[0].toUpperCase() : '?';

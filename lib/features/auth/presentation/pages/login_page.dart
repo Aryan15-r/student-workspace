@@ -112,10 +112,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           validator: (v) {
-                            if (v == null || v.isEmpty)
+                            if (v == null || v.isEmpty) {
                               return 'Please enter your email';
-                            if (!v.contains('@'))
+                            }
+                            if (!v.contains('@')) {
                               return 'Please enter a valid email';
+                            }
                             return null;
                           },
                         ),
@@ -144,10 +146,12 @@ class _LoginPageState extends State<LoginPage> {
                             ),
                           ),
                           validator: (v) {
-                            if (v == null || v.isEmpty)
+                            if (v == null || v.isEmpty) {
                               return 'Please enter your password';
-                            if (v.length < 6)
+                            }
+                            if (v.length < 6) {
                               return 'Password must be at least 6 characters';
+                            }
                             return null;
                           },
                         ),

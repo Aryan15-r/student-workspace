@@ -167,12 +167,15 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                           validator: (v) {
-                            if (v == null || v.trim().isEmpty)
+                            if (v == null || v.trim().isEmpty) {
                               return 'Please choose a username';
-                            if (v.trim().length < 3)
+                            }
+                            if (v.trim().length < 3) {
                               return 'Username must be at least 3 characters';
-                            if (v.contains(' '))
+                            }
+                            if (v.contains(' ')) {
                               return 'Username cannot have spaces';
+                            }
                             return null;
                           },
                         ),
@@ -191,10 +194,12 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                           validator: (v) {
-                            if (v == null || v.isEmpty)
+                            if (v == null || v.isEmpty) {
                               return 'Please enter your email';
-                            if (!v.contains('@'))
+                            }
+                            if (!v.contains('@')) {
                               return 'Please enter a valid email';
+                            }
                             return null;
                           },
                         ),
@@ -223,10 +228,12 @@ class _SignupPageState extends State<SignupPage> {
                             ),
                           ),
                           validator: (v) {
-                            if (v == null || v.isEmpty)
+                            if (v == null || v.isEmpty) {
                               return 'Please create a password';
-                            if (v.length < 6)
+                            }
+                            if (v.length < 6) {
                               return 'Password must be at least 6 characters';
+                            }
                             return null;
                           },
                         ),

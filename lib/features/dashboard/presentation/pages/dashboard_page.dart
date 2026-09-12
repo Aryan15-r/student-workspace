@@ -304,11 +304,7 @@ class _DashboardPageState extends State<DashboardPage> {
                               // ── Quick Tools Header ───────────────────────────
                               const Text(
                                 'Quick Tools & Utilities',
-                                style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: AppTextStyles.headlineMedium,
                               ),
                               const SizedBox(height: 14),
                             ],
@@ -380,11 +376,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           padding: const EdgeInsets.fromLTRB(24, 32, 24, 12),
                           child: const Text(
                             "Attendance Tracker",
-                            style: TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: AppTextStyles.headlineMedium,
                           ),
                         ),
                       ),
@@ -443,11 +435,7 @@ class _DashboardPageState extends State<DashboardPage> {
                             children: [
                               const Text(
                                 "Today's Tasks",
-                                style: TextStyle(
-                                  color: AppColors.textPrimary,
-                                  fontSize: 18,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                                style: AppTextStyles.headlineMedium,
                               ),
                               const Spacer(),
                               TextButton(
@@ -539,11 +527,7 @@ class _DashboardPageState extends State<DashboardPage> {
                           padding: const EdgeInsets.fromLTRB(24, 32, 24, 14),
                           child: const Text(
                             'Explore Modules',
-                            style: TextStyle(
-                              color: AppColors.textPrimary,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
+                            style: AppTextStyles.headlineMedium,
                           ),
                         ),
                       ),
@@ -625,7 +609,7 @@ class _DashboardPageState extends State<DashboardPage> {
 
     if (isOutside) {
       textColor = textColor.withValues(alpha: 0.4);
-      if (bgColor != Colors.transparent && bgColor != null) {
+      if (bgColor != Colors.transparent) {
         bgColor = bgColor.withValues(alpha: 0.05);
       }
     }

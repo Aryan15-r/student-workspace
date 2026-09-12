@@ -449,7 +449,7 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
             build: (pw.Context context) {
               return pw.Container(
                 decoration: const pw.BoxDecoration(
-                  color: PdfColor.fromInt(0xFF1E293B), // Dark slate blue
+                  color: PdfColor.fromInt(0xFFFFF1E0), // Warm background
                 ),
                 padding: const pw.EdgeInsets.all(36),
                 child: pw.Column(
@@ -462,7 +462,7 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                         pw.Text(
                           'StudySpace Presentation',
                           style: pw.TextStyle(
-                            color: PdfColors.orange,
+                            color: const PdfColor.fromInt(0xFFD66A50),
                             fontSize: 10,
                             fontWeight: pw.FontWeight.bold,
                           ),
@@ -470,14 +470,14 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                         pw.Text(
                           'Slide ${i + 1} of ${_generatedSlides.length}',
                           style: const pw.TextStyle(
-                            color: PdfColors.grey400,
+                            color: PdfColor.fromInt(0xFF64748B),
                             fontSize: 10,
                           ),
                         ),
                       ],
                     ),
                     pw.SizedBox(height: 16),
-                    pw.Divider(color: PdfColors.orange),
+                    pw.Divider(color: const PdfColor.fromInt(0xFFD66A50)),
                     pw.SizedBox(height: isTitleSlide ? 40 : 16),
 
                     // Slide Title
@@ -486,7 +486,7 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                       style: pw.TextStyle(
                         fontSize: isTitleSlide ? 30 : 22,
                         fontWeight: pw.FontWeight.bold,
-                        color: PdfColors.white,
+                        color: const PdfColor.fromInt(0xFF1E293B),
                       ),
                     ),
                     if (slide.subtitle != null) ...[
@@ -495,7 +495,7 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                         slide.subtitle!,
                         style: const pw.TextStyle(
                           fontSize: 14,
-                          color: PdfColors.cyan200,
+                          color: PdfColor.fromInt(0xFF64748B),
                         ),
                       ),
                     ],
@@ -516,7 +516,7 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                                 right: 12,
                               ),
                               decoration: const pw.BoxDecoration(
-                                color: PdfColors.orange,
+                                color: PdfColor.fromInt(0xFFD66A50),
                                 shape: pw.BoxShape.circle,
                               ),
                             ),
@@ -525,7 +525,7 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                                 point,
                                 style: const pw.TextStyle(
                                   fontSize: 13,
-                                  color: PdfColors.grey200,
+                                  color: PdfColor.fromInt(0xFF334155),
                                   lineSpacing: 2,
                                 ),
                               ),
@@ -545,13 +545,13 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
                         decoration: pw.BoxDecoration(
                           color: const PdfColor.fromInt(0xFFF7EBDD),
                           borderRadius: pw.BorderRadius.circular(8),
-                          border: pw.Border.all(color: PdfColors.orange),
+                          border: pw.Border.all(color: const PdfColor.fromInt(0xFFD66A50)),
                         ),
                         child: pw.Text(
                           '💡 Note: ${slide.note}',
                           style: const pw.TextStyle(
                             fontSize: 10,
-                            color: PdfColors.orange,
+                            color: PdfColor.fromInt(0xFFD66A50),
                           ),
                         ),
                       ),

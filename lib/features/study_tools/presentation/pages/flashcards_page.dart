@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:go_router/go_router.dart';
 import '../../../../app/theme/app_colors.dart';
+import '../../../../app/theme/app_text_styles.dart';
 import '../../../../shared/widgets/adaptive_scaffold.dart';
 import '../../providers/flashcard_provider.dart';
 
@@ -101,9 +102,9 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
                       children: [
                         const Icon(Icons.style, size: 64, color: AppColors.textMuted),
                         const SizedBox(height: 16),
-                        const Text(
+                        Text(
                           'No Flashcard Decks Yet',
-                          style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                          style: AppTextStyles.headlineSmall,
                         ),
                         const SizedBox(height: 8),
                         FilledButton.icon(
