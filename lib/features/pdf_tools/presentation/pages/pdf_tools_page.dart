@@ -271,73 +271,92 @@ class _PdfToolsPageState extends State<PdfToolsPage> {
   void _openAiPresentationDialog() {
     _checkGuestGuard(() {
       final topicCtrl = TextEditingController(text: 'Quantum Mechanics Basics');
+      double slideCount = 5;
 
       showDialog(
         context: context,
-        builder: (ctx) => AlertDialog(
-          backgroundColor: AppColors.surface,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20),
-            side: const BorderSide(color: AppColors.border),
-          ),
-          title: Row(
-            children: [
-              const Text('✨', style: TextStyle(fontSize: 22)),
-              const SizedBox(width: 8),
-              Text('AI Presentation Maker', style: AppTextStyles.headlineSmall),
-            ],
-          ),
-          content: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'Enter any academic topic or paste your notes. Gemini AI will generate a 5-slide visual presentation deck with bullet points & speaker notes!',
-                style: AppTextStyles.bodySmall,
-              ),
-              const SizedBox(height: 16),
-              TextField(
-                controller: topicCtrl,
-                style: const TextStyle(color: AppColors.textPrimary),
-                decoration: InputDecoration(
-                  labelText: 'Presentation Topic',
-                  hintText: 'e.g., Photosynthesis, Binary Search Trees',
-                  prefixIcon: const Icon(
-                    Icons.slideshow_rounded,
-                    color: AppColors.primary,
+        builder: (ctx) => StatefulBuilder(
+          builder: (ctx, setDialogState) => AlertDialog(
+            backgroundColor: AppColors.surface,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(20),
+              side: const BorderSide(color: AppColors.border),
+            ),
+            title: Row(
+              children: [
+                const Text('✨', style: TextStyle(fontSize: 22)),
+                const SizedBox(width: 8),
+                Text('AI Presentation Maker', style: AppTextStyles.headlineSmall),
+              ],
+            ),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Enter any academic topic or paste your notes. Gemini AI will generate a visual presentation deck with bullet points & speaker notes!',
+                  style: AppTextStyles.bodySmall,
+                ),
+                const SizedBox(height: 16),
+                TextField(
+                  controller: topicCtrl,
+                  style: const TextStyle(color: AppColors.textPrimary),
+                  decoration: InputDecoration(
+                    labelText: 'Presentation Topic',
+                    hintText: 'e.g., Photosynthesis, Binary Search Trees',
+                    prefixIcon: const Icon(
+                      Icons.slideshow_rounded,
+                      color: AppColors.primary,
+                    ),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(12),
+                ),
+                const SizedBox(height: 16),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Text('Number of Slides:', style: AppTextStyles.bodySmall),
+                    Text('${slideCount.toInt()}', style: const TextStyle(fontWeight: FontWeight.bold, color: AppColors.textPrimary)),
+                  ],
+                ),
+                Slider(
+                  value: slideCount,
+                  min: 3,
+                  max: 15,
+                  divisions: 12,
+                  label: slideCount.toInt().toString(),
+                  onChanged: (val) => setDialogState(() => slideCount = val),
+                ),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Cancel'),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: AppColors.primary,
+                ),
+                onPressed: () async {
+                  final topic = topicCtrl.text.trim();
+                  if (topic.isEmpty) return;
+                  Navigator.pop(ctx);
+                  setState(() => _currentSlideIndex = 0);
+                  await context.read<PdfProvider>().generatePresentation(topic, slideCount: slideCount.toInt());
+                },
+                child: const Text(
+                  'Generate Slides',
+                  style: TextStyle(
+                    color: AppColors.textPrimary,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
               ),
             ],
           ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(ctx),
-              child: const Text('Cancel'),
-            ),
-            ElevatedButton(
-              style: ElevatedButton.styleFrom(
-                backgroundColor: AppColors.primary,
-              ),
-              onPressed: () async {
-                final topic = topicCtrl.text.trim();
-                if (topic.isEmpty) return;
-                Navigator.pop(ctx);
-                setState(() => _currentSlideIndex = 0);
-                await context.read<PdfProvider>().generatePresentation(topic);
-              },
-              child: const Text(
-                'Generate Slides',
-                style: TextStyle(
-                  color: AppColors.textPrimary,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ],
         ),
       );
     });

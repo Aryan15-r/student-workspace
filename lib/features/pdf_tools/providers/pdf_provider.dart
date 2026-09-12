@@ -292,7 +292,7 @@ class PdfProvider extends ChangeNotifier {
   }
 
   /// 4. Generate AI Study Presentation Slides
-  Future<bool> generatePresentation(String topic) async {
+  Future<bool> generatePresentation(String topic, {int slideCount = 5}) async {
     final sanitizedTopic = topic.trim();
     if (sanitizedTopic.isEmpty) return false;
 
@@ -308,8 +308,8 @@ class PdfProvider extends ChangeNotifier {
       if (apiKey.isNotEmpty && apiKey != 'your-gemini-api-key-here') {
         final prompt =
             '''
-Create a 5-slide study presentation on the topic: "$sanitizedTopic".
-Format your response ONLY as a JSON array of 5 objects with keys:
+Create a $slideCount-slide study presentation on the topic: "$sanitizedTopic".
+Format your response ONLY as a JSON array of $slideCount objects with keys:
 - "title": (string, short title of the slide)
 - "subtitle": (optional string)
 - "bulletPoints": (array of 3 to 4 concise educational bullet points, no markdown bold tags)
