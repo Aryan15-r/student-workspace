@@ -163,6 +163,21 @@ class _CommunityListPageState extends State<CommunityListPage> {
     final cp = context.read<CommunityProvider>();
     final result = await cp.joinRoomByCode(roomCode: code);
     if (result != null && mounted) {
+      if (result['requiresPasscode'] == 'true') {
+        final dummyRoom = Community(
+          id: result['roomId']!,
+          name: result['roomName']!,
+          description: '',
+          icon: '',
+          category: '',
+          isPrivate: true,
+          passcode: '',
+          createdBy: '',
+          createdAt: DateTime.now(),
+        );
+        _promptPasscodeAndJoin(dummyRoom);
+        return;
+      }
       _roomCodeController.clear();
       context.go(
         '/community/${result['communityId']}/channel/${result['channelId']}',
@@ -1928,7 +1943,7 @@ class _MessageTile extends StatelessWidget {
                     decoration: BoxDecoration(
                       gradient: isMe
                           ? const LinearGradient(
-                              colors: [Color(0xFF4F46E5), Color(0xFF7C3AED)],
+                              colors: [Color(0xFFE07A5F), Color(0xFFF2CC8F)],
                             )
                           : null,
                       color: isMe ? null : const Color(0xFFF7EBDD),

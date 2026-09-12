@@ -233,16 +233,29 @@ class CommunityProvider extends ChangeNotifier {
       final user = _db.auth.currentUser;
 
       // Check if community exists matching exact code/name
-      final existing = await _db
+      var existing = await _db
           .from('communities')
           .select()
           .ilike('name', sanitizedCode)
           .maybeSingle();
 
+      bool foundByPasscode = false;
+
       if (existing == null) {
-        _error =
-            'Room code "$sanitizedCode" not found! Check the code or create a new room in "New Room" section.';
-        return null;
+        // Fallback: search by passcode for private rooms
+        existing = await _db
+            .from('communities')
+            .select()
+            .eq('passcode', sanitizedCode)
+            .eq('is_private', true)
+            .maybeSingle();
+
+        if (existing == null) {
+          _error =
+              'Room "$sanitizedCode" not found! Check the name/passcode or create a new room.';
+          return null;
+        }
+        foundByPasscode = true;
       }
 
       final communityId = existing['id'] as String;
@@ -253,9 +266,19 @@ class CommunityProvider extends ChangeNotifier {
       if (roomIsPrivate && roomPasscode.isNotEmpty) {
         final isCreator = user != null && user.id == roomCreatorId;
         final providedPass = (inputPasscode ?? '').trim();
-        if (!isCreator && providedPass != roomPasscode.trim()) {
-          _error = 'Incorrect passcode for private room "$sanitizedCode".';
-          return null;
+        
+        if (!isCreator && !foundByPasscode) {
+          if (inputPasscode == null) {
+            return {
+              'requiresPasscode': 'true',
+              'roomName': existing['name'] as String,
+              'roomId': communityId,
+            };
+          }
+          if (providedPass != roomPasscode.trim()) {
+            _error = 'Incorrect passcode for private room "${existing['name']}".';
+            return null;
+          }
         }
       }
 
