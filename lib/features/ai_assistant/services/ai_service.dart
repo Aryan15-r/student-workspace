@@ -250,17 +250,27 @@ Example:
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
-          final text = json['candidates']?[0]?['content']?[0]?['parts']?[0]?['text'] ??
-              json['candidates']?[0]?['content']?['parts']?[0]?['text'];
+          // content is a Map, not a List — use ['parts'] directly
+          final text = json['candidates']?[0]?['content']?['parts']?[0]?['text'];
+          debugPrint('Flashcard raw response text: $text');
           if (text != null && text.toString().trim().isNotEmpty) {
-             final parsed = jsonDecode(text.toString());
+             String rawText = text.toString().trim();
+             // Strip markdown code fences if present
+             if (rawText.startsWith('```')) {
+               rawText = rawText.replaceAll(RegExp(r'^```[a-z]*\n?'), '').replaceAll(RegExp(r'```$'), '').trim();
+             }
+             final parsed = jsonDecode(rawText);
              if (parsed is List) {
                return parsed.map((e) => {
                  'front': e['front']?.toString() ?? '',
                  'back': e['back']?.toString() ?? '',
                }).toList();
              }
+          } else {
+            debugPrint('Flashcard: no text in response. Full body: ${response.body}');
           }
+        } else {
+          debugPrint('Flashcard API error ${response.statusCode}: ${response.body}');
         }
       } catch (e) {
         debugPrint('Generate Flashcards error on $model: $e');
@@ -320,14 +330,24 @@ Ensure exactly 4 options per question, and correctOptionIndex is between 0 and 3
 
         if (response.statusCode == 200) {
           final json = jsonDecode(response.body);
-          final text = json['candidates']?[0]?['content']?[0]?['parts']?[0]?['text'] ??
-              json['candidates']?[0]?['content']?['parts']?[0]?['text'];
+          // content is a Map, not a List — use ['parts'] directly
+          final text = json['candidates']?[0]?['content']?['parts']?[0]?['text'];
+          debugPrint('Quiz raw response text: $text');
           if (text != null && text.toString().trim().isNotEmpty) {
-             final parsed = jsonDecode(text.toString());
+             String rawText = text.toString().trim();
+             // Strip markdown code fences if present
+             if (rawText.startsWith('```')) {
+               rawText = rawText.replaceAll(RegExp(r'^```[a-z]*\n?'), '').replaceAll(RegExp(r'```$'), '').trim();
+             }
+             final parsed = jsonDecode(rawText);
              if (parsed is Map<String, dynamic>) {
                 return parsed;
              }
+          } else {
+            debugPrint('Quiz: no text in response. Full body: ${response.body}');
           }
+        } else {
+          debugPrint('Quiz API error ${response.statusCode}: ${response.body}');
         }
       } catch (e) {
         debugPrint('Generate Quiz error on $model: $e');
