@@ -73,6 +73,7 @@ class _FlashcardsPageState extends State<FlashcardsPage> {
           ),
         ],
       ),
+      ),
     );
   }
 

@@ -75,6 +75,7 @@ class _QuizGeneratorPageState extends State<QuizGeneratorPage> {
           ),
         ],
       ),
+      ),
     );
   }
 
