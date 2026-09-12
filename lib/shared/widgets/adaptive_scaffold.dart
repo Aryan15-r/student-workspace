@@ -63,7 +63,7 @@ class AdaptiveScaffold extends StatelessWidget {
     NavItem(
       icon: Icons.timer_outlined,
       activeIcon: Icons.timer_rounded,
-      label: 'Focus',
+      label: 'Study Tools',
       route: '/study-tools',
     ),
     NavItem(
@@ -236,17 +236,17 @@ class _MobileShell extends StatelessWidget {
                       'Manage account, guest status, and academic settings',
                   onTap: () {
                     Navigator.pop(ctx);
-                    onTap(7);
+                    onTap(8);
                   },
                 ),
                 _MenuTile(
                   icon: Icons.timer_rounded,
                   color: const Color(0xFF10B981),
-                  title: 'Focus & Rhythm',
-                  subtitle: 'Study timers and productivity tracker',
+                  title: 'Study Tools',
+                  subtitle: 'Flashcards, AI Quizzes, and Focus timers',
                   onTap: () {
                     Navigator.pop(ctx);
-                    onTap(8);
+                    onTap(7);
                   },
                 ),
                 const SizedBox(height: 16),
@@ -290,7 +290,7 @@ class _MobileShell extends StatelessWidget {
       body: child,
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
-          color: AppColors.surface,
+          color: AppColors.menuPanelBackground,
           border: Border(top: BorderSide(color: AppColors.menuBorder, width: 1.5)),
         ),
         child: ClipRRect(
@@ -309,8 +309,8 @@ class _MobileShell extends StatelessWidget {
                 backgroundColor: Colors.transparent,
                 elevation: 0,
                 type: BottomNavigationBarType.fixed,
-                selectedItemColor: AppColors.primary,
-                unselectedItemColor: AppColors.textMuted,
+                selectedItemColor: AppColors.navBarSelectedText,
+                unselectedItemColor: AppColors.navBarUnselectedText,
                 selectedFontSize: 11,
                 unselectedFontSize: 11,
                 items: const [
@@ -429,21 +429,21 @@ class _TabletShell extends StatelessWidget {
             indicatorColor: AppColors.menuSelectedBackground,
             labelType: NavigationRailLabelType.selected,
             selectedLabelTextStyle: const TextStyle(
-              color: AppColors.primary,
+              color: AppColors.navBarSelectedText,
               fontSize: 11,
               fontWeight: FontWeight.bold,
             ),
             unselectedLabelTextStyle: const TextStyle(
-              color: AppColors.textSecondary,
+              color: AppColors.navBarUnselectedText,
               fontSize: 11,
             ),
             destinations: items
                 .map(
                   (item) => NavigationRailDestination(
-                    icon: Icon(item.icon, color: AppColors.textSecondary),
+                    icon: Icon(item.icon, color: AppColors.navBarUnselectedText),
                     selectedIcon: Icon(
                       item.activeIcon,
-                      color: AppColors.primary,
+                      color: AppColors.navBarSelectedText,
                     ),
                     label: Text(item.label),
                   ),
@@ -531,7 +531,7 @@ class _DesktopShell extends StatelessWidget {
                             Text(
                               'StudySpace',
                               style: TextStyle(
-                                color: AppColors.textPrimary,
+                                color: Colors.white,
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
                               ),
@@ -539,7 +539,7 @@ class _DesktopShell extends StatelessWidget {
                             Text(
                               'Student Operating System',
                               style: TextStyle(
-                                color: AppColors.textSecondary,
+                                color: AppColors.navBarUnselectedText,
                                 fontSize: 10,
                                 fontWeight: FontWeight.w600,
                               ),
@@ -646,15 +646,15 @@ class _SidebarItem extends StatelessWidget {
                 Icon(
                   isSelected ? item.activeIcon : item.icon,
                   color: isSelected
-                      ? AppColors.primary
-                      : AppColors.textSecondary,
+                      ? AppColors.navBarSelectedText
+                      : AppColors.navBarUnselectedText,
                   size: 20,
                 ),
                 const SizedBox(width: 12),
                 Text(
                   item.label,
                   style: TextStyle(
-                    color: isSelected ? AppColors.primary : AppColors.textPrimary,
+                    color: isSelected ? AppColors.navBarSelectedText : AppColors.navBarUnselectedText,
                     fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                     fontSize: 14,
                   ),

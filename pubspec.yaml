@@ -60,3 +60,4 @@ flutter:
   assets:
     - .env          # Environment variables (gitignored — never committed)
     - assets/
+    - assets/images/

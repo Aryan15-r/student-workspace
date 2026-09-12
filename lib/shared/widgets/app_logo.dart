@@ -68,25 +68,13 @@ class _LogoIcon extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      width: size,
-      height: size,
-      decoration: BoxDecoration(
-        gradient: AppColors.primaryGradient,
-        borderRadius: BorderRadius.circular(size * 0.25),
-        boxShadow: [
-          BoxShadow(
-            color: AppColors.primary.withValues(alpha: 0.4),
-            blurRadius: 12,
-            offset: const Offset(0, 4),
-          ),
-        ],
-      ),
-      child: Center(
-        child: Text(
-          '✦',
-          style: TextStyle(fontSize: size * 0.5, color: AppColors.textPrimary),
-        ),
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(size * 0.25),
+      child: Image.asset(
+        'assets/images/logo.png',
+        width: size,
+        height: size,
+        fit: BoxFit.cover,
       ),
     );
   }

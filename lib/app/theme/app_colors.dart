@@ -31,16 +31,18 @@ class AppColors {
   );
 
   // ── Background Layers ──────────────────────────────────────────────────────
-  static const Color background = Color(0xFFFFF8F0); // Page background
+  static const Color background = Color(0xFFFFF1E0); // Warmer page background
   static const Color surface = Color(0xFFFFFCF8); // Cards, dialogs
   static const Color card = Color(0xFFF7EBDD); // Inner cards
   static const Color overlay = Color(0xFFF0DCCB); // Hover / pressed states
 
   // ── Menu & Side Panel ─────────────────────────────────────────────────────
-  static const Color menuBackground = Color(0xFFFFFDF9); // Dedicated menu background
-  static const Color menuPanelBackground = Color(0xFFFAF0E6); // Distinct sidebar panel background
-  static const Color menuBorder = Color(0xFFD6C0B0); // Crisp menu panel border
-  static const Color menuSelectedBackground = Color(0xFFFCEBE3); // Selected menu item background
+  static const Color menuBackground = Color(0xFFFFFDF9); // More menu (bottom sheet) background
+  static const Color menuPanelBackground = Color(0xFF1A2A3A); // Navy Blue navbar/sidebar
+  static const Color menuBorder = Color(0xFF2C3E50); // Darker border for navy blue
+  static const Color menuSelectedBackground = Color(0xFF2C3E50); // Selected item on navy blue
+  static const Color navBarUnselectedText = Color(0xFF94A3B8); // Light gray for unselected text on dark navbar
+  static const Color navBarSelectedText = Color(0xFFF2CC8F); // Honey for selected text on dark navbar
 
   // ── Borders & Dividers ────────────────────────────────────────────────────
   static const Color border = Color(0xFFDCC4B2); // Defined border color for high contrast
