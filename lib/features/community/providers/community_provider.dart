@@ -288,9 +288,21 @@ class CommunityProvider extends ChangeNotifier {
           .eq('community_id', communityId)
           .maybeSingle();
 
-      final channelId = channelData != null
-          ? channelData['id'] as String
-          : communityId;
+      String channelId;
+      if (channelData != null) {
+        channelId = channelData['id'] as String;
+      } else {
+        // Auto-heal: Create the missing default channel
+        final newChannel = await _db.from('channels').insert({
+          'community_id': communityId,
+          'name': 'general',
+          'description': 'Main channel',
+          'is_private': roomIsPrivate,
+          'passcode': roomPasscode,
+          'created_by': roomCreatorId ?? user?.id,
+        }).select().single();
+        channelId = newChannel['id'] as String;
+      }
 
       // Join channel_members
       if (user != null) {

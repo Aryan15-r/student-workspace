@@ -449,7 +449,7 @@ Do not add extra explanation or markdown fences outside the JSON. Return only th
             build: (pw.Context context) {
               return pw.Container(
                 decoration: const pw.BoxDecoration(
-                  color: PdfColor.fromInt(0xFFFFFCF8), // Dark slate blue
+                  color: PdfColor.fromInt(0xFF1E293B), // Dark slate blue
                 ),
                 padding: const pw.EdgeInsets.all(36),
                 child: pw.Column(

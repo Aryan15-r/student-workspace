@@ -212,6 +212,7 @@ Return ONLY valid raw JSON.
       }
     }
 
+    return _getFallbackSearchData(cleanQuery);
   }
 
   /// AI-powered Flashcard generation
