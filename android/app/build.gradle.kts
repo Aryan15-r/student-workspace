@@ -7,7 +7,7 @@ plugins {
 
 android {
     namespace = "com.algopulse.app.student_workspace"
-    compileSdk = 36
+    compileSdk = 37
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
