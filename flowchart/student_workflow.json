@@ -1,0 +1,80 @@
+{
+  "schema_version": 2,
+  "diagram_type": "workflow",
+  "meta": {
+    "title": "Interactive Student Assignment & AI Grading Workflow",
+    "animation": "trace",
+    "visual_preset": "signal-flow",
+    "quality_profile": "showcase",
+    "views": [
+      {
+        "id": "full-flow",
+        "label": "End-to-End Submission",
+        "focus": ["student_ui", "api_gateway", "submission_svc", "ai_evaluator", "plagiarism_chk", "feedback_gen", "dashboard"],
+        "note": "Follow an assignment submission from student upload to AI evaluation and instant feedback."
+      },
+      {
+        "id": "ai-engine",
+        "label": "AI Assessment & Security",
+        "focus": ["rubric_db", "ai_evaluator", "plagiarism_chk", "review_flag"],
+        "note": "Inspect how rubrics guide the AI model and how similarity checks flag anomalies."
+      },
+      {
+        "id": "data-persistence",
+        "label": "Results & Gradebook",
+        "focus": ["feedback_gen", "student_db", "dashboard"],
+        "note": "Examine how grades and contextual feedback are persisted into the gradebook DB."
+      }
+    ],
+    "output": "interactive_flowchart.html"
+  },
+  "lanes": [
+    { "id": "student", "label": "Student Interface" },
+    { "id": "app", "label": "Platform Services" },
+    { "id": "ai", "label": "AI & Security Engine" },
+    { "id": "db", "label": "Data & Persistence" }
+  ],
+  "phases": [
+    { "id": "intake", "label": "Submission Intake", "fromCol": 0, "toCol": 1 },
+    { "id": "evaluation", "label": "AI Assessment & Integrity", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "delivery", "label": "Feedback & Insights", "fromCol": 4, "toCol": 5, "variant": "dashed" }
+  ],
+  "groups": [
+    { "id": "submission_intake", "label": "Client Intake", "lane": "student", "fromCol": 0, "toCol": 1 },
+    { "id": "ai_pipeline", "label": "AI Assessment Loop", "lane": "ai", "fromCol": 2, "toCol": 3, "variant": "emphasis" },
+    { "id": "record_keeping", "label": "Persistence Layer", "lane": "db", "fromCol": 2, "toCol": 4, "variant": "dashed" }
+  ],
+  "mainPath": ["student_ui", "api_gateway", "submission_svc", "ai_evaluator", "plagiarism_chk", "feedback_gen", "dashboard"],
+  "nodes": [
+    { "id": "student_ui", "lane": "student", "col": 0, "type": "frontend", "label": "Student App", "sublabel": "submits assignment", "width": 132 },
+    { "id": "api_gateway", "lane": "app", "col": 1, "type": "backend", "label": "API Gateway", "sublabel": "authenticates student", "width": 132 },
+    { "id": "submission_svc", "lane": "app", "col": 2, "type": "backend", "label": "Submission Svc", "sublabel": "validates payload", "width": 132 },
+    { "id": "ai_evaluator", "lane": "ai", "col": 2, "type": "backend", "label": "AI Evaluator", "sublabel": "grades code & answers", "tag": "Gemini 3.6", "width": 132 },
+    { "id": "plagiarism_chk", "lane": "ai", "col": 3, "type": "security", "label": "Integrity Check", "sublabel": "similarity scan", "tag": "plagiarism scan", "width": 132 },
+    { "id": "review_flag", "lane": "ai", "col": 4, "type": "security", "label": "Instructor Queue", "sublabel": "manual review", "width": 132 },
+    { "id": "rubric_db", "lane": "db", "col": 2, "type": "database", "label": "Rubric Store", "sublabel": "grading criteria", "width": 132 },
+    { "id": "student_db", "lane": "db", "col": 4, "type": "database", "label": "Gradebook DB", "sublabel": "scores & analytics", "width": 132 },
+    { "id": "feedback_gen", "lane": "app", "col": 4, "type": "messagebus", "label": "Report Engine", "sublabel": "synthesizes feedback", "width": 132 },
+    { "id": "dashboard", "lane": "student", "col": 5, "type": "frontend", "label": "Student Dashboard", "sublabel": "views grade & tips", "width": 132 }
+  ],
+  "edges": [
+    { "id": "sub-req", "from": "student_ui", "to": "api_gateway", "label": "submit", "variant": "default" },
+    { "id": "gate-sub", "from": "api_gateway", "to": "submission_svc", "label": "route", "variant": "default" },
+    { "id": "sub-ai", "from": "submission_svc", "to": "ai_evaluator", "label": "eval", "variant": "emphasis" },
+    { "id": "rubric-ai", "from": "rubric_db", "to": "ai_evaluator", "label": "rubric", "variant": "dashed" },
+    { "id": "ai-plag", "from": "ai_evaluator", "to": "plagiarism_chk", "label": "verify", "variant": "default" },
+    { "id": "plag-flag", "from": "plagiarism_chk", "to": "review_flag", "label": "flagged", "variant": "security", "role": "error" },
+    { "id": "plag-clean", "from": "plagiarism_chk", "to": "feedback_gen", "label": "passed", "variant": "emphasis" },
+    { "id": "gen-db", "from": "feedback_gen", "to": "student_db", "label": "save", "variant": "dashed" },
+    { "id": "gen-dash", "from": "feedback_gen", "to": "dashboard", "label": "deliver", "variant": "emphasis" }
+  ],
+  "cards": [
+    {
+      "dot": "cyan",
+      "title": "Interactive Workflow",
+      "items": [
+        "Rubric-driven AI evaluation & instant gradebook sync"
+      ]
+    }
+  ]
+}
