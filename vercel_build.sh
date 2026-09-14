@@ -33,4 +33,7 @@ flutter pub get
 echo "=== Building Flutter Web Application ==="
 flutter build web --release --base-href /
 
+echo "=== Copying Flowchart Assets ==="
+cp -r web/flowchart build/web/flowchart 2>/dev/null || cp -r flowchart build/web/flowchart 2>/dev/null || true
+
 echo "=== Flutter Web Build Complete! ==="
